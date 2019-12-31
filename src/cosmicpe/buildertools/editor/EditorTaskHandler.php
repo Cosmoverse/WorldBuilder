@@ -9,10 +9,15 @@ use pocketmine\scheduler\Task;
 
 final class EditorTaskHandler extends Task{
 
-	private const OPS_PER_TICK = 65536;
+	/** @var int */
+	private $max_operations_per_tick;
 
 	/** @var EditorTaskInfo[] */
 	private $tasks = [];
+
+	public function __construct(int $max_operations_per_tick){
+		$this->max_operations_per_tick = $max_operations_per_tick;
+	}
 
 	public function handle(EditorTask $task) : void{
 		$this->tasks[spl_object_id($task)] = EditorTaskInfo::fromEditorTask($task);
@@ -21,7 +26,7 @@ final class EditorTaskHandler extends Task{
 	public function onRun(int $currentTick) : void{
 		$tasks_c = count($this->tasks);
 		if($tasks_c > 0){
-			$ops = (int) floor(self::OPS_PER_TICK / count($this->tasks));
+			$ops = (int) floor($this->max_operations_per_tick / count($this->tasks));
 			$ids = array_keys($this->tasks);
 			shuffle($ids);
 			foreach($ids as $id){
