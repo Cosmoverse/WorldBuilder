@@ -1,4 +1,4 @@
-# BuilderTools v0.0.1 configuration
+# WorldBuilder v0.0.1 configuration
 
 # The maximum number of blocks that can be iterated over a tick.
 # Decreasing this will slow down world editor processes.

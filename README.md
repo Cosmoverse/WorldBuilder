@@ -1,16 +1,16 @@
-# BulderTools
+# WorldBuilder
 A world editor plugin designed for production use.
 
-BuilderTools is specifically designed to handle multiple world edit operations efficiently.
-Unlike most of the async world editor plugins, BuilderTools while being 100% asynchronous, does not execute world edit tasks on a new thread.
+WorldBuilder is specifically designed to handle multiple world edit operations efficiently.
+Unlike most of the async world editor plugins, WorldBuilder while being 100% asynchronous, does not execute world edit tasks on a new thread.
 It instead executes them on the main thread but splits the task into several smaller tasks which are executed over several game ticks.
 There is a configurable limit on how many block iterations can occur over a tick which acts as a performance regulator.
 
-**NOTE:** BuilderTools is an efficiency-first, annoyance-last world editor plugin so do not expect light-speed world edits.
+**NOTE:** WorldBuilder is an efficiency-first, annoyance-last world editor plugin so do not expect light-speed world edits.
 There is a default limit of 65536 block iterations per tick (or about 1,310,720 per second) so if you're editing 78,643,200 million
 blocks volume region on an "INFINITE frequency" CPU, the task will always take about a minute to complete.
 
-BuilderTools is great for creative mode servers and provides an API for limiting and monitoring world edits.
+WorldBuilder is great for creative mode servers and provides an API for limiting and monitoring world edits.
 
 
 ## Developer Docs
