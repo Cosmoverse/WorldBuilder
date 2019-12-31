@@ -26,7 +26,8 @@ final class EditorTaskHandler extends Task{
 	public function onRun(int $currentTick) : void{
 		$tasks_c = count($this->tasks);
 		if($tasks_c > 0){
-			$ops = (int) floor($this->max_operations_per_tick / count($this->tasks));
+			$ops = max(1024, (int) floor($this->max_operations_per_tick / count($this->tasks)));
+			$completed = 0;
 			$ids = array_keys($this->tasks);
 			shuffle($ids);
 			foreach($ids as $id){
@@ -46,6 +47,10 @@ final class EditorTaskHandler extends Task{
 				}
 				if(isset($this->tasks[$id])){
 					$info->getTask()->onCompleteOperations($initial - $limit);
+				}
+				$completed += $initial - $limit;
+				if($completed >= $ops){
+					break;
 				}
 			}
 		}

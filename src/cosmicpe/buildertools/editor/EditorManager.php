@@ -13,7 +13,7 @@ final class EditorManager{
 	private static $task_handler;
 
 	public static function init(Loader $plugin) : void{
-		self::$task_handler = new EditorTaskHandler($plugin->getConfig()->get("max-ops-per-tick"));
+		self::$task_handler = new EditorTaskHandler((int) $plugin->getConfig()->get("max-ops-per-tick"));
 		$plugin->getScheduler()->scheduleRepeatingTask(self::$task_handler, 1);
 	}
 

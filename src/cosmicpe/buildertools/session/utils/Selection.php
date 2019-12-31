@@ -28,6 +28,13 @@ final class Selection{
 		}
 	}
 
+	/**
+	 * @return Vector3[]
+	 */
+	public function getPoints() : array{
+		return $this->points->toArray();
+	}
+
 	public function isComplete() : bool{
 		foreach($this->points as $point){
 			if($point === null){
