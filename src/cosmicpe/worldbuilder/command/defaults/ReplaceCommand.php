@@ -18,7 +18,7 @@ use pocketmine\utils\TextFormat;
 class ReplaceCommand extends Command{
 
 	public function __construct(Loader $plugin){
-		parent::__construct($plugin, "/replace", "Replaces blocks in selected position");
+		parent::__construct($plugin, "/replace", "Replaces blocks in selected space");
 		$this->addCheck(new RequireSelectionCheck());
 	}
 

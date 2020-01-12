@@ -7,6 +7,7 @@ namespace cosmicpe\worldbuilder\session;
 use cosmicpe\worldbuilder\editor\EditorManager;
 use cosmicpe\worldbuilder\editor\task\EditorTask;
 use cosmicpe\worldbuilder\event\player\PlayerTriggerEditorTaskEvent;
+use cosmicpe\worldbuilder\session\clipboard\Clipboard;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use pocketmine\player\Player;
 
@@ -14,6 +15,9 @@ final class PlayerSession{
 
 	/** @var Selection|null */
 	private $selection;
+
+	/** @var Clipboard|null */
+	private $clipboard;
 
 	/** @var Player */
 	private $player;
@@ -28,6 +32,14 @@ final class PlayerSession{
 
 	public function setSelection(?Selection $selection) : void{
 		$this->selection = $selection;
+	}
+
+	public function getClipboard() : ?Clipboard{
+		return $this->clipboard;
+	}
+
+	public function setClipboard(?Clipboard $clipboard) : void{
+		$this->clipboard = $clipboard;
 	}
 
 	public function pushEditorTask(EditorTask $task, ?string $message = null) : bool{

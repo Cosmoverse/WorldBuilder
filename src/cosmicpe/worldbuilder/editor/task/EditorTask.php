@@ -59,14 +59,16 @@ abstract class EditorTask{
 
 	abstract public function run() : Generator;
 
-	protected function onChunkChanged(int $chunkX, int $chunkZ) : void{
+	protected function onChunkChanged(int $chunkX, int $chunkZ, array $flags = [Chunk::DIRTY_FLAG_TERRAIN]) : void{
 		/** @var World $world */
 		$world = $this->iterator->world;
 		$world->clearCache(true);
 
 		$chunk = $world->getChunk($chunkX, $chunkZ, false);
 		if($chunk !== null){
-			$chunk->setDirtyFlag(Chunk::DIRTY_FLAG_TERRAIN, true);
+			foreach($flags as $flag){
+				$chunk->setDirtyFlag($flag, true);
+			}
 			foreach($world->getChunkListeners($chunkX, $chunkZ) as $listener){
 				$listener->onChunkChanged($chunk);
 			}
