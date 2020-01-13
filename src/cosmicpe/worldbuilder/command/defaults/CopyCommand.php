@@ -6,7 +6,7 @@ namespace cosmicpe\worldbuilder\command\defaults;
 
 use cosmicpe\worldbuilder\command\check\RequireSelectionCheck;
 use cosmicpe\worldbuilder\command\Command;
-use cosmicpe\worldbuilder\editor\task\CopyEditorTask;
+use cosmicpe\worldbuilder\editor\task\copy\CopyEditorTask;
 use cosmicpe\worldbuilder\editor\task\listener\EditorTaskOnCompletionListener;
 use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\session\clipboard\Clipboard;

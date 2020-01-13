@@ -6,7 +6,7 @@ namespace cosmicpe\worldbuilder\command\defaults;
 
 use cosmicpe\worldbuilder\command\check\PlayerOnlyCommandCheck;
 use cosmicpe\worldbuilder\command\Command;
-use cosmicpe\worldbuilder\editor\task\PasteEditorTask;
+use cosmicpe\worldbuilder\editor\task\copy\PasteEditorTask;
 use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use pocketmine\command\CommandSender;

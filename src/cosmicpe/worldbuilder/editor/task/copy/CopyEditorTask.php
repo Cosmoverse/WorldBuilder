@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\editor\task;
+namespace cosmicpe\worldbuilder\editor\task\copy;
 
+use cosmicpe\worldbuilder\editor\task\AdvancedEditorTask;
+use cosmicpe\worldbuilder\editor\task\copy\nbtcopier\NamedtagCopierManager;
 use cosmicpe\worldbuilder\session\clipboard\Clipboard;
 use cosmicpe\worldbuilder\session\clipboard\ClipboardEntry;
 use cosmicpe\worldbuilder\session\utils\Selection;
@@ -41,7 +43,7 @@ class CopyEditorTask extends AdvancedEditorTask{
 			($this->iterator->currentChunk->getZ() << 4) + $z - $this->minimum->z,
 			new ClipboardEntry(
 				$this->iterator->currentSubChunk->getFullBlock($x, $y & 0x0f, $z),
-				$tile !== null ? $tile->saveNBT() : null
+				$tile !== null ? NamedtagCopierManager::copy($tile) : null
 			)
 		);
 		return false;

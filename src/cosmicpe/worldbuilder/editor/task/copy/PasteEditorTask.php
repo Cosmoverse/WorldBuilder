@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\editor\task;
+namespace cosmicpe\worldbuilder\editor\task\copy;
 
+use cosmicpe\worldbuilder\editor\task\copy\nbtcopier\NamedtagCopierManager;
+use cosmicpe\worldbuilder\editor\task\EditorTask;
 use cosmicpe\worldbuilder\session\clipboard\Clipboard;
 use Ds\Set;
 use Generator;
 use pocketmine\block\tile\TileFactory;
 use pocketmine\math\Vector3;
-use pocketmine\world\format\Chunk;
 use pocketmine\world\World;
 
 class PasteEditorTask extends EditorTask{
@@ -44,7 +45,7 @@ class PasteEditorTask extends EditorTask{
 			}
 
 			if($entry->tile_nbt !== null){
-				$tiles[] = TileFactory::createFromData($world, $entry->tile_nbt);
+				$tiles[] = TileFactory::createFromData($world, NamedtagCopierManager::moveTo($entry->tile_nbt, $x, $y, $z));
 			}
 
 			$this->iterator->currentSubChunk->setFullBlock($x & 0x0f, $y & 0x0f, $z & 0x0f, $entry->full_block);
@@ -54,9 +55,10 @@ class PasteEditorTask extends EditorTask{
 
 		foreach($chunks as $hash){
 			World::getXZ($hash, $chunkX, $chunkZ);
-			$this->onChunkChanged($chunkX, $chunkZ, [Chunk::DIRTY_FLAG_TERRAIN, Chunk::DIRTY_FLAG_TILES]);
+			$this->onChunkChanged($chunkX, $chunkZ);
 		}
 
+		// Send tiles AFTER blocks have been placed, or else chests don't show up paired
 		foreach($tiles as $tile){
 			$world->addTile($tile);
 			yield true;
