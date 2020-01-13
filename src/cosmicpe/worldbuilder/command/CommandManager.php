@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\command;
 
 use cosmicpe\worldbuilder\command\defaults\CopyCommand;
+use cosmicpe\worldbuilder\command\defaults\DrainCommand;
 use cosmicpe\worldbuilder\command\defaults\PasteCommand;
 use cosmicpe\worldbuilder\command\defaults\PosCommand;
 use cosmicpe\worldbuilder\command\defaults\ReplaceCommand;
@@ -16,6 +17,7 @@ final class CommandManager{
 	public static function init(Loader $plugin) : void{
 		self::register($plugin,
 			new CopyCommand($plugin),
+			new DrainCommand($plugin),
 			new PasteCommand($plugin),
 			new PosCommand($plugin, 0),
 			new PosCommand($plugin, 1),
