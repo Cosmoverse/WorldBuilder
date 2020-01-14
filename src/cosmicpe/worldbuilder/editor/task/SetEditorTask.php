@@ -32,7 +32,8 @@ class SetEditorTask extends AdvancedEditorTask{
 		$this->iterator->currentSubChunk->setFullBlock($x, $y & 0x0f, $z, $this->full_block);
 		$tile = $this->iterator->currentChunk->getTile($x, $y, $z);
 		if($tile !== null){
-			$tile->onBlockDestroyed();
+			$this->iterator->currentChunk->removeTile($tile);
+			// $tile->onBlockDestroyed();
 		}
 		return true;
 	}

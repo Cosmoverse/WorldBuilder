@@ -15,16 +15,16 @@ use pocketmine\world\World;
 
 class PasteEditorTask extends EditorTask{
 
-	/** @var Clipboard */
-	private $clipboard;
-
 	/** @var Vector3 */
 	private $relative_position;
 
+	/** @var Clipboard */
+	private $clipboard;
+
 	public function __construct(World $world, Clipboard $clipboard, Vector3 $relative_position){
-		parent::__construct($world, $clipboard->getSelection(), $clipboard->getVolume());
+		$this->relative_position = $relative_position->floor()->add($clipboard->getRelativePosition());
+		parent::__construct($world, $clipboard->asSelection($this->relative_position), $clipboard->getVolume());
 		$this->clipboard = $clipboard;
-		$this->relative_position = $relative_position;
 	}
 
 	public function getName() : string{
@@ -32,7 +32,7 @@ class PasteEditorTask extends EditorTask{
 	}
 
 	public function run() : Generator{
-		$relative_pos = $this->relative_position->floor()->add($this->clipboard->getRelativePosition());
+		$relative_pos = $this->relative_position;
 		$world = $this->getWorld();
 		$chunks = new Set();
 		$tiles = [];

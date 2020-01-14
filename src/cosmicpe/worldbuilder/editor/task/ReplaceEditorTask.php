@@ -19,6 +19,10 @@ class ReplaceEditorTask extends AdvancedEditorTask{
 		$this->replacement_map = $replacement_map->toFullIdArray();
 	}
 
+	public function getReplacementMap() : array{
+		return $this->replacement_map;
+	}
+
 	public function getName() : string{
 		return "replace";
 	}
@@ -28,7 +32,8 @@ class ReplaceEditorTask extends AdvancedEditorTask{
 			$this->iterator->currentSubChunk->setFullBlock($x, $y & 0x0f, $z, $this->replacement_map[$find]);
 			$tile = $this->iterator->currentChunk->getTile($x, $y, $z);
 			if($tile !== null){
-				$tile->onBlockDestroyed();
+				$this->iterator->currentChunk->removeTile($tile);
+				// $tile->onBlockDestroyed();
 			}
 			return true;
 		}

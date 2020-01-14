@@ -24,7 +24,7 @@ class ReplaceCommand extends Command{
 
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
 		/** @var Player $sender */
-		if(isset($args[0], $args[1])){
+		if(isset($args[0], $args[1]) && (count($args) & 1) === 0){
 			$map = new ReplacementMap();
 
 			foreach(array_chunk($args, 2) as [$find, $replace]){
