@@ -6,8 +6,10 @@ namespace cosmicpe\worldbuilder\command;
 
 use cosmicpe\worldbuilder\command\defaults\CopyCommand;
 use cosmicpe\worldbuilder\command\defaults\DrainCommand;
+use cosmicpe\worldbuilder\command\defaults\FixPcBlocksCommand;
 use cosmicpe\worldbuilder\command\defaults\PasteCommand;
 use cosmicpe\worldbuilder\command\defaults\PosCommand;
+use cosmicpe\worldbuilder\command\defaults\RegenerateChunksCommand;
 use cosmicpe\worldbuilder\command\defaults\ReplaceCommand;
 use cosmicpe\worldbuilder\command\defaults\SetCommand;
 use cosmicpe\worldbuilder\Loader;
@@ -17,7 +19,9 @@ final class CommandManager{
 	public static function init(Loader $plugin) : void{
 		self::register($plugin,
 			new CopyCommand($plugin),
+			new RegenerateChunksCommand($plugin),
 			new DrainCommand($plugin),
+			new FixPcBlocksCommand($plugin),
 			new PasteCommand($plugin),
 			new PosCommand($plugin, 0),
 			new PosCommand($plugin, 1),

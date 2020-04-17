@@ -13,10 +13,12 @@ final class ReplacementMap{
 	private $full_id_map = [];
 
 	public function put(Block $find, Block $replace) : ReplacementMap{
-		$find_id = $find->getFullId();
-		$replace_id = $replace->getFullId();
-		if($find_id !== $replace_id){
-			$this->full_id_map[$find_id] = $replace_id;
+		return $this->putFullId($find->getFullId(), $replace->getFullId());
+	}
+
+	public function putFullId(int $find, int $replace) : ReplacementMap{
+		if($find !== $replace){
+			$this->full_id_map[$find] = $replace;
 		}
 		return $this;
 	}
