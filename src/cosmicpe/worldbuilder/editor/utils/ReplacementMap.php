@@ -31,14 +31,18 @@ final class ReplacementMap{
 		return count($this->full_id_map) === 0;
 	}
 
+	/**
+	 * @return int[]
+	 */
 	public function toFullIdArray() : array{
 		return $this->full_id_map;
 	}
 
 	public function __toString() : string{
+		$block_factory = BlockFactory::getInstance();
 		$result = "";
 		foreach($this->full_id_map as $find => $replace){
-			$result .= BlockFactory::fromFullBlock($find)->getName() . " -> " . BlockFactory::fromFullBlock($replace)->getName() . ", ";
+			$result .= $block_factory->fromFullBlock($find)->getName() . " -> " . $block_factory->fromFullBlock($replace)->getName() . ", ";
 		}
 		return rtrim($result, ", ");
 	}

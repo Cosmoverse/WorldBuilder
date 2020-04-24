@@ -25,7 +25,7 @@ class CopyCommand extends Command{
 	}
 
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
-		/** @var Player $sender */
+		assert($sender instanceof Player);
 		$session = PlayerSessionManager::get($sender);
 		$session->setClipboard(null);
 

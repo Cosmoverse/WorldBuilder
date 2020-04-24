@@ -35,7 +35,7 @@ class DrainCommand extends Command{
 
 		$this->map = new ReplacementMap();
 		$air = VanillaBlocks::AIR();
-		foreach(BlockFactory::getAllKnownStates() as $state){
+		foreach(BlockFactory::getInstance()->getAllKnownStates() as $state){
 			if($state instanceof Water){
 				$this->map->put($state, $air);
 			}
@@ -43,7 +43,7 @@ class DrainCommand extends Command{
 	}
 
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
-		/** @var Player $sender */
+		assert($sender instanceof Player);
 		$session = PlayerSessionManager::get($sender);
 		if(!isset($args[0])){
 			$this->selection_check->validate($sender);

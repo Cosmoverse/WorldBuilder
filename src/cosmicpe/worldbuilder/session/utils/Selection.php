@@ -19,7 +19,7 @@ final class Selection{
 		return $selection;
 	}
 
-	/** @var SplFixedArray<Vector3> */
+	/** @var SplFixedArray<Vector3|null> */
 	private $points;
 
 	public function __construct(int $capacity){

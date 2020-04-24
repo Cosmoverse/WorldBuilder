@@ -49,5 +49,10 @@ abstract class Command extends PocketMineCommand{
 		}
 	}
 
+	/**
+	 * @param CommandSender $sender
+	 * @param string $label
+	 * @param string[] $args
+	 */
 	abstract public function onExecute(CommandSender $sender, string $label, array $args) : void;
 }

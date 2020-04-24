@@ -21,7 +21,7 @@ class SetEditorTask extends AdvancedEditorTask{
 	}
 
 	final public function getBlockSet() : Block{
-		return BlockFactory::fromFullBlock($this->full_block);
+		return BlockFactory::getInstance()->fromFullBlock($this->full_block);
 	}
 
 	public function getName() : string{

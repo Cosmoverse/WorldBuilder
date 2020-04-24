@@ -22,7 +22,7 @@ class SetCommand extends Command{
 	}
 
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
-		/** @var Player $sender */
+		assert($sender instanceof Player);
 		if(isset($args[0])){
 			$block = BlockUtils::fromString($args[0]);
 			if($block !== null){

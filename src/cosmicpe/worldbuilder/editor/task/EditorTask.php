@@ -9,6 +9,7 @@ use cosmicpe\worldbuilder\editor\task\listener\EditorTaskListener;
 use cosmicpe\worldbuilder\editor\task\listener\EditorTaskListenerInfo;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use Generator;
+use InvalidArgumentException;
 use pocketmine\world\format\Chunk;
 use pocketmine\world\utils\SubChunkIteratorManager;
 use pocketmine\world\World;
@@ -43,8 +44,11 @@ abstract class EditorTask{
 	}
 
 	final public function getWorld() : World{
-		/** @noinspection PhpIncompatibleReturnTypeInspection shut the fuck up */
-		return $this->iterator->world;
+		$world = $this->iterator->world;
+		if(!($world instanceof World)){
+			throw new InvalidArgumentException("Expected supplied tworld to be an instance of " . World::class . ", got " . get_class($world));
+		}
+		return $world;
 	}
 
 	final public function getSelection() : Selection{
@@ -57,6 +61,9 @@ abstract class EditorTask{
 
 	abstract public function getName() : string;
 
+	/**
+	 * @return Generator<bool>
+	 */
 	abstract public function run() : Generator;
 
 	protected function onChunkChanged(int $chunkX, int $chunkZ) : void{

@@ -23,7 +23,7 @@ class ReplaceCommand extends Command{
 	}
 
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
-		/** @var Player $sender */
+		assert($sender instanceof Player);
 		if(isset($args[0], $args[1]) && (count($args) & 1) === 0){
 			$map = new ReplacementMap();
 

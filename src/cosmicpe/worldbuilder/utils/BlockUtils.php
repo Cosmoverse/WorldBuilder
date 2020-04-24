@@ -16,14 +16,14 @@ final class BlockUtils{
 		if(strpos($string, ":") !== false){
 			[$id, $meta] = explode(":", $string);
 			try{
-				return BlockFactory::get((int) $id, (int) $meta);
+				return BlockFactory::getInstance()->get((int) $id, (int) $meta);
 			}catch(InvalidArgumentException $e){
 				return null;
 			}
 		}
 
 		try{
-			$block = ItemFactory::fromString($string)->getBlock();
+			$block = ItemFactory::getInstance()->fromString($string)->getBlock();
 		}catch(InvalidArgumentException $e){
 			return null;
 		}

@@ -32,7 +32,7 @@ class FixPcBlocksCommand extends Command{
 		}
 
 		if(!$map->isEmpty()){
-			/** @var Player $sender */
+			assert($sender instanceof Player);
 			$session = PlayerSessionManager::get($sender);
 			$session->pushEditorTask(new ReplaceEditorTask($sender->getWorld(), $session->getSelection(), $map), TextFormat::GREEN . "Replacing " . $map);
 			return;

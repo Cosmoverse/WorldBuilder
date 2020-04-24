@@ -19,6 +19,9 @@ class ReplaceEditorTask extends AdvancedEditorTask{
 		$this->replacement_map = $replacement_map->toFullIdArray();
 	}
 
+	/**
+	 * @return int[]
+	 */
 	public function getReplacementMap() : array{
 		return $this->replacement_map;
 	}
