@@ -36,6 +36,7 @@ class PasteEditorTask extends EditorTask{
 		$world = $this->getWorld();
 		$chunks = new Set();
 		$tiles = [];
+		$tile_factory = TileFactory::getInstance();
 		foreach($this->clipboard->getAll($x, $y, $z) as $entry){
 			$x += $relative_pos->x;
 			$y += $relative_pos->y;
@@ -45,7 +46,7 @@ class PasteEditorTask extends EditorTask{
 			}
 
 			if($entry->tile_nbt !== null){
-				$tiles[] = TileFactory::createFromData($world, NamedtagCopierManager::moveTo($entry->tile_nbt, $x, $y, $z));
+				$tiles[] = $tile_factory->createFromData($world, NamedtagCopierManager::moveTo($entry->tile_nbt, $x, $y, $z));
 			}
 
 			$this->iterator->currentSubChunk->setFullBlock($x & 0x0f, $y & 0x0f, $z & 0x0f, $entry->full_block);

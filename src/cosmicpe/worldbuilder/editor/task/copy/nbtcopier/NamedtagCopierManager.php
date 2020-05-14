@@ -19,7 +19,7 @@ final class NamedtagCopierManager{
 
 	public static function init() : void{
 		self::$default_copier = new DefaultNamedtagCopier();
-		self::register(TileFactory::getSaveId(Chest::class), new ChestNamedtagCopier());
+		self::register(TileFactory::getInstance()->getSaveId(Chest::class), new ChestNamedtagCopier());
 	}
 
 	public static function register(string $save_id, NamedTagCopier $copier) : void{
@@ -31,7 +31,7 @@ final class NamedtagCopierManager{
 	}
 
 	public static function copy(Tile $tile) : CompoundTag{
-		return self::get(TileFactory::getSaveId(get_class($tile)))->copy($tile);
+		return self::get(TileFactory::getInstance()->getSaveId(get_class($tile)))->copy($tile);
 	}
 
 	public static function moveTo(CompoundTag $nbt, int $x, int $y, int $z) : CompoundTag{

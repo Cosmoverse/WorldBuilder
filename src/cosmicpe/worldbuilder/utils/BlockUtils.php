@@ -9,6 +9,7 @@ use pocketmine\block\Block;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\item\ItemFactory;
+use pocketmine\item\LegacyStringToItemParser;
 
 final class BlockUtils{
 
@@ -23,7 +24,7 @@ final class BlockUtils{
 		}
 
 		try{
-			$block = ItemFactory::getInstance()->fromString($string)->getBlock();
+			$block = LegacyStringToItemParser::getInstance()->parse($string)->getBlock();
 		}catch(InvalidArgumentException $e){
 			return null;
 		}
