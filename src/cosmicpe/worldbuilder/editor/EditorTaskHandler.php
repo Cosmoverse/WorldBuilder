@@ -23,7 +23,7 @@ final class EditorTaskHandler extends Task{
 		$this->tasks[spl_object_id($task)] = EditorTaskInfo::fromEditorTask($task);
 	}
 
-	public function onRun(int $currentTick) : void{
+	public function onRun() : void{
 		$tasks_c = count($this->tasks);
 		if($tasks_c > 0){
 			$ops = max(1024, (int) floor($this->max_operations_per_tick / count($this->tasks)));
