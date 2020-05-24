@@ -22,7 +22,7 @@ class PasteEditorTask extends EditorTask{
 	private $clipboard;
 
 	public function __construct(World $world, Clipboard $clipboard, Vector3 $relative_position){
-		$this->relative_position = $relative_position->floor()->add($clipboard->getRelativePosition());
+		$this->relative_position = $relative_position->floor()->addVector($clipboard->getRelativePosition());
 		parent::__construct($world, $clipboard->asSelection($this->relative_position), $clipboard->getVolume());
 		$this->clipboard = $clipboard;
 	}
