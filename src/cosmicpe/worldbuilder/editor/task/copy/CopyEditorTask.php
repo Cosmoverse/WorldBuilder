@@ -35,12 +35,12 @@ class CopyEditorTask extends AdvancedEditorTask{
 		return "copy";
 	}
 
-	protected function onIterate(int $x, int $y, int $z) : bool{
+	protected function onIterate(int $chunkX, int $chunkZ, int $x, int $y, int $z) : bool{
 		$tile = $this->iterator->currentChunk->getTile($x, $y, $z);
 		$this->clipboard->copy(
-			($this->iterator->currentChunk->getX() << 4) + $x - $this->minimum->x,
+			($chunkX << 4) + $x - $this->minimum->x,
 			$y - $this->minimum->y,
-			($this->iterator->currentChunk->getZ() << 4) + $z - $this->minimum->z,
+			($chunkZ << 4) + $z - $this->minimum->z,
 			new ClipboardEntry(
 				$this->iterator->currentSubChunk->getFullBlock($x, $y & 0x0f, $z),
 				$tile !== null ? NamedtagCopierManager::copy($tile) : null

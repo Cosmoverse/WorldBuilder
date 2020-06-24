@@ -30,7 +30,7 @@ class ReplaceEditorTask extends AdvancedEditorTask{
 		return "replace";
 	}
 
-	protected function onIterate(int $x, int $y, int $z) : bool{
+	protected function onIterate(int $chunkX, int $chunkZ, int $x, int $y, int $z) : bool{
 		if(isset($this->replacement_map[$find = $this->iterator->currentSubChunk->getFullBlock($x, $y & 0x0f, $z)])){
 			$this->iterator->currentSubChunk->setFullBlock($x, $y & 0x0f, $z, $this->replacement_map[$find]);
 			$tile = $this->iterator->currentChunk->getTile($x, $y, $z);

@@ -31,7 +31,11 @@ class CopyCommand extends Command{
 
 		/** @var Selection $selection */
 		$selection = $session->getSelection();
-		$task = new CopyEditorTask($sender->getWorld(), $selection, new Clipboard(Vector3::minComponents(...$selection->getPoints())->subtractVector($sender->getPosition()->floor())));
+		$task = new CopyEditorTask($sender->getWorld(), $selection, new Clipboard(
+			Vector3::minComponents(...$selection->getPoints())->subtractVector($sender->getPosition()->floor()),
+			$selection->getPoint(0),
+			$selection->getPoint(1)
+		));
 		$task->registerListener(new EditorTaskOnCompletionListener(static function(CopyEditorTask $task) use($session) : void{
 			$session->setClipboard($task->getClipboard());
 		}));

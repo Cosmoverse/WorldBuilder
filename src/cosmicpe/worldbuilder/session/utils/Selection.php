@@ -30,15 +30,17 @@ final class Selection{
 		return $this->points[$index];
 	}
 
-	public function setPoint(int $index, ?Vector3 $point) : void{
+	public function setPoint(int $index, ?Vector3 $point) : ?Vector3{
 		if($point !== null){
-			$point->x = max(Limits::INT32_MIN, min(Limits::INT32_MAX, $point->x));
-			$point->y = max(0, min(World::Y_MAX - 1, $point->y));
-			$point->z = max(Limits::INT32_MIN, min(Limits::INT32_MAX, $point->z));
+			$point->x = max(Limits::INT32_MIN, min(Limits::INT32_MAX, $point->getFloorX()));
+			$point->y = max(0, min(World::Y_MAX - 1, $point->getFloorY()));
+			$point->z = max(Limits::INT32_MIN, min(Limits::INT32_MAX, $point->getFloorZ()));
 			$this->points[$index] = $point;
-		}else{
-			unset($this->points[$index]);
+			return $point->asVector3();
 		}
+
+		unset($this->points[$index]);
+		return null;
 	}
 
 	/**

@@ -35,7 +35,7 @@ abstract class AdvancedEditorTask extends EditorTask{
 						break;
 					}
 
-					if($this->onIterate($subChunkX, $y, $subChunkZ)){
+					if($this->onIterate($chunkX, $chunkZ, $subChunkX, $y, $subChunkZ)){
 						$changed = true;
 					}
 					yield true;
@@ -49,10 +49,12 @@ abstract class AdvancedEditorTask extends EditorTask{
 	}
 
 	/**
+	 * @param int $chunkX
+	 * @param int $chunkZ
 	 * @param int $x 0-15
 	 * @param int $y 0-255
 	 * @param int $z 0-15
 	 * @return bool whether chunk was changed
 	 */
-	abstract protected function onIterate(int $x, int $y, int $z) : bool;
+	abstract protected function onIterate(int $chunkX, int $chunkZ, int $x, int $y, int $z) : bool;
 }

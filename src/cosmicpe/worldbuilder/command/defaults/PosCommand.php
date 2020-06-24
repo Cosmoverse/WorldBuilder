@@ -31,7 +31,9 @@ class PosCommand extends Command{
 		if($selection === null){
 			$session->setSelection($selection = new Selection(2));
 		}
-		$selection->setPoint($this->selection_index, $pos = $sender->getPosition()->floor());
+
+		$pos = $selection->setPoint($this->selection_index, $sender->getPosition()->floor());
+		assert($pos !== null);
 		$sender->sendMessage(TextFormat::GREEN . "Selected position #" . ($this->selection_index + 1) . TextFormat::GRAY . " (" . $pos->x . ", " . $pos->y . ", " . $pos->z . ")");
 	}
 }

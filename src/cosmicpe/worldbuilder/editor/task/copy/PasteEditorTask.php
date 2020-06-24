@@ -32,7 +32,7 @@ class PasteEditorTask extends EditorTask{
 	}
 
 	public function run() : Generator{
-		$relative_pos = $this->relative_position;
+		$relative_pos = $this->relative_position->floor();
 		$world = $this->getWorld();
 		$chunks = new Set();
 		$tiles = [];
