@@ -20,6 +20,7 @@ class PosCommand extends Command{
 
 	public function __construct(Loader $plugin, int $selection_index){
 		parent::__construct($plugin, "/pos" . ($selection_index + 1), "Selects position #" . ($selection_index + 1));
+		$this->setPermission("worldbuilder.command.pos");
 		$this->selection_index = $selection_index;
 		$this->addCheck(new PlayerOnlyCommandCheck());
 	}

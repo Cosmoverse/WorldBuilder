@@ -29,6 +29,7 @@ class DrainCommand extends Command{
 
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/drain", "Drain water in selected space or a radius");
+		$this->setPermission("worldbuilder.command.drain");
 		$this->addCheck(new PlayerOnlyCommandCheck());
 
 		$this->selection_check = new RequireSelectionCheck();

@@ -17,6 +17,7 @@ class RegenerateChunksCommand extends Command{
 
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/regeneratechunks", "Regenerates all chunks in the selected space");
+		$this->setPermission("worldbuilder.command.regeneratechunks");
 		$this->addCheck(new RequireSelectionCheck());
 	}
 

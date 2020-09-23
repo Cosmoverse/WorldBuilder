@@ -18,6 +18,7 @@ class SetCommand extends Command{
 
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/set", "Sets a given block in selected space");
+		$this->setPermission("worldbuilder.command.set");
 		$this->addCheck(new RequireSelectionCheck());
 	}
 

@@ -17,6 +17,7 @@ class PasteCommand extends Command{
 
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/paste", "Pastes blocks in the selected space");
+		$this->setPermission("worldbuilder.command.paste");
 		$this->addCheck(new PlayerOnlyCommandCheck());
 	}
 

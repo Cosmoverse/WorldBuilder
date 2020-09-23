@@ -21,6 +21,7 @@ class CopyCommand extends Command{
 
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/copy", "Copies blocks in the selected space");
+		$this->setPermission("worldbuilder.command.copy");
 		$this->addCheck(new RequireSelectionCheck());
 	}
 

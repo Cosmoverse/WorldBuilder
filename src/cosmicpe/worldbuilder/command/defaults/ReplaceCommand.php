@@ -19,6 +19,7 @@ class ReplaceCommand extends Command{
 
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/replace", "Replaces blocks in selected space");
+		$this->setPermission("worldbuilder.command.replace");
 		$this->addCheck(new RequireSelectionCheck());
 	}
 

@@ -31,8 +31,8 @@ final class Clipboard{
 
 	public function asSelection(Vector3 $relative_to) : Selection{
 		$selection = new Selection(2);
-		$selection->setPoint(0, $this->minimum->addVector($relative_to));
-		$selection->setPoint(1, $this->maximum->addVector($relative_to));
+		$selection->setPoint(0, $relative_to);
+		$selection->setPoint(1, $this->maximum->subtractVector($this->minimum)->addVector($relative_to));
 		return $selection;
 	}
 

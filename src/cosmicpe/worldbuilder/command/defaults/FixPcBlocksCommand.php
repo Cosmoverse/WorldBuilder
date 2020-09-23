@@ -18,6 +18,7 @@ class FixPcBlocksCommand extends Command{
 
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/fixpcblocks", "Replaces java edition pre-1.12 blocks in selected space with bedrock equivalents");
+		$this->setPermission("worldbuilder.command.fixpcblocks");
 		$this->addCheck(new RequireSelectionCheck());
 	}
 
