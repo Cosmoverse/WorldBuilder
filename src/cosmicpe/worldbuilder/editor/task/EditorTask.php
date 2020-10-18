@@ -10,7 +10,6 @@ use cosmicpe\worldbuilder\editor\task\listener\EditorTaskListenerInfo;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use Generator;
 use InvalidArgumentException;
-use pocketmine\world\format\Chunk;
 use pocketmine\world\utils\SubChunkExplorer;
 use pocketmine\world\World;
 
@@ -69,14 +68,9 @@ abstract class EditorTask{
 	protected function onChunkChanged(int $chunkX, int $chunkZ) : void{
 		/** @var World $world */
 		$world = $this->iterator->world;
-		$world->clearCache(true);
-
 		$chunk = $world->getOrLoadChunk($chunkX, $chunkZ, false);
 		if($chunk !== null){
-			$chunk->setDirtyFlag(Chunk::DIRTY_FLAG_TERRAIN, true);
-			foreach($world->getChunkListeners($chunkX, $chunkZ) as $listener){
-				$listener->onChunkChanged($chunk);
-			}
+			$world->setChunk($chunkX, $chunkZ, $chunk, false);
 		}
 	}
 
