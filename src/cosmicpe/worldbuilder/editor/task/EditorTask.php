@@ -11,7 +11,7 @@ use cosmicpe\worldbuilder\session\utils\Selection;
 use Generator;
 use InvalidArgumentException;
 use pocketmine\world\format\Chunk;
-use pocketmine\world\utils\SubChunkIteratorManager;
+use pocketmine\world\utils\SubChunkExplorer;
 use pocketmine\world\World;
 
 abstract class EditorTask{
@@ -19,7 +19,7 @@ abstract class EditorTask{
 	/** @var Selection */
 	protected $selection;
 
-	/** @var SubChunkIteratorManager */
+	/** @var SubChunkExplorer */
 	protected $iterator;
 
 	/** @var EditorTaskListener[] */
@@ -33,7 +33,7 @@ abstract class EditorTask{
 
 	public function __construct(World $world, Selection $selection, int $estimated_operations){
 		$this->selection = $selection;
-		$this->iterator = new SubChunkIteratorManager($world);
+		$this->iterator = new SubChunkExplorer($world);
 		$this->estimated_operations = $estimated_operations;
 	}
 
@@ -71,7 +71,7 @@ abstract class EditorTask{
 		$world = $this->iterator->world;
 		$world->clearCache(true);
 
-		$chunk = $world->getChunk($chunkX, $chunkZ, false);
+		$chunk = $world->getOrLoadChunk($chunkX, $chunkZ, false);
 		if($chunk !== null){
 			$chunk->setDirtyFlag(Chunk::DIRTY_FLAG_TERRAIN, true);
 			foreach($world->getChunkListeners($chunkX, $chunkZ) as $listener){
