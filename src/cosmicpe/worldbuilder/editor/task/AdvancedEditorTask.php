@@ -23,22 +23,32 @@ abstract class AdvancedEditorTask extends EditorTask{
 		$max_y = $max->y;
 		$max_z = $max->z;
 
-		for($x = $min_x; $x <= $max_x; ++$x){
-			$chunkX = $x >> 4;
-			$subChunkX = $x & 0x0f;
-			for($z = $min_z; $z <= $max_z; ++$z){
-				$chunkZ = $z >> 4;
-				$subChunkZ = $z & 0x0f;
-				$changed = false;
-				for($y = $min_y; $y <= $max_y; ++$y){
-					if(!$this->iterator->moveTo($x, $y, $z, true)){
-						break;
-					}
+		$min_chunkX = $min_x >> 4;
+		$max_chunkX = $max_x >> 4;
+		$min_chunkZ = $min_z >> 4;
+		$max_chunkZ = $max_z >> 4;
 
-					if($this->onIterate($chunkX, $chunkZ, $subChunkX, $y, $subChunkZ)){
-						$changed = true;
+		for($chunkX = $min_chunkX; $chunkX <= $max_chunkX; ++$chunkX){
+			$abs_cx = $chunkX << 4;
+			$min_i = max($abs_cx, $min_x) & 0x0f;
+			$max_i = min($abs_cx + 0x0f, $max_x) & 0x0f;
+			for($chunkZ = $min_chunkZ; $chunkZ <= $max_chunkZ; ++$chunkZ){
+				$abs_cz = $chunkZ << 4;
+				$min_k = max($abs_cz, $min_z) & 0x0f;
+				$max_k = min($abs_cz + 0x0f, $max_z) & 0x0f;
+				$changed = false;
+				for($subChunkX = $min_i; $subChunkX <= $max_i; ++$subChunkX){
+					for($subChunkZ = $min_k; $subChunkZ <= $max_k; ++$subChunkZ){
+						for($y = $min_y; $y <= $max_y; ++$y){
+							if(!$this->iterator->moveTo($abs_cx + $subChunkX, $y, $abs_cz + $subChunkZ, true)){
+								break 3;
+							}
+							if($this->onIterate($chunkX, $chunkZ, $subChunkX, $y, $subChunkZ)){
+								$changed = true;
+							}
+							yield true;
+						}
 					}
-					yield true;
 				}
 
 				if($changed){
