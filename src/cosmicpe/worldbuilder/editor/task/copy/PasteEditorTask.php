@@ -6,11 +6,13 @@ namespace cosmicpe\worldbuilder\editor\task\copy;
 
 use cosmicpe\worldbuilder\editor\task\copy\nbtcopier\NamedtagCopierManager;
 use cosmicpe\worldbuilder\editor\task\EditorTask;
+use cosmicpe\worldbuilder\editor\task\utils\ChunkIteratorCursor;
 use cosmicpe\worldbuilder\session\clipboard\Clipboard;
 use Ds\Set;
 use Generator;
 use pocketmine\block\tile\TileFactory;
 use pocketmine\math\Vector3;
+use pocketmine\world\utils\SubChunkExplorer;
 use pocketmine\world\World;
 
 class PasteEditorTask extends EditorTask{
@@ -37,11 +39,13 @@ class PasteEditorTask extends EditorTask{
 		$chunks = new Set();
 		$tiles = [];
 		$tile_factory = TileFactory::getInstance();
+
+		$iterator = new SubChunkExplorer($world);
 		foreach($this->clipboard->getAll($x, $y, $z) as $entry){
 			$x += $relative_pos->x;
 			$y += $relative_pos->y;
 			$z += $relative_pos->z;
-			if(!$this->iterator->moveTo($x, $y, $z, true)){
+			if(!$iterator->moveTo($x, $y, $z, true)){
 				continue;
 			}
 
@@ -49,14 +53,18 @@ class PasteEditorTask extends EditorTask{
 				$tiles[] = $tile_factory->createFromData($world, NamedtagCopierManager::moveTo($entry->tile_nbt, $x, $y, $z));
 			}
 
-			$this->iterator->currentSubChunk->setFullBlock($x & 0x0f, $y & 0x0f, $z & 0x0f, $entry->full_block);
+			$iterator->currentSubChunk->setFullBlock($x & 0x0f, $y & 0x0f, $z & 0x0f, $entry->full_block);
 			$chunks->add(World::chunkHash($x >> 4, $z >> 4));
 			yield true;
 		}
 
+		$cursor = new ChunkIteratorCursor($world);
 		foreach($chunks as $hash){
-			World::getXZ($hash, $chunkX, $chunkZ);
-			$this->onChunkChanged($chunkX, $chunkZ);
+			World::getXZ($hash, $cursor->chunkX, $cursor->chunkZ);
+			$cursor->chunk = $world->getOrLoadChunk($cursor->chunkX, $cursor->chunkZ);
+			if($cursor->chunk !== null){
+				$this->onChunkChanged($cursor);
+			}
 		}
 
 		// Send tiles AFTER blocks have been placed, or else chests don't show up paired

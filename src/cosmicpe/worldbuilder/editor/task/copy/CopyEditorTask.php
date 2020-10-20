@@ -6,6 +6,7 @@ namespace cosmicpe\worldbuilder\editor\task\copy;
 
 use cosmicpe\worldbuilder\editor\task\AdvancedEditorTask;
 use cosmicpe\worldbuilder\editor\task\copy\nbtcopier\NamedtagCopierManager;
+use cosmicpe\worldbuilder\editor\task\utils\SubChunkIteratorCursor;
 use cosmicpe\worldbuilder\session\clipboard\Clipboard;
 use cosmicpe\worldbuilder\session\clipboard\ClipboardEntry;
 use cosmicpe\worldbuilder\session\utils\Selection;
@@ -35,14 +36,14 @@ class CopyEditorTask extends AdvancedEditorTask{
 		return "copy";
 	}
 
-	protected function onIterate(int $chunkX, int $chunkZ, int $x, int $y, int $z) : bool{
-		$tile = $this->iterator->currentChunk->getTile($x, $y, $z);
+	protected function onIterate(SubChunkIteratorCursor $cursor) : bool{
+		$tile = $cursor->chunk->getTile($cursor->x, $y = ($cursor->subChunkY << 4) + $cursor->y, $cursor->z);
 		$this->clipboard->copy(
-			($chunkX << 4) + $x - $this->minimum->x,
+			($cursor->chunkX << 4) + $cursor->x - $this->minimum->x,
 			$y - $this->minimum->y,
-			($chunkZ << 4) + $z - $this->minimum->z,
+			($cursor->chunkZ << 4) + $cursor->z - $this->minimum->z,
 			new ClipboardEntry(
-				$this->iterator->currentSubChunk->getFullBlock($x, $y & 0x0f, $z),
+				$cursor->sub_chunk->getFullBlock($cursor->x, $cursor->y, $cursor->z),
 				$tile !== null ? NamedtagCopierManager::copy($tile) : null
 			)
 		);

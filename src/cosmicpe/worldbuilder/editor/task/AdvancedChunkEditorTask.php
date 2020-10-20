@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\editor\task;
 
+use cosmicpe\worldbuilder\editor\task\utils\ChunkIteratorCursor;
 use Generator;
 use pocketmine\math\Vector3;
 
@@ -21,10 +22,12 @@ abstract class AdvancedChunkEditorTask extends EditorTask{
 		$max_x = $max->x >> 4;
 		$max_z = $max->z >> 4;
 
-		for($x = $min_x; $x <= $max_x; ++$x){
-			for($z = $min_z; $z <= $max_z; ++$z){
-				if($this->onIterate($x, $z)){
-					$this->onChunkChanged($x, $z);
+		$cursor = new ChunkIteratorCursor($this->getWorld());
+		for($cursor->chunkX = $min_x; $cursor->chunkX <= $max_x; ++$cursor->chunkX){
+			for($cursor->chunkZ = $min_z; $cursor->chunkZ <= $max_z; ++$cursor->chunkZ){
+				$cursor->chunk = $cursor->world->getOrLoadChunk($cursor->chunkX, $cursor->chunkZ);
+				if($cursor->chunk !== null && $this->onIterate($cursor)){
+					$this->onChunkChanged($cursor);
 				}
 				yield true;
 			}
@@ -32,9 +35,8 @@ abstract class AdvancedChunkEditorTask extends EditorTask{
 	}
 
 	/**
-	 * @param int $x
-	 * @param int $z
+	 * @param ChunkIteratorCursor $cursor
 	 * @return bool whether chunk was changed
 	 */
-	abstract protected function onIterate(int $x, int $z) : bool;
+	abstract protected function onIterate(ChunkIteratorCursor $cursor) : bool;
 }

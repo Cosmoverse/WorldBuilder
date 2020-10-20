@@ -7,10 +7,9 @@ namespace cosmicpe\worldbuilder\editor\task;
 use cosmicpe\worldbuilder\editor\task\listener\ClosureEditorTaskListenerInfo;
 use cosmicpe\worldbuilder\editor\task\listener\EditorTaskListener;
 use cosmicpe\worldbuilder\editor\task\listener\EditorTaskListenerInfo;
+use cosmicpe\worldbuilder\editor\task\utils\ChunkIteratorCursor;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use Generator;
-use InvalidArgumentException;
-use pocketmine\world\utils\SubChunkExplorer;
 use pocketmine\world\World;
 
 abstract class EditorTask{
@@ -18,8 +17,8 @@ abstract class EditorTask{
 	/** @var Selection */
 	protected $selection;
 
-	/** @var SubChunkExplorer */
-	protected $iterator;
+	/** @var World */
+	protected $world;
 
 	/** @var EditorTaskListener[] */
 	private $listeners = [];
@@ -32,7 +31,7 @@ abstract class EditorTask{
 
 	public function __construct(World $world, Selection $selection, int $estimated_operations){
 		$this->selection = $selection;
-		$this->iterator = new SubChunkExplorer($world);
+		$this->world = $world;
 		$this->estimated_operations = $estimated_operations;
 	}
 
@@ -43,11 +42,7 @@ abstract class EditorTask{
 	}
 
 	final public function getWorld() : World{
-		$world = $this->iterator->world;
-		if(!($world instanceof World)){
-			throw new InvalidArgumentException("Expected supplied tworld to be an instance of " . World::class . ", got " . get_class($world));
-		}
-		return $world;
+		return $this->world;
 	}
 
 	final public function getSelection() : Selection{
@@ -65,13 +60,8 @@ abstract class EditorTask{
 	 */
 	abstract public function run() : Generator;
 
-	protected function onChunkChanged(int $chunkX, int $chunkZ) : void{
-		/** @var World $world */
-		$world = $this->iterator->world;
-		$chunk = $world->getOrLoadChunk($chunkX, $chunkZ, false);
-		if($chunk !== null){
-			$world->setChunk($chunkX, $chunkZ, $chunk, false);
-		}
+	protected function onChunkChanged(ChunkIteratorCursor $cursor) : void{
+		$cursor->world->setChunk($cursor->chunkX, $cursor->chunkZ, $cursor->chunk, false);
 	}
 
 	public function onCompleteOperations(int $completed) : void{

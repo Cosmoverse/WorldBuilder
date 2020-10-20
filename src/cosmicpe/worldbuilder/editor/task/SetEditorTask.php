@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\editor\task;
 
+use cosmicpe\worldbuilder\editor\task\utils\SubChunkIteratorCursor;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use cosmicpe\worldbuilder\utils\Vector3Utils;
 use pocketmine\block\Block;
@@ -28,11 +29,11 @@ class SetEditorTask extends AdvancedEditorTask{
 		return "set";
 	}
 
-	protected function onIterate(int $chunkX, int $chunkZ, int $x, int $y, int $z) : bool{
-		$this->iterator->currentSubChunk->setFullBlock($x, $y & 0x0f, $z, $this->full_block);
-		$tile = $this->iterator->currentChunk->getTile($x, $y, $z);
+	protected function onIterate(SubChunkIteratorCursor $cursor) : bool{
+		$cursor->sub_chunk->setFullBlock($cursor->x, $cursor->y, $cursor->z, $this->full_block);
+		$tile = $cursor->chunk->getTile($cursor->x, ($cursor->subChunkY << 4) + $cursor->y, $cursor->z);
 		if($tile !== null){
-			$this->iterator->currentChunk->removeTile($tile);
+			$cursor->chunk->removeTile($tile);
 			// $tile->onBlockDestroyed();
 		}
 		return true;
