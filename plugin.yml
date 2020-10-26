@@ -26,5 +26,7 @@ permissions:
             default: op
           worldbuilder.command.set:
             default: op
+          worldbuilder.command.setbiome:
+            default: op
           worldbuilder.command.setrandom:
             default: op
