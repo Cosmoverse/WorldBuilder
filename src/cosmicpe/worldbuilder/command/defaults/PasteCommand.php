@@ -24,7 +24,7 @@ class PasteCommand extends Command{
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
 		assert($sender instanceof Player);
 		$session = PlayerSessionManager::get($sender);
-		$clipboard = $session->getClipboard();
+		$clipboard = $session->getClipboardSchematic();
 		if($clipboard !== null){
 			$session->pushEditorTask(new PasteEditorTask($sender->getWorld(), $clipboard, $sender->getPosition()->floor()), TextFormat::GREEN . "Pasting blocks");
 		}else{

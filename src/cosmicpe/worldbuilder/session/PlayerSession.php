@@ -6,8 +6,8 @@ namespace cosmicpe\worldbuilder\session;
 
 use cosmicpe\worldbuilder\editor\EditorManager;
 use cosmicpe\worldbuilder\editor\task\EditorTask;
+use cosmicpe\worldbuilder\editor\utils\schematic\Schematic;
 use cosmicpe\worldbuilder\event\player\PlayerTriggerEditorTaskEvent;
-use cosmicpe\worldbuilder\session\clipboard\Clipboard;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use pocketmine\player\Player;
 
@@ -16,8 +16,8 @@ final class PlayerSession{
 	/** @var Selection|null */
 	private $selection;
 
-	/** @var Clipboard|null */
-	private $clipboard;
+	/** @var Schematic|null */
+	private $clipboard_schematic;
 
 	/** @var Player */
 	private $player;
@@ -34,12 +34,12 @@ final class PlayerSession{
 		$this->selection = $selection;
 	}
 
-	public function getClipboard() : ?Clipboard{
-		return $this->clipboard;
+	public function getClipboardSchematic() : ?Schematic{
+		return $this->clipboard_schematic;
 	}
 
-	public function setClipboard(?Clipboard $clipboard) : void{
-		$this->clipboard = $clipboard;
+	public function setClipboardSchematic(?Schematic $schematic) : void{
+		$this->clipboard_schematic = $schematic;
 	}
 
 	public function pushEditorTask(EditorTask $task, ?string $message = null) : bool{

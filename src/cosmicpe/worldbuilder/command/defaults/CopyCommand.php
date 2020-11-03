@@ -8,8 +8,8 @@ use cosmicpe\worldbuilder\command\check\RequireSelectionCheck;
 use cosmicpe\worldbuilder\command\Command;
 use cosmicpe\worldbuilder\editor\task\copy\CopyEditorTask;
 use cosmicpe\worldbuilder\editor\task\listener\EditorTaskOnCompletionListener;
+use cosmicpe\worldbuilder\editor\utils\schematic\SimpleSchematic;
 use cosmicpe\worldbuilder\Loader;
-use cosmicpe\worldbuilder\session\clipboard\Clipboard;
 use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use pocketmine\command\CommandSender;
@@ -28,17 +28,17 @@ class CopyCommand extends Command{
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
 		assert($sender instanceof Player);
 		$session = PlayerSessionManager::get($sender);
-		$session->setClipboard(null);
+		$session->setClipboardSchematic(null);
 
 		/** @var Selection $selection */
 		$selection = $session->getSelection();
-		$task = new CopyEditorTask($sender->getWorld(), $selection, new Clipboard(
+		$task = new CopyEditorTask($sender->getWorld(), $selection, new SimpleSchematic(
 			Vector3::minComponents(...$selection->getPoints())->subtractVector($sender->getPosition()->floor()),
 			$selection->getPoint(0),
 			$selection->getPoint(1)
 		));
 		$task->registerListener(new EditorTaskOnCompletionListener(static function(CopyEditorTask $task) use($session) : void{
-			$session->setClipboard($task->getClipboard());
+			$session->setClipboardSchematic($task->getClipboard());
 		}));
 		$session->pushEditorTask($task, TextFormat::GREEN . "Copying selection");
 	}

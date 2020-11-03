@@ -37,7 +37,7 @@ abstract class AdvancedEditorTask extends EditorTask{
 			$min_i = max($abs_cx, $min_x) & 0x0f;
 			$max_i = min($abs_cx + 0x0f, $max_x) & 0x0f;
 			for($cursor->chunkZ = $min_chunkZ; $cursor->chunkZ <= $max_chunkZ; ++$cursor->chunkZ){
-				$cursor->chunk = $cursor->world->getOrLoadChunk($cursor->chunkX, $cursor->chunkZ);
+				$cursor->chunk = $cursor->world->getOrLoadChunk($cursor->chunkX, $cursor->chunkZ, false);
 				if($cursor->chunk === null){
 					continue;
 				}
@@ -49,7 +49,7 @@ abstract class AdvancedEditorTask extends EditorTask{
 				$max_k = min($abs_cz + 0x0f, $max_z) & 0x0f;
 
 				for($cursor->subChunkY = $min_subChunkY; $cursor->subChunkY <= $max_subChunkY; ++$cursor->subChunkY){
-					$cursor->sub_chunk = $cursor->chunk->getWritableSubChunk($cursor->subChunkY);
+					$cursor->sub_chunk = $cursor->chunk->getSubChunk($cursor->subChunkY);
 
 					$abs_cy = $cursor->subChunkY << 4;
 					$min_j = max($abs_cy, $min_y) & 0x0f;

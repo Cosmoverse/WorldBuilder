@@ -2,32 +2,17 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\session\clipboard;
+namespace cosmicpe\worldbuilder\editor\utils\schematic;
 
 use cosmicpe\worldbuilder\session\utils\Selection;
 use Generator;
 use pocketmine\math\Vector3;
 use pocketmine\world\World;
 
-final class Clipboard{
+class SimpleSchematic extends AdvancedSchematic{
 
-	/** @var Vector3 */
-	private $minimum;
-
-	/** @var Vector3 */
-	private $maximum;
-
-	/** @var Vector3 */
-	private $relative_position;
-
-	/** @var ClipboardEntry[] */
+	/** @var SchematicEntry[] */
 	private $entries = [];
-
-	public function __construct(Vector3 $relative_position, Vector3 $minimum, Vector3 $maximum){
-		$this->relative_position = $relative_position;
-		$this->minimum = $minimum;
-		$this->maximum = $maximum;
-	}
 
 	public function asSelection(Vector3 $relative_to) : Selection{
 		$selection = new Selection(2);
@@ -36,11 +21,11 @@ final class Clipboard{
 		return $selection;
 	}
 
-	public function getRelativePosition() : Vector3{
-		return $this->relative_position;
+	public function get(int $x, int $y, int $z) : ?SchematicEntry{
+		return $this->entries[World::blockHash($x, $y, $z)] ?? null;
 	}
 
-	public function copy(int $x, int $y, int $z, ClipboardEntry $entry) : void{
+	public function copy(int $x, int $y, int $z, SchematicEntry $entry) : void{
 		$this->entries[World::blockHash($x, $y, $z)] = $entry;
 	}
 
@@ -48,7 +33,7 @@ final class Clipboard{
 	 * @param int $x
 	 * @param int $y
 	 * @param int $z
-	 * @return Generator|ClipboardEntry[]
+	 * @return Generator|SchematicEntry[]
 	 */
 	public function getAll(&$x, &$y, &$z) : Generator{
 		foreach($this->entries as $hash => $entry){
