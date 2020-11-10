@@ -57,7 +57,7 @@ abstract class SetSchematicEditorTask extends EditorTask{
 		$cursor = new ChunkIteratorCursor($world);
 		foreach($chunks as $hash){
 			World::getXZ($hash, $cursor->chunkX, $cursor->chunkZ);
-			$cursor->chunk = $world->getOrLoadChunk($cursor->chunkX, $cursor->chunkZ, false);
+			$cursor->chunk = $world->loadChunk($cursor->chunkX, $cursor->chunkZ, false);
 			if($cursor->chunk !== null){
 				$this->onChunkChanged($cursor);
 			}
