@@ -4,31 +4,25 @@ api: 4.0.0
 version: 0.0.1
 author: CosmicPE
 permissions:
-  worldbuilder:
+  worldbuilder.command.copy:
+    default: op
+  worldbuilder.command.drain:
+    default: op
+  worldbuilder.command.fixpcblocks:
     default: false
-    children:
-      worldbuilder.command:
-        default: false
-        children:
-          worldbuilder.command.copy:
-            default: op
-          worldbuilder.command.drain:
-            default: op
-          worldbuilder.command.fixpcblocks:
-            default: false
-          worldbuilder.command.paste:
-            default: op
-          worldbuilder.command.pos:
-            default: op
-          worldbuilder.command.regeneratechunks:
-            default: false
-          worldbuilder.command.replace:
-            default: op
-          worldbuilder.command.set:
-            default: op
-          worldbuilder.command.setbiome:
-            default: op
-          worldbuilder.command.setrandom:
-            default: op
-          worldbuilder.command.schematic:
-            default: op
+  worldbuilder.command.paste:
+    default: op
+  worldbuilder.command.pos:
+    default: op
+  worldbuilder.command.regeneratechunks:
+    default: false
+  worldbuilder.command.replace:
+    default: op
+  worldbuilder.command.set:
+    default: op
+  worldbuilder.command.setbiome:
+    default: op
+  worldbuilder.command.setrandom:
+    default: op
+  worldbuilder.command.schematic:
+    default: op
