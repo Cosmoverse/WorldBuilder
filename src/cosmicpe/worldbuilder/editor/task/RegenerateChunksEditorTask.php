@@ -30,7 +30,7 @@ class RegenerateChunksEditorTask extends AdvancedChunkEditorTask{
 	}
 
 	protected function onIterate(ChunkIteratorCursor $cursor) : bool{
-		$cursor->world->setChunk($cursor->chunkX, $cursor->chunkZ, new Chunk());
+		$cursor->world->unloadChunk($cursor->chunkX, $cursor->chunkZ, false, false);
 		$provider = $this->world->getProvider();
 		if(!($provider instanceof LevelDB)){
 			throw new UnsupportedWorldFormatException("Regeneration of chunks is only supported for LevelDb worlds");

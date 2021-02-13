@@ -7,7 +7,6 @@ namespace cosmicpe\worldbuilder\editor\task;
 use cosmicpe\worldbuilder\editor\task\copy\nbtcopier\NamedtagCopierManager;
 use cosmicpe\worldbuilder\editor\task\utils\ChunkIteratorCursor;
 use cosmicpe\worldbuilder\editor\utils\schematic\Schematic;
-use Ds\Set;
 use Generator;
 use pocketmine\block\tile\TileFactory;
 use pocketmine\math\Vector3;
@@ -32,7 +31,7 @@ abstract class SetSchematicEditorTask extends EditorTask{
 	public function run() : Generator{
 		$relative_pos = $this->relative_position->floor();
 		$world = $this->getWorld();
-		$chunks = new Set();
+		$chunks = [];
 		$tiles = [];
 		$tile_factory = TileFactory::getInstance();
 
@@ -50,12 +49,12 @@ abstract class SetSchematicEditorTask extends EditorTask{
 			}
 
 			$iterator->currentSubChunk->setFullBlock($x & 0x0f, $y & 0x0f, $z & 0x0f, $entry->full_block);
-			$chunks->add(World::chunkHash($x >> 4, $z >> 4));
+			$chunks[World::chunkHash($x >> 4, $z >> 4)] = true;
 			yield true;
 		}
 
 		$cursor = new ChunkIteratorCursor($world);
-		foreach($chunks as $hash){
+		foreach($chunks as $hash => $_){
 			World::getXZ($hash, $cursor->chunkX, $cursor->chunkZ);
 			$cursor->chunk = $world->loadChunk($cursor->chunkX, $cursor->chunkZ);
 			if($cursor->chunk !== null){
