@@ -67,7 +67,7 @@ class SetRandomCommand extends Command{
 
 		$sender->sendMessage(
 			TextFormat::RED . "/{$label} <...block>" . TextFormat::EOL .
-			TextFormat::GRAY . "<block> format: <block_identifier>@[weight=15]" . TextFormat::EOL .
+			TextFormat::GRAY . "<block> format: <block_identifier>[@weight=15]" . TextFormat::EOL .
 			TextFormat::GRAY . "Example: /{$label} grass@18 wool:1@4 dirt podzol"
 		);
 	}

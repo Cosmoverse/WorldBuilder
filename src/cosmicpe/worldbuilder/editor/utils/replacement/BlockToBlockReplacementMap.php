@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\editor\utils;
+namespace cosmicpe\worldbuilder\editor\utils\replacement;
 
 use pocketmine\block\Block;
 use pocketmine\block\BlockFactory;
 
-final class ReplacementMap{
+final class BlockToBlockReplacementMap{
 
 	/** @var int[] */
 	private $full_id_map = [];
 
-	public function put(Block $find, Block $replace) : ReplacementMap{
+	public function put(Block $find, Block $replace) : BlockToBlockReplacementMap{
 		return $this->putFullId($find->getFullId(), $replace->getFullId());
 	}
 
-	public function putFullId(int $find, int $replace) : ReplacementMap{
+	public function putFullId(int $find, int $replace) : BlockToBlockReplacementMap{
 		if($find !== $replace){
 			$this->full_id_map[$find] = $replace;
 		}

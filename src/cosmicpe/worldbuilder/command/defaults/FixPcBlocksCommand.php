@@ -7,7 +7,7 @@ namespace cosmicpe\worldbuilder\command\defaults;
 use cosmicpe\worldbuilder\command\check\RequireSelectionCheck;
 use cosmicpe\worldbuilder\command\Command;
 use cosmicpe\worldbuilder\editor\task\ReplaceEditorTask;
-use cosmicpe\worldbuilder\editor\utils\ReplacementMap;
+use cosmicpe\worldbuilder\editor\utils\replacement\BlockToBlockReplacementMap;
 use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use pocketmine\command\CommandSender;
@@ -27,7 +27,7 @@ class FixPcBlocksCommand extends Command{
 		$data = json_decode(stream_get_contents($_data), true, 512, JSON_THROW_ON_ERROR);
 		fclose($_data);
 
-		$map = new ReplacementMap();
+		$map = new BlockToBlockReplacementMap();
 		foreach($data as $pc => $pe){
 			$map->putFullId((int) $pc, $pe);
 		}

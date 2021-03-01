@@ -7,7 +7,7 @@ namespace cosmicpe\worldbuilder\command\defaults;
 use cosmicpe\worldbuilder\command\check\RequireSelectionCheck;
 use cosmicpe\worldbuilder\command\Command;
 use cosmicpe\worldbuilder\editor\task\ReplaceEditorTask;
-use cosmicpe\worldbuilder\editor\utils\ReplacementMap;
+use cosmicpe\worldbuilder\editor\utils\replacement\BlockToBlockReplacementMap;
 use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use cosmicpe\worldbuilder\utils\BlockUtils;
@@ -26,7 +26,7 @@ class ReplaceCommand extends Command{
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
 		assert($sender instanceof Player);
 		if(isset($args[0], $args[1]) && (count($args) & 1) === 0){
-			$map = new ReplacementMap();
+			$map = new BlockToBlockReplacementMap();
 
 			foreach(array_chunk($args, 2) as [$find, $replace]){
 				$find_block = BlockUtils::fromString($find);

@@ -8,7 +8,7 @@ use cosmicpe\worldbuilder\command\check\PlayerOnlyCommandCheck;
 use cosmicpe\worldbuilder\command\check\RequireSelectionCheck;
 use cosmicpe\worldbuilder\command\Command;
 use cosmicpe\worldbuilder\editor\task\ReplaceEditorTask;
-use cosmicpe\worldbuilder\editor\utils\ReplacementMap;
+use cosmicpe\worldbuilder\editor\utils\replacement\BlockToBlockReplacementMap;
 use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use cosmicpe\worldbuilder\session\utils\Selection;
@@ -24,7 +24,7 @@ class DrainCommand extends Command{
 	/** @var RequireSelectionCheck */
 	private $selection_check;
 
-	/** @var ReplacementMap */
+	/** @var BlockToBlockReplacementMap */
 	private $map;
 
 	public function __construct(Loader $plugin){
@@ -34,7 +34,7 @@ class DrainCommand extends Command{
 
 		$this->selection_check = new RequireSelectionCheck();
 
-		$this->map = new ReplacementMap();
+		$this->map = new BlockToBlockReplacementMap();
 		$air = VanillaBlocks::AIR();
 		foreach(BlockFactory::getInstance()->getAllKnownStates() as $state){
 			if($state instanceof Water){

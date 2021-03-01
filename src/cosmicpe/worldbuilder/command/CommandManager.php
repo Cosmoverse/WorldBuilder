@@ -11,6 +11,7 @@ use cosmicpe\worldbuilder\command\defaults\PasteCommand;
 use cosmicpe\worldbuilder\command\defaults\PosCommand;
 use cosmicpe\worldbuilder\command\defaults\RegenerateChunksCommand;
 use cosmicpe\worldbuilder\command\defaults\ReplaceCommand;
+use cosmicpe\worldbuilder\command\defaults\ReplaceSetRandomCommand;
 use cosmicpe\worldbuilder\command\defaults\SchematicCommand;
 use cosmicpe\worldbuilder\command\defaults\SetBiomeCommand;
 use cosmicpe\worldbuilder\command\defaults\SetCommand;
@@ -29,6 +30,7 @@ final class CommandManager{
 			new PosCommand($plugin, 0),
 			new PosCommand($plugin, 1),
 			new ReplaceCommand($plugin),
+			new ReplaceSetRandomCommand($plugin),
 			new SchematicCommand($plugin),
 			new SetBiomeCommand($plugin),
 			new SetCommand($plugin),

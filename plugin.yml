@@ -18,6 +18,8 @@ permissions:
     default: false
   worldbuilder.command.replace:
     default: op
+  worldbuilder.command.replacesetrandom:
+    default: op
   worldbuilder.command.set:
     default: op
   worldbuilder.command.setbiome:
