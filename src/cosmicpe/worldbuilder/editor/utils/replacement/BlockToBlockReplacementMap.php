@@ -10,7 +10,7 @@ use pocketmine\block\BlockFactory;
 final class BlockToBlockReplacementMap{
 
 	/** @var int[] */
-	private $full_id_map = [];
+	private array $full_id_map = [];
 
 	public function put(Block $find, Block $replace) : BlockToBlockReplacementMap{
 		return $this->putFullId($find->getFullId(), $replace->getFullId());

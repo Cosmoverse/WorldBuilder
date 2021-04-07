@@ -16,11 +16,8 @@ use pocketmine\world\World;
 
 abstract class SetSchematicEditorTask extends EditorTask{
 
-	/** @var Vector3 */
-	private $relative_position;
-
-	/** @var Schematic */
-	private $clipboard;
+	private Vector3 $relative_position;
+	private Schematic $clipboard;
 
 	public function __construct(World $world, Schematic $clipboard, Vector3 $relative_position){
 		$this->relative_position = $relative_position->floor()->addVector($clipboard->getRelativePosition());
@@ -56,8 +53,9 @@ abstract class SetSchematicEditorTask extends EditorTask{
 		$cursor = new ChunkIteratorCursor($world);
 		foreach($chunks as $hash => $_){
 			World::getXZ($hash, $cursor->chunkX, $cursor->chunkZ);
-			$cursor->chunk = $world->loadChunk($cursor->chunkX, $cursor->chunkZ);
-			if($cursor->chunk !== null){
+			$chunk = $world->loadChunk($cursor->chunkX, $cursor->chunkZ);
+			if($chunk !== null){
+				$cursor->chunk = $chunk;
 				$this->onChunkChanged($cursor);
 			}
 		}

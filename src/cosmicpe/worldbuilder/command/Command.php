@@ -13,11 +13,10 @@ use pocketmine\utils\TextFormat;
 
 abstract class Command extends PocketMineCommand{
 
-	/** @var Loader */
-	private $plugin;
+	private Loader $plugin;
 
 	/** @var CommandCheck[] */
-	private $checks = [];
+	private array $checks = [];
 
 	public function __construct(Loader $plugin, string $name, string $description, array $aliases = []){
 		parent::__construct($name);

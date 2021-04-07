@@ -21,11 +21,8 @@ use pocketmine\utils\TextFormat;
 
 class DrainCommand extends Command{
 
-	/** @var RequireSelectionCheck */
-	private $selection_check;
-
-	/** @var BlockToBlockReplacementMap */
-	private $map;
+	private RequireSelectionCheck $selection_check;
+	private BlockToBlockReplacementMap $map;
 
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/drain", "Drain water in selected space or a radius");

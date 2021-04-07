@@ -8,11 +8,8 @@ use pocketmine\nbt\tag\CompoundTag;
 
 final class SchematicEntry{
 
-	/** @var int */
-	public $full_block;
-
-	/** @var CompoundTag|null */
-	public $tile_nbt;
+	public int $full_block;
+	public ?CompoundTag  $tile_nbt;
 
 	public function __construct(int $full_block, ?CompoundTag $tile_nbt){
 		$this->full_block = $full_block;

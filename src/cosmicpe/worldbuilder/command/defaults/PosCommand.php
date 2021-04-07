@@ -16,7 +16,7 @@ use pocketmine\utils\TextFormat;
 class PosCommand extends Command{
 
 	/** @var int */
-	private $selection_index;
+	private int $selection_index;
 
 	public function __construct(Loader $plugin, int $selection_index){
 		parent::__construct($plugin, "/pos" . ($selection_index + 1), "Selects position #" . ($selection_index + 1));

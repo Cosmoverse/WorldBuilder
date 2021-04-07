@@ -14,20 +14,13 @@ use pocketmine\world\World;
 
 abstract class EditorTask{
 
-	/** @var Selection */
-	protected $selection;
-
-	/** @var World */
-	protected $world;
+	protected Selection $selection;
+	protected World $world;
+	private int $operations_completed = 0;
+	private int $estimated_operations;
 
 	/** @var EditorTaskListener[] */
-	private $listeners = [];
-
-	/** @var int */
-	private $operations_completed = 0;
-
-	/** @var int */
-	private $estimated_operations;
+	private array $listeners = [];
 
 	public function __construct(World $world, Selection $selection, int $estimated_operations){
 		$this->selection = $selection;

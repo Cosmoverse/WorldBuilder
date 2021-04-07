@@ -11,8 +11,7 @@ use pocketmine\world\World;
 
 class SetBiomeEditorTask extends AdvancedPlaneEditorTask{
 
-	/** @var int */
-	private $biome_id;
+	private int $biome_id;
 
 	public function __construct(World $world, Selection $selection, int $biome_id){
 		parent::__construct($world, $selection, (int) Vector3Utils::calculateVolume($selection->getPoint(0), $selection->getPoint(1)));

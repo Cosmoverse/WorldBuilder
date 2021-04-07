@@ -11,8 +11,7 @@ use pocketmine\math\Vector3;
 
 class LazyLoadedMinecraftSchematic extends SimpleSchematic{
 
-	/** @var MinecraftSchematicExplorer */
-	private $explorer;
+	private MinecraftSchematicExplorer $explorer;
 
 	public function __construct(Vector3 $relative_position, Vector3 $minimum, Vector3 $maximum, MinecraftSchematicExplorer $explorer){
 		parent::__construct($relative_position, $minimum, $maximum);

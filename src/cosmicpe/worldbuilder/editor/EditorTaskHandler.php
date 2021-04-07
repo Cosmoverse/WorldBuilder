@@ -9,11 +9,10 @@ use pocketmine\scheduler\Task;
 
 final class EditorTaskHandler extends Task{
 
-	/** @var int */
-	private $max_operations_per_tick;
+	private int $max_operations_per_tick;
 
 	/** @var EditorTaskInfo[] */
-	private $tasks = [];
+	private array $tasks = [];
 
 	public function __construct(int $max_operations_per_tick){
 		$this->max_operations_per_tick = $max_operations_per_tick;

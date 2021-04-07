@@ -12,10 +12,9 @@ use pocketmine\nbt\tag\CompoundTag;
 final class NamedtagCopierManager{
 
 	/** @var NamedTagCopier[] */
-	private static $copiers = [];
+	private static array $copiers = [];
 
-	/** @var NamedTagCopier */
-	private static $default_copier;
+	private static NamedTagCopier $default_copier;
 
 	public static function init() : void{
 		self::$default_copier = new DefaultNamedtagCopier();

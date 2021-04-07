@@ -13,7 +13,7 @@ final class EditorFormatRegistry{
 	 * @var EditorFormat[]
 	 * @phpstan-var array<string, EditorFormat>
 	 */
-	private $formats = [];
+	private array $formats = [];
 
 	public function __construct(){
 		$this->register(EditorFormatIds::MINECRAFT_SCHEMATIC, new MinecraftSchematicEditorFormat());

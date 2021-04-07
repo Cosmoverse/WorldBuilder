@@ -13,14 +13,9 @@ use pocketmine\player\Player;
 
 final class PlayerSession{
 
-	/** @var Selection|null */
-	private $selection;
-
-	/** @var Schematic|null */
-	private $clipboard_schematic;
-
-	/** @var Player */
-	private $player;
+	private ?Selection $selection = null;
+	private ?Schematic $clipboard_schematic = null;
+	private Player $player;
 
 	public function __construct(Player $player){
 		$this->player = $player;

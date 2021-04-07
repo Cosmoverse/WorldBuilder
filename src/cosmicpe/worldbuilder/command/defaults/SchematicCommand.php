@@ -13,7 +13,6 @@ use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use cosmicpe\worldbuilder\utils\FileSystemUtils;
 use pocketmine\command\CommandSender;
-use pocketmine\math\Vector3;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 use SplFileInfo;

@@ -13,7 +13,7 @@ use pocketmine\world\World;
 class ReplaceEditorTask extends AdvancedEditorTask{
 
 	/** @var int[] */
-	private $replacement_map;
+	private array $replacement_map;
 
 	public function __construct(World $world, Selection $selection, BlockToBlockReplacementMap $replacement_map){
 		parent::__construct($world, $selection, (int) Vector3Utils::calculateVolume($selection->getPoint(0), $selection->getPoint(1)));

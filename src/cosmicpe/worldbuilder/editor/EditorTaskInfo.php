@@ -13,11 +13,10 @@ final class EditorTaskInfo{
 		return new EditorTaskInfo($task, $task->run());
 	}
 
-	/** @var EditorTask */
-	private $task;
+	private EditorTask $task;
 
 	/** @var Generator<bool> */
-	private $generator;
+	private Generator $generator;
 
 	/**
 	 * @param EditorTask $task

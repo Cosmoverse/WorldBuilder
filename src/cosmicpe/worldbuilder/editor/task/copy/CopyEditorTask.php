@@ -16,11 +16,8 @@ use pocketmine\world\World;
 
 class CopyEditorTask extends AdvancedEditorTask{
 
-	/** @var Schematic */
-	private $clipboard;
-
-	/** @var Vector3 */
-	private $minimum;
+	private Schematic $clipboard;
+	private Vector3 $minimum;
 
 	public function __construct(World $world, Selection $selection, Schematic $clipboard){
 		parent::__construct($world, $selection, (int) Vector3Utils::calculateVolume($selection->getPoint(0), $selection->getPoint(1)));

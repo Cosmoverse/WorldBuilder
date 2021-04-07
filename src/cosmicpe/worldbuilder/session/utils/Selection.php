@@ -20,7 +20,7 @@ final class Selection{
 	}
 
 	/** @var SplFixedArray<Vector3|null> */
-	private $points;
+	private SplFixedArray $points;
 
 	public function __construct(int $capacity){
 		$this->points = new SplFixedArray($capacity);

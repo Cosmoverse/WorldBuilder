@@ -11,11 +11,8 @@ use cosmicpe\worldbuilder\Loader;
 
 final class EditorManager{
 
-	/** @var EditorTaskHandler */
-	private static $task_handler;
-
-	/** @var EditorFormatRegistry */
-	private static $format_registry;
+	private static EditorTaskHandler $task_handler;
+	private static EditorFormatRegistry $format_registry;
 
 	public static function init(Loader $plugin) : void{
 		NamedtagCopierManager::init();

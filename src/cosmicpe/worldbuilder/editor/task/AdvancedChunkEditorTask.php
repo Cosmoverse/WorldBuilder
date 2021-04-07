@@ -25,9 +25,12 @@ abstract class AdvancedChunkEditorTask extends EditorTask{
 		$cursor = new ChunkIteratorCursor($this->getWorld());
 		for($cursor->chunkX = $min_x; $cursor->chunkX <= $max_x; ++$cursor->chunkX){
 			for($cursor->chunkZ = $min_z; $cursor->chunkZ <= $max_z; ++$cursor->chunkZ){
-				$cursor->chunk = $cursor->world->loadChunk($cursor->chunkX, $cursor->chunkZ);
-				if($cursor->chunk !== null && $this->onIterate($cursor)){
-					$this->onChunkChanged($cursor);
+				$chunk = $cursor->world->loadChunk($cursor->chunkX, $cursor->chunkZ);
+				if($chunk !== null){
+					$cursor->chunk = $chunk;
+					if($this->onIterate($cursor)){
+						$this->onChunkChanged($cursor);
+					}
 				}
 				yield true;
 			}

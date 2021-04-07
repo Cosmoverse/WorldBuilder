@@ -7,7 +7,6 @@ namespace cosmicpe\worldbuilder\editor\task;
 use cosmicpe\worldbuilder\editor\task\utils\ChunkIteratorCursor;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use cosmicpe\worldbuilder\utils\Vector3Utils;
-use pocketmine\world\format\Chunk;
 use pocketmine\world\format\io\exception\UnsupportedWorldFormatException;
 use pocketmine\world\format\io\leveldb\LevelDB;
 use pocketmine\world\World;

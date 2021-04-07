@@ -12,7 +12,7 @@ use pocketmine\world\World;
 class SimpleSchematic extends AdvancedSchematic{
 
 	/** @var SchematicEntry[] */
-	private $entries = [];
+	private array $entries = [];
 
 	public function asSelection(Vector3 $relative_to) : Selection{
 		$selection = new Selection(2);

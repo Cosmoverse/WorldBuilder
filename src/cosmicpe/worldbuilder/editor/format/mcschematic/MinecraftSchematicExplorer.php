@@ -14,23 +14,14 @@ final class MinecraftSchematicExplorer{
 		return ($y * $length + $z) * $width + $x;
 	}
 
-	/** @var int */
-	public $width;
-
-	/** @var int */
-	public $height;
-
-	/** @var int */
-	public $length;
-
-	/** @var string */
-	public $block_ids;
-
-	/** @var string */
-	public $block_metas;
+	public int $width;
+	public int $height;
+	public int $length;
+	public string $block_ids;
+	public string $block_metas;
 
 	/** @var CompoundTag[] */
-	public $tile_entities;
+	public array $tile_entities;
 
 	/**
 	 * @param int $width
