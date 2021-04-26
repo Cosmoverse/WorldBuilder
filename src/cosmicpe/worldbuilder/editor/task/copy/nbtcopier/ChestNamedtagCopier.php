@@ -7,6 +7,7 @@ namespace cosmicpe\worldbuilder\editor\task\copy\nbtcopier;
 use pocketmine\block\tile\Chest;
 use pocketmine\block\tile\Tile;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\IntTag;
 
 class ChestNamedtagCopier extends DefaultNamedtagCopier{
 
@@ -15,20 +16,20 @@ class ChestNamedtagCopier extends DefaultNamedtagCopier{
 
 	public function copy(Tile $tile) : CompoundTag{
 		$nbt = parent::copy($tile);
-		if($nbt->hasTag(Chest::TAG_PAIRX) && $nbt->hasTag(Chest::TAG_PAIRZ)){
+		if(($tag_pair_x = $nbt->getTag(Chest::TAG_PAIRX)) instanceof IntTag && ($tag_pair_z = $nbt->getTag(Chest::TAG_PAIRZ)) instanceof IntTag){
 			$nbt
-				->setInt(self::TAG_PAIRX_RELATIVE, $nbt->getInt(Chest::TAG_PAIRX) - $nbt->getInt(Tile::TAG_X))
-				->setInt(self::TAG_PAIRZ_RELATIVE, $nbt->getInt(Chest::TAG_PAIRZ) - $nbt->getInt(Tile::TAG_Z));
+				->setInt(self::TAG_PAIRX_RELATIVE, $tag_pair_x->getValue() - $nbt->getInt(Tile::TAG_X))
+				->setInt(self::TAG_PAIRZ_RELATIVE, $tag_pair_z->getValue() - $nbt->getInt(Tile::TAG_Z));
 		}
 		return $nbt;
 	}
 
 	public function moveTo(CompoundTag $nbt, int $x, int $y, int $z) : CompoundTag{
 		$nbt = parent::moveTo($nbt, $x, $y, $z);
-		if($nbt->hasTag(self::TAG_PAIRX_RELATIVE) && $nbt->hasTag(self::TAG_PAIRZ_RELATIVE)){
+		if(($tag_pairx_rel = $nbt->getTag(self::TAG_PAIRX_RELATIVE)) instanceof IntTag && ($tag_pairz_rel = $nbt->getTag(self::TAG_PAIRZ_RELATIVE)) instanceof IntTag){
 			$nbt
-				->setInt(Chest::TAG_PAIRX, $x + $nbt->getInt(self::TAG_PAIRX_RELATIVE))
-				->setInt(Chest::TAG_PAIRZ, $z + $nbt->getInt(self::TAG_PAIRZ_RELATIVE))
+				->setInt(Chest::TAG_PAIRX, $x + $tag_pairx_rel->getValue())
+				->setInt(Chest::TAG_PAIRZ, $z + $tag_pairz_rel->getValue())
 				->removeTag(self::TAG_PAIRX_RELATIVE, self::TAG_PAIRZ_RELATIVE);
 		}
 		return $nbt;
