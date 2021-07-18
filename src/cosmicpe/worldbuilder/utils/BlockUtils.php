@@ -10,6 +10,7 @@ use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\data\bedrock\LegacyBlockIdToStringIdMap;
 use pocketmine\item\LegacyStringToItemParser;
+use pocketmine\item\LegacyStringToItemParserException;
 
 final class BlockUtils{
 
@@ -31,7 +32,7 @@ final class BlockUtils{
 
 		try{
 			$block = LegacyStringToItemParser::getInstance()->parse($string)->getBlock();
-		}catch(InvalidArgumentException $e){
+		}catch(LegacyStringToItemParserException $e){
 			return null;
 		}
 		return $block->canBePlaced() || ($block->getId() === BlockLegacyIds::AIR && ($string === "air" || $string === "0")) ? $block : null;
