@@ -62,7 +62,7 @@ abstract class SetSchematicEditorTask extends EditorTask{
 
 		// Send tiles AFTER blocks have been placed, or else chests don't show up paired
 		foreach($tiles as $tile){
-			$pos = $tile->getPos();
+			$pos = $tile->getPosition();
 			$old_tile = $world->getTileAt($pos->x, $pos->y, $pos->z);
 			if($old_tile !== null){
 				$world->removeTile($old_tile);
