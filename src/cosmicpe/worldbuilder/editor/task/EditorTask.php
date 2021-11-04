@@ -54,7 +54,7 @@ abstract class EditorTask{
 	abstract public function run() : Generator;
 
 	protected function onChunkChanged(ChunkIteratorCursor $cursor) : void{
-		$cursor->world->setChunk($cursor->chunkX, $cursor->chunkZ, $cursor->chunk, false);
+		$cursor->world->setChunk($cursor->chunkX, $cursor->chunkZ, $cursor->chunk);
 	}
 
 	public function onCompleteOperations(int $completed) : void{
