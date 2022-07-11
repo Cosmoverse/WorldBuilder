@@ -9,6 +9,7 @@ use cosmicpe\worldbuilder\session\utils\Selection;
 use cosmicpe\worldbuilder\utils\Vector3Utils;
 use pocketmine\block\Block;
 use pocketmine\block\BlockFactory;
+use pocketmine\world\format\Chunk;
 use pocketmine\world\World;
 
 class SetEditorTask extends AdvancedEditorTask{
@@ -30,7 +31,7 @@ class SetEditorTask extends AdvancedEditorTask{
 
 	protected function onIterate(SubChunkIteratorCursor $cursor) : bool{
 		$cursor->sub_chunk->setFullBlock($cursor->x, $cursor->y, $cursor->z, $this->full_block);
-		$tile = $cursor->chunk->getTile($cursor->x, ($cursor->subChunkY << 4) + $cursor->y, $cursor->z);
+		$tile = $cursor->chunk->getTile($cursor->x, ($cursor->subChunkY << Chunk::COORD_BIT_SIZE) + $cursor->y, $cursor->z);
 		if($tile !== null){
 			$cursor->chunk->removeTile($tile);
 			// $tile->onBlockDestroyed();

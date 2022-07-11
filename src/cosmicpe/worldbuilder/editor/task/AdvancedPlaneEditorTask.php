@@ -7,6 +7,7 @@ namespace cosmicpe\worldbuilder\editor\task;
 use cosmicpe\worldbuilder\editor\task\utils\ChunkIteratorCursor;
 use Generator;
 use pocketmine\math\Vector3;
+use pocketmine\world\format\Chunk;
 
 abstract class AdvancedPlaneEditorTask extends EditorTask{
 
@@ -22,16 +23,16 @@ abstract class AdvancedPlaneEditorTask extends EditorTask{
 		$max_x = $max->x;
 		$max_z = $max->z;
 
-		$min_chunkX = $min_x >> 4;
-		$max_chunkX = $max_x >> 4;
-		$min_chunkZ = $min_z >> 4;
-		$max_chunkZ = $max_z >> 4;
+		$min_chunkX = $min_x >> Chunk::COORD_BIT_SIZE;
+		$max_chunkX = $max_x >> Chunk::COORD_BIT_SIZE;
+		$min_chunkZ = $min_z >> Chunk::COORD_BIT_SIZE;
+		$max_chunkZ = $max_z >> Chunk::COORD_BIT_SIZE;
 
 		$cursor = new ChunkIteratorCursor($this->getWorld());
 		for($cursor->chunkX = $min_chunkX; $cursor->chunkX <= $max_chunkX; ++$cursor->chunkX){
-			$abs_cx = $cursor->chunkX << 4;
-			$min_i = max($abs_cx, $min_x) & 0x0f;
-			$max_i = min($abs_cx + 0x0f, $max_x) & 0x0f;
+			$abs_cx = $cursor->chunkX << Chunk::COORD_BIT_SIZE;
+			$min_i = max($abs_cx, $min_x) & Chunk::COORD_MASK;
+			$max_i = min($abs_cx + Chunk::COORD_MASK, $max_x) & Chunk::COORD_MASK;
 			for($cursor->chunkZ = $min_chunkZ; $cursor->chunkZ <= $max_chunkZ; ++$cursor->chunkZ){
 				$chunk = $cursor->world->loadChunk($cursor->chunkX, $cursor->chunkZ);
 				if($chunk === null){
@@ -41,9 +42,9 @@ abstract class AdvancedPlaneEditorTask extends EditorTask{
 
 				$changed = false;
 
-				$abs_cz = $cursor->chunkZ << 4;
-				$min_k = max($abs_cz, $min_z) & 0x0f;
-				$max_k = min($abs_cz + 0x0f, $max_z) & 0x0f;
+				$abs_cz = $cursor->chunkZ << Chunk::COORD_BIT_SIZE;
+				$min_k = max($abs_cz, $min_z) & Chunk::COORD_MASK;
+				$max_k = min($abs_cz + Chunk::COORD_MASK, $max_z) & Chunk::COORD_MASK;
 				for($cursor->x = $min_i; $cursor->x <= $max_i; ++$cursor->x){
 					for($cursor->z = $min_k; $cursor->z <= $max_k; ++$cursor->z){
 						if($this->onIterate($cursor)){

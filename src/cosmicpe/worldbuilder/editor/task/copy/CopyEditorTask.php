@@ -12,6 +12,7 @@ use cosmicpe\worldbuilder\editor\utils\schematic\SchematicEntry;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use cosmicpe\worldbuilder\utils\Vector3Utils;
 use pocketmine\math\Vector3;
+use pocketmine\world\format\Chunk;
 use pocketmine\world\World;
 
 class CopyEditorTask extends AdvancedEditorTask{
@@ -34,11 +35,11 @@ class CopyEditorTask extends AdvancedEditorTask{
 	}
 
 	protected function onIterate(SubChunkIteratorCursor $cursor) : bool{
-		$tile = $cursor->chunk->getTile($cursor->x, $y = ($cursor->subChunkY << 4) + $cursor->y, $cursor->z);
+		$tile = $cursor->chunk->getTile($cursor->x, $y = ($cursor->subChunkY << Chunk::COORD_BIT_SIZE) + $cursor->y, $cursor->z);
 		$this->clipboard->copy(
-			($cursor->chunkX << 4) + $cursor->x - $this->minimum->x,
+			($cursor->chunkX << Chunk::COORD_BIT_SIZE) + $cursor->x - $this->minimum->x,
 			$y - $this->minimum->y,
-			($cursor->chunkZ << 4) + $cursor->z - $this->minimum->z,
+			($cursor->chunkZ << Chunk::COORD_BIT_SIZE) + $cursor->z - $this->minimum->z,
 			new SchematicEntry(
 				$cursor->sub_chunk->getFullBlock($cursor->x, $cursor->y, $cursor->z),
 				$tile !== null ? NamedtagCopierManager::copy($tile) : null

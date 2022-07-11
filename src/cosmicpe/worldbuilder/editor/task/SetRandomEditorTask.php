@@ -8,6 +8,7 @@ use cosmicpe\worldbuilder\editor\task\utils\SubChunkIteratorCursor;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use cosmicpe\worldbuilder\utils\Vector3Utils;
 use cosmicpe\worldbuilder\utils\WeightedRandomIntegerSelector;
+use pocketmine\world\format\Chunk;
 use pocketmine\world\World;
 
 class SetRandomEditorTask extends AdvancedEditorTask{
@@ -25,7 +26,7 @@ class SetRandomEditorTask extends AdvancedEditorTask{
 
 	protected function onIterate(SubChunkIteratorCursor $cursor) : bool{
 		$cursor->sub_chunk->setFullBlock($cursor->x, $cursor->y, $cursor->z, $this->selector->generate(1)->current());
-		$tile = $cursor->chunk->getTile($cursor->x, ($cursor->subChunkY << 4) + $cursor->y, $cursor->z);
+		$tile = $cursor->chunk->getTile($cursor->x, ($cursor->subChunkY << Chunk::COORD_BIT_SIZE) + $cursor->y, $cursor->z);
 		if($tile !== null){
 			$cursor->chunk->removeTile($tile);
 			// $tile->onBlockDestroyed();

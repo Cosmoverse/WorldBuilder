@@ -10,6 +10,7 @@ use cosmicpe\worldbuilder\editor\utils\schematic\Schematic;
 use Generator;
 use pocketmine\block\tile\TileFactory;
 use pocketmine\math\Vector3;
+use pocketmine\world\format\Chunk;
 use pocketmine\world\utils\SubChunkExplorer;
 use pocketmine\world\utils\SubChunkExplorerStatus;
 use pocketmine\world\World;
@@ -45,8 +46,8 @@ abstract class SetSchematicEditorTask extends EditorTask{
 				$tiles[] = $tile_factory->createFromData($world, NamedtagCopierManager::moveTo($entry->tile_nbt, $x, $y, $z));
 			}
 
-			$iterator->currentSubChunk->setFullBlock($x & 0x0f, $y & 0x0f, $z & 0x0f, $entry->full_block);
-			$chunks[World::chunkHash($x >> 4, $z >> 4)] = true;
+			$iterator->currentSubChunk->setFullBlock($x & Chunk::COORD_MASK, $y & Chunk::COORD_MASK, $z & Chunk::COORD_MASK, $entry->full_block);
+			$chunks[World::chunkHash($x >> Chunk::COORD_BIT_SIZE, $z >> Chunk::COORD_BIT_SIZE)] = true;
 			yield true;
 		}
 

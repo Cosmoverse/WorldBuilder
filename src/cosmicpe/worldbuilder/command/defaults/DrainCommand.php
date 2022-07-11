@@ -18,6 +18,7 @@ use pocketmine\block\Water;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
+use pocketmine\world\format\Chunk;
 
 class DrainCommand extends Command{
 
@@ -54,7 +55,7 @@ class DrainCommand extends Command{
 				return;
 			}
 
-			$max_radius = $sender->getViewDistance() << 4;
+			$max_radius = $sender->getViewDistance() << Chunk::COORD_BIT_SIZE;
 			if($radius > $max_radius){
 				$radius = $max_radius;
 			}

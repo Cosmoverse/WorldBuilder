@@ -7,6 +7,7 @@ namespace cosmicpe\worldbuilder\editor\task;
 use cosmicpe\worldbuilder\editor\task\utils\ChunkIteratorCursor;
 use Generator;
 use pocketmine\math\Vector3;
+use pocketmine\world\format\Chunk;
 
 abstract class AdvancedChunkEditorTask extends EditorTask{
 
@@ -15,12 +16,12 @@ abstract class AdvancedChunkEditorTask extends EditorTask{
 		$second = $this->selection->getPoint(1);
 
 		$min = Vector3::minComponents($first, $second);
-		$min_x = $min->x >> 4;
-		$min_z = $min->z >> 4;
+		$min_x = $min->x >> Chunk::COORD_BIT_SIZE;
+		$min_z = $min->z >> Chunk::COORD_BIT_SIZE;
 
 		$max = Vector3::maxComponents($first, $second);
-		$max_x = $max->x >> 4;
-		$max_z = $max->z >> 4;
+		$max_x = $max->x >> Chunk::COORD_BIT_SIZE;
+		$max_z = $max->z >> Chunk::COORD_BIT_SIZE;
 
 		$cursor = new ChunkIteratorCursor($this->getWorld());
 		for($cursor->chunkX = $min_x; $cursor->chunkX <= $max_x; ++$cursor->chunkX){
