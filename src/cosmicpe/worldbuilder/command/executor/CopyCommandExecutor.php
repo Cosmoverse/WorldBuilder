@@ -2,32 +2,23 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\command\defaults;
+namespace cosmicpe\worldbuilder\command\executor;
 
-use cosmicpe\worldbuilder\command\check\RequireSelectionCheck;
-use cosmicpe\worldbuilder\command\Command;
 use cosmicpe\worldbuilder\editor\task\copy\CopyEditorTask;
 use cosmicpe\worldbuilder\editor\task\listener\EditorTaskOnCompletionListener;
 use cosmicpe\worldbuilder\editor\utils\schematic\SimpleSchematic;
-use cosmicpe\worldbuilder\Loader;
-use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use cosmicpe\worldbuilder\session\utils\Selection;
+use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
-class CopyCommand extends Command{
+final class CopyCommandExecutor extends WorldBuilderCommandExecutor{
 
-	public function __construct(Loader $plugin){
-		parent::__construct($plugin, "/copy", "Copies blocks in the selected space");
-		$this->setPermission("worldbuilder.command.copy");
-		$this->addCheck(new RequireSelectionCheck($plugin->getPlayerSessionManager()));
-	}
-
-	public function onExecute(CommandSender $sender, string $label, array $args) : void{
+	protected function executeCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
-		$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
+		$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
 		$session->setClipboardSchematic(null);
 
 		/** @var Selection $selection */
@@ -41,5 +32,6 @@ class CopyCommand extends Command{
 			$session->setClipboardSchematic($task->getClipboard());
 		}));
 		$session->pushEditorTask($task, TextFormat::GREEN . "Copying selection");
+		return true;
 	}
 }

@@ -2,29 +2,19 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\command\defaults;
+namespace cosmicpe\worldbuilder\command\executor;
 
-use cosmicpe\worldbuilder\command\check\RequireSelectionCheck;
-use cosmicpe\worldbuilder\command\Command;
 use cosmicpe\worldbuilder\editor\task\ReplaceSetRandomEditorTask;
 use cosmicpe\worldbuilder\editor\utils\replacement\BlockToWeightedRandomSelectorReplacementMap;
-use cosmicpe\worldbuilder\Loader;
-use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use cosmicpe\worldbuilder\utils\BlockUtils;
 use cosmicpe\worldbuilder\utils\WeightedRandomIntegerSelector;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
-class ReplaceSetRandomCommand extends Command{
+final class ReplaceSetRandomCommandExecutor extends WorldBuilderCommandExecutor{
 
-	public function __construct(Loader $plugin){
-		parent::__construct($plugin, "/replacesetrandom", "Replaces blocks in selected space with a random block");
-		$this->setPermission("worldbuilder.command.replacesetrandom");
-		$this->addCheck(new RequireSelectionCheck($plugin->getPlayerSessionManager()));
-	}
-
-	public function onExecute(CommandSender $sender, string $label, array $args) : void{
+	protected function executeCommand(CommandSender $sender, \pocketmine\command\Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
 		if(isset($args[0])){
 			$arg_str = implode(" ", $args); // TODO: Iterate over $args directly to support block identifiers with spaces (do they even have spaces in identifiers?)
@@ -38,14 +28,14 @@ class ReplaceSetRandomCommand extends Command{
 				$delimiter = strpos($arg_str, $delimiter_str, $offset);
 				if($delimiter === false){
 					$sender->sendMessage(TextFormat::RED . "Failed to find delimiter for \"<block_identifier>\" when parsing: " . substr($arg_str, $offset) . " (at offset: {$offset})");
-					return;
+					return true;
 				}
 
 				$find_block_identifier = trim(substr($arg_str, $offset, $delimiter - $offset));
 				$find_block = BlockUtils::fromString($find_block_identifier);
 				if($find_block === null){
 					$sender->sendMessage(TextFormat::RED . "{$find_block_identifier} is not a valid block (failed when parsing: " . substr($arg_str, $delimiter) . " (at offset: {$offset}))");
-					return;
+					return true;
 				}
 
 				$offset = $delimiter + strlen($delimiter_str);
@@ -54,7 +44,7 @@ class ReplaceSetRandomCommand extends Command{
 				$delimiter = strpos($arg_str, $delimiter_str, $offset);
 				if($delimiter === false){
 					$sender->sendMessage(TextFormat::RED . "Failed to find delimiter for \"{replacement}\" (opening bracket) when parsing: " . substr($arg_str, $offset) . " (at offset: {$offset})");
-					return;
+					return true;
 				}
 
 				$offset = $delimiter + strlen($delimiter_str);
@@ -64,7 +54,7 @@ class ReplaceSetRandomCommand extends Command{
 				$delimiter = strpos($arg_str, $delimiter_str, $offset);
 				if($delimiter === false){
 					$sender->sendMessage(TextFormat::RED . "Failed to find delimiter for \"{replacement}\" (closing bracket) when parsing: " . substr($arg_str, $offset) . " (at offset: {$offset})");
-					return;
+					return true;
 				}
 
 				$offset = $delimiter + strlen($delimiter_str);
@@ -81,11 +71,11 @@ class ReplaceSetRandomCommand extends Command{
 							$weight = (int) $weight;
 							if($weight <= 0){
 								$sender->sendMessage(TextFormat::RED . "Invalid value supplied for weight in replacement {{$replacement_str}}.");
-								return;
+								return true;
 							}
 						}else{
 							$sender->sendMessage(TextFormat::RED . "Invalid value supplied for weight in replacement {{$replacement_str}}.");
-							return;
+							return true;
 						}
 
 						$block_identifier = substr($entry, 0, $weight_symbol_pos);
@@ -94,7 +84,7 @@ class ReplaceSetRandomCommand extends Command{
 					$replacement_block = BlockUtils::fromString($block_identifier);
 					if($replacement_block === null){
 						$sender->sendMessage(TextFormat::RED . "{$block_identifier} is not a valid block (in replacement {{$replacement_str}}).");
-						return;
+						return true;
 					}
 
 					$randomizer->add($replacement_block->getFullId(), $weight);
@@ -104,9 +94,9 @@ class ReplaceSetRandomCommand extends Command{
 				$replacement_map->put($find_block, $randomizer);
 			}
 
-			$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
+			$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
 			$session->pushEditorTask(new ReplaceSetRandomEditorTask($sender->getWorld(), $session->getSelection(), $replacement_map), TextFormat::GREEN . "Replacing blocks with a randomized list of block(s)");
-			return;
+			return true;
 		}
 
 		$sender->sendMessage(
@@ -115,5 +105,6 @@ class ReplaceSetRandomCommand extends Command{
 			TextFormat::GRAY . "{replacement} format: <block_identifier>[@weight=15]" . TextFormat::EOL .
 			TextFormat::GRAY . "Example: /{$label} grass->{dirt dirt:1@5 podzol} stone->{stone:1 stone:2@8}"
 		);
+		return true;
 	}
 }

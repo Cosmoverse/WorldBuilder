@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\command\check;
 
-use cosmicpe\worldbuilder\command\utils\CommandException;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 
-class PlayerOnlyCommandCheck implements CommandCheck{
+final class PlayerOnlyCommandCheck implements CommandCheck{
 
-	public function validate(CommandSender $sender) : void{
-		if(!($sender instanceof Player)){
-			throw new CommandException("This command can only be executed as a player.");
-		}
+	public function __construct(){
+	}
+
+	public function validate(CommandSender $sender) : ?string{
+		return $sender instanceof Player ? null : "This command can only be executed as a player.";
 	}
 }

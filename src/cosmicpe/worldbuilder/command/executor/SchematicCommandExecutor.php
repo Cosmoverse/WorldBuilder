@@ -2,37 +2,27 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\command\defaults;
+namespace cosmicpe\worldbuilder\command\executor;
 
-use cosmicpe\worldbuilder\command\check\PlayerOnlyCommandCheck;
-use cosmicpe\worldbuilder\command\Command;
 use cosmicpe\worldbuilder\editor\format\EditorFormatIds;
 use cosmicpe\worldbuilder\editor\task\SimpleSetSchematicEditorTask;
-use cosmicpe\worldbuilder\Loader;
-use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use cosmicpe\worldbuilder\utils\FileSystemUtils;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 use SplFileInfo;
 
-class SchematicCommand extends Command{
+final class SchematicCommandExecutor extends WorldBuilderCommandExecutor{
 
 	private const FILE_EXTENSION = "schematic";
 
-	public function __construct(Loader $plugin){
-		parent::__construct($plugin, "/schematic", "Pastes blocks in the selected space", ["/schem"]);
-		$this->setPermission("worldbuilder.command.schematic");
-		$this->addCheck(new PlayerOnlyCommandCheck());
-	}
-
-	public function onExecute(CommandSender $sender, string $label, array $args) : void{
+	protected function executeCommand(CommandSender $sender, \pocketmine\command\Command $command, string $label, array $args) : bool{
 		if(isset($args[0])){
 			switch($args[0]){
 				case "list":
 					$found = 0;
 					$message = "";
-					$directory = $this->getPlugin()->getDataFolder();
+					$directory = $this->getLoader()->getDataFolder();
 					foreach(FileSystemUtils::findFilesWithExtension($directory, self::FILE_EXTENSION) as $file){
 						$message .= TextFormat::RED . TextFormat::BOLD . ++$found . ". " . TextFormat::RESET . TextFormat::RED . $file->getBasename("." . self::FILE_EXTENSION) . TextFormat::GRAY . " [" . FileSystemUtils::printBytesToHumanReadable($file->getSize()) . "]" . TextFormat::EOL;
 					}
@@ -44,10 +34,10 @@ class SchematicCommand extends Command{
 					}else{
 						$sender->sendMessage(TextFormat::RED . "No .schematic files were found in {$directory}.");
 					}
-					return;
+					return true;
 				case "import":
 					if(isset($args[1])){
-						$file = new SplFileInfo($this->getPlugin()->getDataFolder() . implode(" ", array_slice($args, 1)) . "." . self::FILE_EXTENSION);
+						$file = new SplFileInfo($this->getLoader()->getDataFolder() . implode(" ", array_slice($args, 1)) . "." . self::FILE_EXTENSION);
 						if($file->isFile()){
 							$path = $file->getRealPath();
 							assert($path !== null);
@@ -55,24 +45,24 @@ class SchematicCommand extends Command{
 
 							assert($sender instanceof Player);
 
-							$schematic = $this->getPlugin()->getEditorManager()->getFormatRegistry()->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->import($contents);
-							$this->getPlugin()->getPlayerSessionManager()->get($sender)->pushEditorTask(new SimpleSetSchematicEditorTask($sender->getWorld(), $schematic, $sender->getPosition()->floor()), TextFormat::GREEN . "Importing {$file->getFilename()}");
+							$schematic = $this->getLoader()->getEditorManager()->getFormatRegistry()->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->import($contents);
+							$this->getLoader()->getPlayerSessionManager()->get($sender)->pushEditorTask(new SimpleSetSchematicEditorTask($sender->getWorld(), $schematic, $sender->getPosition()->floor()), TextFormat::GREEN . "Importing {$file->getFilename()}");
 						}else{
 							$sender->sendMessage(TextFormat::RED . "File not found: {$file->getPathname()}");
 						}
 					}else{
 						$sender->sendMessage(TextFormat::RED . "/{$label} import <file_name>");
 					}
-					return;
+					return true;
 				case "export":
 					if(isset($args[1])){
-						$export_path = $this->getPlugin()->getDataFolder() . implode(" ", array_slice($args, 1)) . "." . self::FILE_EXTENSION;
+						$export_path = $this->getLoader()->getDataFolder() . implode(" ", array_slice($args, 1)) . "." . self::FILE_EXTENSION;
 						if(!file_exists($export_path)){
 							assert($sender instanceof Player);
-							$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
+							$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
 							$schematic = $session->getClipboardSchematic();
 							if($schematic !== null){
-								$contents = $this->getPlugin()->getEditorManager()->getFormatRegistry()->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->export($schematic);
+								$contents = $this->getLoader()->getEditorManager()->getFormatRegistry()->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->export($schematic);
 								file_put_contents($export_path, $contents);
 								$sender->sendMessage(TextFormat::GREEN . "Exported clipboard to {$export_path}.");
 							}else{
@@ -84,7 +74,7 @@ class SchematicCommand extends Command{
 					}else{
 						$sender->sendMessage(TextFormat::RED . "/{$label} export <file_name>");
 					}
-					return;
+					return true;
 			}
 		}
 
@@ -93,5 +83,6 @@ class SchematicCommand extends Command{
 			TextFormat::RED . "/{$label} import <file_name>" . TextFormat::GRAY . " - Import structure from a <file_name>.schematic" . TextFormat::EOL .
 			TextFormat::RED . "/{$label} export <file_name>" . TextFormat::GRAY . " - Export selected area as <file_name>.schematic"
 		);
+		return true;
 	}
 }

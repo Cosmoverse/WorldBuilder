@@ -3,6 +3,48 @@ main: cosmicpe\worldbuilder\Loader
 api: 4.0.0
 version: 0.0.1
 author: CosmicPE
+commands:
+  /copy:
+    permission: worldbuilder.command.copy
+    description: Copies blocks in the selected space
+  /drain:
+    permission: worldbuilder.command.drain
+    description: Drain water in selected space or a radius
+  /fixpcblocks:
+    permission: worldbuilder.command.fixpcblocks
+    description: Replaces java edition pre-1.12 blocks in selected space with bedrock equivalents
+  /paste:
+    permission: worldbuilder.command.paste
+    description: Pastes blocks in the selected space
+  /pos1:
+    permission: worldbuilder.command.pos
+    description: "Selects position #1"
+  /pos2:
+    permission: worldbuilder.command.pos
+    description: "Selects position #2"
+  /regeneratechunks:
+    permission: worldbuilder.command.regeneratechunks
+    description: Regenerates all chunks in the selected space
+  /replace:
+    permission: worldbuilder.command.replace
+    description: Replaces blocks in selected space
+  /replacesetrandom:
+    permission: worldbuilder.command.replacesetrandom
+    description: Replaces blocks in selected space with a random block
+  /schematic:
+    permission: worldbuilder.command.schematic
+    description: Pastes blocks in the selected space
+    aliases:
+    - "/schem"
+  /set:
+    permission: worldbuilder.command.set
+    description: Sets a given block in selected space
+  /setbiome:
+    permission: worldbuilder.command.setbiome
+    description: Sets a given biome in selected space
+  /setrandom:
+    permission: worldbuilder.command.setrandom
+    description: Sets a randomized list of block in selected space
 permissions:
   worldbuilder.command.copy:
     default: op
@@ -20,11 +62,11 @@ permissions:
     default: op
   worldbuilder.command.replacesetrandom:
     default: op
+  worldbuilder.command.schematic:
+    default: op
   worldbuilder.command.set:
     default: op
   worldbuilder.command.setbiome:
     default: op
   worldbuilder.command.setrandom:
-    default: op
-  worldbuilder.command.schematic:
     default: op

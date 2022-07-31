@@ -2,35 +2,32 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\command\defaults;
+namespace cosmicpe\worldbuilder\command\executor;
 
-use cosmicpe\worldbuilder\command\check\PlayerOnlyCommandCheck;
 use cosmicpe\worldbuilder\command\check\RequireSelectionCheck;
-use cosmicpe\worldbuilder\command\Command;
 use cosmicpe\worldbuilder\editor\task\ReplaceEditorTask;
 use cosmicpe\worldbuilder\editor\utils\replacement\BlockToBlockReplacementMap;
 use cosmicpe\worldbuilder\Loader;
-use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\block\Water;
+use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\format\Chunk;
 
-class DrainCommand extends Command{
+final class DrainCommandExecutor extends WorldBuilderCommandExecutor{
 
-	private RequireSelectionCheck $selection_check;
 	private BlockToBlockReplacementMap $map;
 
-	public function __construct(Loader $plugin){
-		parent::__construct($plugin, "/drain", "Drain water in selected space or a radius");
-		$this->setPermission("worldbuilder.command.drain");
-		$this->addCheck(new PlayerOnlyCommandCheck());
-
-		$this->selection_check = new RequireSelectionCheck($plugin->getPlayerSessionManager());
+	public function __construct(
+		Loader $loader,
+		array $checks,
+		private RequireSelectionCheck $selection_check
+	){
+		parent::__construct($loader, $checks);
 
 		$this->map = new BlockToBlockReplacementMap();
 		$air = VanillaBlocks::AIR();
@@ -41,18 +38,23 @@ class DrainCommand extends Command{
 		}
 	}
 
-	public function onExecute(CommandSender $sender, string $label, array $args) : void{
+	protected function executeCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
-		$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
+		$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
 		if(!isset($args[0])){
-			$this->selection_check->validate($sender);
+			$result = $this->selection_check->validate($sender);
+			if($result !== null){
+				$sender->sendMessage(TextFormat::RED . $result);
+				return true;
+			}
+
 			$selection = $session->getSelection();
 			$message = "Draining water";
 		}else{
 			$radius = (int) $args[0];
 			if($radius < 0){
 				$sender->sendMessage(TextFormat::RED . "Usage: /" . $label . " [radius]");
-				return;
+				return true;
 			}
 
 			$max_radius = $sender->getViewDistance() << Chunk::COORD_BIT_SIZE;
@@ -65,5 +67,6 @@ class DrainCommand extends Command{
 		}
 
 		$session->pushEditorTask(new ReplaceEditorTask($sender->getWorld(), $selection, $this->map), TextFormat::GREEN . $message);
+		return true;
 	}
 }

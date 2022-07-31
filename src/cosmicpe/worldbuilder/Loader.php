@@ -16,13 +16,13 @@ final class Loader extends PluginBase{
 	private PlayerSessionManager $player_session_manager;
 
 	protected function onLoad() : void{
-		$this->command_manager = new CommandManager();
+		$this->command_manager = new CommandManager($this);
 		$this->editor_manager = new EditorManager();
 		$this->player_session_manager = new PlayerSessionManager();
 	}
 
 	protected function onEnable() : void{
-		$this->command_manager->init($this);
+		$this->command_manager->init();
 		$this->editor_manager->init($this);
 		$this->player_session_manager->init($this);
 	}

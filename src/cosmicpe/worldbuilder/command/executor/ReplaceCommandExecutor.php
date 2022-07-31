@@ -2,28 +2,18 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\command\defaults;
+namespace cosmicpe\worldbuilder\command\executor;
 
-use cosmicpe\worldbuilder\command\check\RequireSelectionCheck;
-use cosmicpe\worldbuilder\command\Command;
 use cosmicpe\worldbuilder\editor\task\ReplaceEditorTask;
 use cosmicpe\worldbuilder\editor\utils\replacement\BlockToBlockReplacementMap;
-use cosmicpe\worldbuilder\Loader;
-use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use cosmicpe\worldbuilder\utils\BlockUtils;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
-class ReplaceCommand extends Command{
+final class ReplaceCommandExecutor extends WorldBuilderCommandExecutor{
 
-	public function __construct(Loader $plugin){
-		parent::__construct($plugin, "/replace", "Replaces blocks in selected space");
-		$this->setPermission("worldbuilder.command.replace");
-		$this->addCheck(new RequireSelectionCheck($plugin->getPlayerSessionManager()));
-	}
-
-	public function onExecute(CommandSender $sender, string $label, array $args) : void{
+	protected function executeCommand(CommandSender $sender, \pocketmine\command\Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
 		if(isset($args[0], $args[1]) && (count($args) & 1) === 0){
 			$map = new BlockToBlockReplacementMap();
@@ -32,25 +22,26 @@ class ReplaceCommand extends Command{
 				$find_block = BlockUtils::fromString($find);
 				if($find_block === null){
 					$sender->sendMessage(TextFormat::RED . $find . " is not a valid block.");
-					return;
+					return true;
 				}
 
 				$replace_block = BlockUtils::fromString($replace);
 				if($replace_block === null){
 					$sender->sendMessage(TextFormat::RED . $replace . " is not a valid block.");
-					return;
+					return true;
 				}
 
 				$map->put($find_block, $replace_block);
 			}
 
 			if(!$map->isEmpty()){
-				$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
+				$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
 				$session->pushEditorTask(new ReplaceEditorTask($sender->getWorld(), $session->getSelection(), $map), TextFormat::GREEN . "Replacing " . $map);
-				return;
+				return true;
 			}
 		}
 
 		$sender->sendMessage(TextFormat::RED . "/" . $label . " <...<find> <replace>>");
+		return true;
 	}
 }

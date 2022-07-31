@@ -11,7 +11,7 @@ interface CommandCheck{
 
 	/**
 	 * @param CommandSender $sender
-	 * @throws CommandException
+	 * @return string
 	 */
-	public function validate(CommandSender $sender) : void;
+	public function validate(CommandSender $sender) : ?string;
 }
