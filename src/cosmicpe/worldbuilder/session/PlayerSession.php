@@ -15,13 +15,11 @@ final class PlayerSession{
 
 	private ?Selection $selection = null;
 	private ?Schematic $clipboard_schematic = null;
-	private Player $player;
-	private EditorManager $editor_manager;
 
-	public function __construct(Player $player, EditorManager $editor_manager){
-		$this->player = $player;
-		$this->editor_manager = $editor_manager;
-	}
+	public function __construct(
+		private Player $player,
+		private EditorManager $editor_manager
+	){}
 
 	public function getSelection() : ?Selection{
 		return $this->selection;

@@ -8,15 +8,11 @@ use pocketmine\math\Vector3;
 
 abstract class AdvancedSchematic implements Schematic{
 
-	protected Vector3 $minimum;
-	protected Vector3 $maximum;
-	protected Vector3 $relative_position;
-
-	public function __construct(Vector3 $relative_position, Vector3 $minimum, Vector3 $maximum){
-		$this->relative_position = $relative_position;
-		$this->minimum = $minimum;
-		$this->maximum = $maximum;
-	}
+	public function __construct(
+		protected Vector3 $relative_position,
+		protected Vector3 $minimum,
+		protected Vector3 $maximum
+	){}
 
 	public function getWidth() : int{
 		return 1 + ($this->maximum->x - $this->minimum->x);

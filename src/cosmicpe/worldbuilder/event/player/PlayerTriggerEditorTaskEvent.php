@@ -13,15 +13,11 @@ use pocketmine\player\Player;
 class PlayerTriggerEditorTaskEvent extends WorldBuilderEvent implements Cancellable{
 	use CancellableTrait;
 
-	private Player $player;
-	private EditorTask $task;
-	private ?string $message;
-
-	public function __construct(Player $player, EditorTask $task, ?string $message = null){
-		$this->player = $player;
-		$this->task = $task;
-		$this->message = $message;
-	}
+	public function __construct(
+		private Player $player,
+		private EditorTask $task,
+		private ?string $message = null
+	){}
 
 	public function getPlayer() : Player{
 		return $this->player;

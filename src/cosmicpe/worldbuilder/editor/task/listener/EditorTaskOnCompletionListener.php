@@ -9,11 +9,9 @@ use cosmicpe\worldbuilder\editor\task\EditorTask;
 
 class EditorTaskOnCompletionListener implements EditorTaskListener{
 
-	private Closure $callback;
-
-	public function __construct(Closure $callback){
-		$this->callback = $callback;
-	}
+	public function __construct(
+		private Closure $callback
+	){}
 
 	public function onRegister(EditorTask $task) : void{
 	}

@@ -14,15 +14,6 @@ final class MinecraftSchematicExplorer{
 		return ($y * $length + $z) * $width + $x;
 	}
 
-	public int $width;
-	public int $height;
-	public int $length;
-	public string $block_ids;
-	public string $block_metas;
-
-	/** @var CompoundTag[] */
-	public array $tile_entities;
-
 	/**
 	 * @param int $width
 	 * @param int $height
@@ -31,14 +22,14 @@ final class MinecraftSchematicExplorer{
 	 * @param string $block_metas
 	 * @param CompoundTag[] $tile_entities
 	 */
-	public function __construct(int $width, int $height, int $length, string $block_ids, string $block_metas, array $tile_entities){
-		$this->width = $width;
-		$this->height = $height;
-		$this->length = $length;
-		$this->block_ids = $block_ids;
-		$this->block_metas = $block_metas;
-		$this->tile_entities = $tile_entities;
-	}
+	public function __construct(
+		public int $width,
+		public int $height,
+		public int $length,
+		public string $block_ids,
+		public string $block_metas,
+		public array $tile_entities
+	){}
 
 	public function indexAt(int $x, int $y, int $z) : int{
 		return self::index($x, $y, $z, $this->length, $this->width);

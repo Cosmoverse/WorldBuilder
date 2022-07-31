@@ -8,11 +8,9 @@ use Closure;
 
 class ClosureEditorTaskListenerInfo implements EditorTaskListenerInfo{
 
-	private Closure $unregisterer;
-
-	public function __construct(Closure $unregisterer){
-		$this->unregisterer = $unregisterer;
-	}
+	public function __construct(
+		private Closure $unregisterer
+	){}
 
 	public function unregister() : void{
 		($this->unregisterer)();

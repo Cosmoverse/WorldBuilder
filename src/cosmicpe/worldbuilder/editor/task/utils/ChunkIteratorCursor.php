@@ -9,14 +9,13 @@ use pocketmine\world\World;
 
 class ChunkIteratorCursor{
 
-	public World $world;
 	public int $chunkX = 0;
 	public int $chunkZ = 0;
 	public Chunk $chunk;
 	public int $x = 0; // 0 - 15
 	public int $z = 0; // 0 - 15
 
-	public function __construct(World $world){
-		$this->world = $world;
-	}
+	public function __construct(
+		public World $world
+	){}
 }
