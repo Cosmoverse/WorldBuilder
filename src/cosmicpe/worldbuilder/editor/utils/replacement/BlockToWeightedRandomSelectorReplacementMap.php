@@ -10,7 +10,7 @@ use pocketmine\block\BlockFactory;
 
 final class BlockToWeightedRandomSelectorReplacementMap{
 
-	/** @var WeightedRandomIntegerSelector[] */
+	/** @var array<int, WeightedRandomIntegerSelector> */
 	private array $block_to_selector_map = [];
 
 	public function put(Block $find, WeightedRandomIntegerSelector $selector) : self{
@@ -31,7 +31,7 @@ final class BlockToWeightedRandomSelectorReplacementMap{
 	}
 
 	/**
-	 * @return WeightedRandomIntegerSelector[]
+	 * @return array<int, WeightedRandomIntegerSelector>
 	 */
 	public function toFullIdArray() : array{
 		return $this->block_to_selector_map;

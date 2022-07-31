@@ -14,7 +14,7 @@ use pocketmine\world\World;
 
 class ReplaceSetRandomEditorTask extends AdvancedEditorTask{
 
-	/** @var WeightedRandomIntegerSelector[] */
+	/** @var array<int, WeightedRandomIntegerSelector> */
 	private array $replacement_map;
 
 	public function __construct(World $world, Selection $selection, BlockToWeightedRandomSelectorReplacementMap $replacement_map){
@@ -23,7 +23,7 @@ class ReplaceSetRandomEditorTask extends AdvancedEditorTask{
 	}
 
 	/**
-	 * @return WeightedRandomIntegerSelector[]
+	 * @return array<int, WeightedRandomIntegerSelector>
 	 */
 	public function getReplacementMap() : array{
 		return $this->replacement_map;

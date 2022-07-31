@@ -49,7 +49,7 @@ class LazyLoadedMinecraftSchematic extends SimpleSchematic{
 	 * @param int $x
 	 * @param int $y
 	 * @param int $z
-	 * @return Generator|SchematicEntry[]
+	 * @return Generator<SchematicEntry>
 	 */
 	public function getAll(&$x, &$y, &$z) : Generator{
 		$width = $this->explorer->width;

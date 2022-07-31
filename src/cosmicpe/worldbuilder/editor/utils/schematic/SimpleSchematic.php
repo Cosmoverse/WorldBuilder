@@ -11,7 +11,7 @@ use pocketmine\world\World;
 
 class SimpleSchematic extends AdvancedSchematic{
 
-	/** @var SchematicEntry[] */
+	/** @var array<int, SchematicEntry> */
 	private array $entries = [];
 
 	public function asSelection(Vector3 $relative_to) : Selection{
@@ -33,7 +33,7 @@ class SimpleSchematic extends AdvancedSchematic{
 	 * @param int $x
 	 * @param int $y
 	 * @param int $z
-	 * @return Generator|SchematicEntry[]
+	 * @return Generator<SchematicEntry>
 	 */
 	public function getAll(&$x, &$y, &$z) : Generator{
 		foreach($this->entries as $hash => $entry){

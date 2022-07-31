@@ -12,7 +12,7 @@ final class PlayerSessionManager{
 
 	private EditorManager $editor_manager;
 
-	/** @var PlayerSession[] */
+	/** @var array<int, PlayerSession> */
 	private array $sessions = [];
 	
 	public function __construct(){

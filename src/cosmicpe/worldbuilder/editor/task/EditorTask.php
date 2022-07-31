@@ -16,7 +16,7 @@ abstract class EditorTask{
 
 	private int $operations_completed = 0;
 
-	/** @var EditorTaskListener[] */
+	/** @var array<int, EditorTaskListener> */
 	private array $listeners = [];
 
 	public function __construct(

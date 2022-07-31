@@ -9,7 +9,7 @@ use pocketmine\block\BlockFactory;
 
 final class BlockToBlockReplacementMap{
 
-	/** @var int[] */
+	/** @var array<int, int> */
 	private array $full_id_map = [];
 
 	public function put(Block $find, Block $replace) : BlockToBlockReplacementMap{
@@ -32,7 +32,7 @@ final class BlockToBlockReplacementMap{
 	}
 
 	/**
-	 * @return int[]
+	 * @return array<int, int>
 	 */
 	public function toFullIdArray() : array{
 		return $this->full_id_map;

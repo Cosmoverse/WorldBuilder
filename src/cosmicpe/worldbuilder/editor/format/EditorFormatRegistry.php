@@ -9,10 +9,7 @@ use InvalidArgumentException;
 
 final class EditorFormatRegistry{
 
-	/**
-	 * @var EditorFormat[]
-	 * @phpstan-var array<string, EditorFormat>
-	 */
+	/** @var array<string, EditorFormat> */
 	private array $formats = [];
 
 	public function __construct(){
@@ -32,8 +29,7 @@ final class EditorFormatRegistry{
 	}
 
 	/**
-	 * @return EditorFormat[]
-	 * @phpstan-return array<string, EditorFormat>
+	 * @return array<string, EditorFormat>
 	 */
 	public function getFormats() : array{
 		return $this->formats;

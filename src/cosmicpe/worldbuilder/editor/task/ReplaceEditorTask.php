@@ -13,7 +13,7 @@ use pocketmine\world\World;
 
 class ReplaceEditorTask extends AdvancedEditorTask{
 
-	/** @var int[] */
+	/** @var array<int, int> */
 	private array $replacement_map;
 
 	public function __construct(World $world, Selection $selection, BlockToBlockReplacementMap $replacement_map){
@@ -22,7 +22,7 @@ class ReplaceEditorTask extends AdvancedEditorTask{
 	}
 
 	/**
-	 * @return int[]
+	 * @return array<int, int>
 	 */
 	public function getReplacementMap() : array{
 		return $this->replacement_map;

@@ -13,9 +13,7 @@ final class FileSystemUtils{
 	/**
 	 * @param string $directory
 	 * @param string $extension
-	 * @return Generator|SplFileInfo[]
-	 *
-	 * @phpstan-return Generator<SplFileInfo>
+	 * @return Generator<SplFileInfo>
 	 */
 	public static function findFilesWithExtension(string $directory, string $extension) : Generator{
 		foreach(new DirectoryIterator($directory) as $item){

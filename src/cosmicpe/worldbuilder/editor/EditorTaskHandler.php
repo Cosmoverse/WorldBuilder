@@ -9,7 +9,7 @@ use pocketmine\scheduler\Task;
 
 final class EditorTaskHandler extends Task{
 
-	/** @var EditorTaskInfo[] */
+	/** @var array<int, EditorTaskInfo> */
 	private array $tasks = [];
 
 	public function __construct(

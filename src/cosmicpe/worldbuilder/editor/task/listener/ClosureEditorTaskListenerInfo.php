@@ -8,6 +8,9 @@ use Closure;
 
 class ClosureEditorTaskListenerInfo implements EditorTaskListenerInfo{
 
+	/**
+	 * @param Closure() : void $unregisterer
+	 */
 	public function __construct(
 		private Closure $unregisterer
 	){}

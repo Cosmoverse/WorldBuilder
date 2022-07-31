@@ -20,7 +20,7 @@ final class MinecraftSchematicExplorer{
 	 * @param int $length
 	 * @param string $block_ids
 	 * @param string $block_metas
-	 * @param CompoundTag[] $tile_entities
+	 * @param array<int, CompoundTag> $tile_entities
 	 */
 	public function __construct(
 		public int $width,

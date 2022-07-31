@@ -44,7 +44,7 @@ final class Selection{
 	}
 
 	/**
-	 * @return Vector3[]
+	 * @return array<int, Vector3>
 	 */
 	public function getPoints() : array{
 		return $this->points->toArray();
