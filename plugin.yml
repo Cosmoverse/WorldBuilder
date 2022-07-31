@@ -1,7 +1,7 @@
 name: WorldBuilder
 main: cosmicpe\worldbuilder\Loader
 api: 4.0.0
-version: 0.0.1
+version: 0.0.2
 author: CosmicPE
 commands:
   /copy:
