@@ -20,8 +20,11 @@ use cosmicpe\worldbuilder\Loader;
 
 final class CommandManager{
 
-	public static function init(Loader $plugin) : void{
-		self::register($plugin,
+	public function __construct(){
+	}
+
+	public function init(Loader $plugin) : void{
+		$plugin->getServer()->getCommandMap()->registerAll($plugin->getName(), [
 			new CopyCommand($plugin),
 			new RegenerateChunksCommand($plugin),
 			new DrainCommand($plugin),
@@ -35,10 +38,6 @@ final class CommandManager{
 			new SetBiomeCommand($plugin),
 			new SetCommand($plugin),
 			new SetRandomCommand($plugin)
-		);
-	}
-
-	public static function register(Loader $plugin, Command ...$commands) : void{
-		$plugin->getServer()->getCommandMap()->registerAll($plugin->getName(), $commands);
+		]);
 	}
 }

@@ -18,12 +18,12 @@ class RegenerateChunksCommand extends Command{
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/regeneratechunks", "Regenerates all chunks in the selected space");
 		$this->setPermission("worldbuilder.command.regeneratechunks");
-		$this->addCheck(new RequireSelectionCheck());
+		$this->addCheck(new RequireSelectionCheck($plugin->getPlayerSessionManager()));
 	}
 
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
 		assert($sender instanceof Player);
-		$session = PlayerSessionManager::get($sender);
+		$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
 		$selection = $session->getSelection();
 		$session->pushEditorTask(new RegenerateChunksEditorTask($sender->getWorld(), $selection), TextFormat::GREEN . "Regenerating chunks");
 	}

@@ -11,22 +11,24 @@ use cosmicpe\worldbuilder\Loader;
 
 final class EditorManager{
 
-	private static EditorTaskHandler $task_handler;
-	private static EditorFormatRegistry $format_registry;
+	private EditorTaskHandler $task_handler;
+	private EditorFormatRegistry $format_registry;
 
-	public static function init(Loader $plugin) : void{
+	public function __construct(){
 		NamedtagCopierManager::init();
-
-		self::$format_registry = new EditorFormatRegistry();
-		self::$task_handler = new EditorTaskHandler((int) $plugin->getConfig()->get("max-ops-per-tick"));
-		$plugin->getScheduler()->scheduleRepeatingTask(self::$task_handler, 1);
+		$this->format_registry = new EditorFormatRegistry();
 	}
 
-	public static function getFormatRegistry() : EditorFormatRegistry{
-		return self::$format_registry;
+	public function init(Loader $plugin) : void{
+		$this->task_handler = new EditorTaskHandler((int) $plugin->getConfig()->get("max-ops-per-tick"));
+		$plugin->getScheduler()->scheduleRepeatingTask($this->task_handler, 1);
 	}
 
-	public static function push(EditorTask $task) : void{
-		self::$task_handler->handle($task);
+	public function getFormatRegistry() : EditorFormatRegistry{
+		return $this->format_registry;
+	}
+
+	public function push(EditorTask $task) : void{
+		$this->task_handler->handle($task);
 	}
 }

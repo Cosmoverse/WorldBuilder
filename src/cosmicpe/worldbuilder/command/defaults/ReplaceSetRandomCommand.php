@@ -21,7 +21,7 @@ class ReplaceSetRandomCommand extends Command{
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/replacesetrandom", "Replaces blocks in selected space with a random block");
 		$this->setPermission("worldbuilder.command.replacesetrandom");
-		$this->addCheck(new RequireSelectionCheck());
+		$this->addCheck(new RequireSelectionCheck($plugin->getPlayerSessionManager()));
 	}
 
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
@@ -104,7 +104,7 @@ class ReplaceSetRandomCommand extends Command{
 				$replacement_map->put($find_block, $randomizer);
 			}
 
-			$session = PlayerSessionManager::get($sender);
+			$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
 			$session->pushEditorTask(new ReplaceSetRandomEditorTask($sender->getWorld(), $session->getSelection(), $replacement_map), TextFormat::GREEN . "Replacing blocks with a randomized list of block(s)");
 			return;
 		}

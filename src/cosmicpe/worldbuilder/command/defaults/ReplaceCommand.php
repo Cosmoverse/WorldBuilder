@@ -20,7 +20,7 @@ class ReplaceCommand extends Command{
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/replace", "Replaces blocks in selected space");
 		$this->setPermission("worldbuilder.command.replace");
-		$this->addCheck(new RequireSelectionCheck());
+		$this->addCheck(new RequireSelectionCheck($plugin->getPlayerSessionManager()));
 	}
 
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
@@ -45,7 +45,7 @@ class ReplaceCommand extends Command{
 			}
 
 			if(!$map->isEmpty()){
-				$session = PlayerSessionManager::get($sender);
+				$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
 				$session->pushEditorTask(new ReplaceEditorTask($sender->getWorld(), $session->getSelection(), $map), TextFormat::GREEN . "Replacing " . $map);
 				return;
 			}

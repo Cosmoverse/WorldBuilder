@@ -9,13 +9,17 @@ use pocketmine\event\player\PlayerLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 
 final class PlayerSessionListener implements Listener{
+	
+	public function __construct(
+		private PlayerSessionManager $manager
+	){}
 
 	/**
 	 * @param PlayerLoginEvent $event
 	 * @priority MONITOR
 	 */
 	public function onPlayerLogin(PlayerLoginEvent $event) : void{
-		PlayerSessionManager::add($event->getPlayer());
+		$this->manager->add($event->getPlayer());
 	}
 
 	/**
@@ -23,6 +27,6 @@ final class PlayerSessionListener implements Listener{
 	 * @priority MONITOR
 	 */
 	public function onPlayerQuit(PlayerQuitEvent $event) : void{
-		PlayerSessionManager::remove($event->getPlayer());
+		$this->manager->remove($event->getPlayer());
 	}
 }

@@ -20,7 +20,7 @@ class SetRandomCommand extends Command{
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/setrandom", "Sets a randomized list of block in selected space");
 		$this->setPermission("worldbuilder.command.setrandom");
-		$this->addCheck(new RequireSelectionCheck());
+		$this->addCheck(new RequireSelectionCheck($plugin->getPlayerSessionManager()));
 	}
 
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
@@ -60,7 +60,7 @@ class SetRandomCommand extends Command{
 			}
 
 			$randomizer->setup();
-			$session = PlayerSessionManager::get($sender);
+			$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
 			$session->pushEditorTask(new SetRandomEditorTask($sender->getWorld(), $session->getSelection(), $randomizer), TextFormat::GREEN . "Setting a randomized list of {$randomizer->count()} block(s)");
 			return;
 		}

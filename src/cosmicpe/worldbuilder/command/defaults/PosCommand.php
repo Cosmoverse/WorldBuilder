@@ -27,7 +27,7 @@ class PosCommand extends Command{
 
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
 		assert($sender instanceof Player);
-		$session = PlayerSessionManager::get($sender);
+		$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
 		$selection = $session->getSelection();
 		if($selection === null){
 			$session->setSelection($selection = new Selection(2));

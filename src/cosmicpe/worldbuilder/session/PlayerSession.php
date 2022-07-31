@@ -16,9 +16,11 @@ final class PlayerSession{
 	private ?Selection $selection = null;
 	private ?Schematic $clipboard_schematic = null;
 	private Player $player;
+	private EditorManager $editor_manager;
 
-	public function __construct(Player $player){
+	public function __construct(Player $player, EditorManager $editor_manager){
 		$this->player = $player;
+		$this->editor_manager = $editor_manager;
 	}
 
 	public function getSelection() : ?Selection{
@@ -41,7 +43,7 @@ final class PlayerSession{
 		$ev = new PlayerTriggerEditorTaskEvent($this->player, $task, $message);
 		$ev->call();
 		if(!$ev->isCancelled()){
-			EditorManager::push($task);
+			$this->editor_manager->push($task);
 			$message = $ev->getMessage();
 			if($message !== null){
 				$this->player->sendMessage($message);

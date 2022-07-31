@@ -6,7 +6,6 @@ namespace cosmicpe\worldbuilder\command\defaults;
 
 use cosmicpe\worldbuilder\command\check\PlayerOnlyCommandCheck;
 use cosmicpe\worldbuilder\command\Command;
-use cosmicpe\worldbuilder\editor\EditorManager;
 use cosmicpe\worldbuilder\editor\format\EditorFormatIds;
 use cosmicpe\worldbuilder\editor\task\SimpleSetSchematicEditorTask;
 use cosmicpe\worldbuilder\Loader;
@@ -56,8 +55,8 @@ class SchematicCommand extends Command{
 
 							assert($sender instanceof Player);
 
-							$schematic = EditorManager::getFormatRegistry()->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->import($contents);
-							PlayerSessionManager::get($sender)->pushEditorTask(new SimpleSetSchematicEditorTask($sender->getWorld(), $schematic, $sender->getPosition()->floor()), TextFormat::GREEN . "Importing {$file->getFilename()}");
+							$schematic = $this->getPlugin()->getEditorManager()->getFormatRegistry()->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->import($contents);
+							$this->getPlugin()->getPlayerSessionManager()->get($sender)->pushEditorTask(new SimpleSetSchematicEditorTask($sender->getWorld(), $schematic, $sender->getPosition()->floor()), TextFormat::GREEN . "Importing {$file->getFilename()}");
 						}else{
 							$sender->sendMessage(TextFormat::RED . "File not found: {$file->getPathname()}");
 						}
@@ -70,10 +69,10 @@ class SchematicCommand extends Command{
 						$export_path = $this->getPlugin()->getDataFolder() . implode(" ", array_slice($args, 1)) . "." . self::FILE_EXTENSION;
 						if(!file_exists($export_path)){
 							assert($sender instanceof Player);
-							$session = PlayerSessionManager::get($sender);
+							$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
 							$schematic = $session->getClipboardSchematic();
 							if($schematic !== null){
-								$contents = EditorManager::getFormatRegistry()->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->export($schematic);
+								$contents = $this->getPlugin()->getEditorManager()->getFormatRegistry()->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->export($schematic);
 								file_put_contents($export_path, $contents);
 								$sender->sendMessage(TextFormat::GREEN . "Exported clipboard to {$export_path}.");
 							}else{

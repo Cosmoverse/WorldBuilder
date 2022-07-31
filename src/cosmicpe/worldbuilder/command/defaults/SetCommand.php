@@ -19,7 +19,7 @@ class SetCommand extends Command{
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/set", "Sets a given block in selected space");
 		$this->setPermission("worldbuilder.command.set");
-		$this->addCheck(new RequireSelectionCheck());
+		$this->addCheck(new RequireSelectionCheck($plugin->getPlayerSessionManager()));
 	}
 
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
@@ -27,7 +27,7 @@ class SetCommand extends Command{
 		if(isset($args[0])){
 			$block = BlockUtils::fromString($args[0]);
 			if($block !== null){
-				$session = PlayerSessionManager::get($sender);
+				$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
 				$session->pushEditorTask(new SetEditorTask($sender->getWorld(), $session->getSelection(), $block), TextFormat::GREEN . "Setting " . $block->getName());
 				return;
 			}

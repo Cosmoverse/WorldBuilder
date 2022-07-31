@@ -30,7 +30,7 @@ class DrainCommand extends Command{
 		$this->setPermission("worldbuilder.command.drain");
 		$this->addCheck(new PlayerOnlyCommandCheck());
 
-		$this->selection_check = new RequireSelectionCheck();
+		$this->selection_check = new RequireSelectionCheck($plugin->getPlayerSessionManager());
 
 		$this->map = new BlockToBlockReplacementMap();
 		$air = VanillaBlocks::AIR();
@@ -43,7 +43,7 @@ class DrainCommand extends Command{
 
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
 		assert($sender instanceof Player);
-		$session = PlayerSessionManager::get($sender);
+		$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
 		if(!isset($args[0])){
 			$this->selection_check->validate($sender);
 			$selection = $session->getSelection();

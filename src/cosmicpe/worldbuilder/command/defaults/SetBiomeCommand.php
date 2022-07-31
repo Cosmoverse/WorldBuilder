@@ -18,7 +18,7 @@ class SetBiomeCommand extends Command{
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/setbiome", "Sets a given biome in selected space");
 		$this->setPermission("worldbuilder.command.setbiome");
-		$this->addCheck(new RequireSelectionCheck());
+		$this->addCheck(new RequireSelectionCheck($plugin->getPlayerSessionManager()));
 	}
 
 	protected function getBiomeIdFromString(string $string) : ?int{
@@ -36,7 +36,7 @@ class SetBiomeCommand extends Command{
 		if(isset($args[0])){
 			$biome_id = $this->getBiomeIdFromString($args[0]);
 			if($biome_id !== null){
-				$session = PlayerSessionManager::get($sender);
+				$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
 				$session->pushEditorTask(new SetBiomeEditorTask($sender->getWorld(), $session->getSelection(), $biome_id), TextFormat::GREEN . "Setting biome " . $biome_id);
 				return;
 			}

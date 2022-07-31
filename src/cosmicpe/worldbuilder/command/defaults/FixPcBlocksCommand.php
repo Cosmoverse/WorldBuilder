@@ -19,7 +19,7 @@ class FixPcBlocksCommand extends Command{
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/fixpcblocks", "Replaces java edition pre-1.12 blocks in selected space with bedrock equivalents");
 		$this->setPermission("worldbuilder.command.fixpcblocks");
-		$this->addCheck(new RequireSelectionCheck());
+		$this->addCheck(new RequireSelectionCheck($plugin->getPlayerSessionManager()));
 	}
 
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
@@ -34,7 +34,7 @@ class FixPcBlocksCommand extends Command{
 
 		if(!$map->isEmpty()){
 			assert($sender instanceof Player);
-			$session = PlayerSessionManager::get($sender);
+			$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
 			$session->pushEditorTask(new ReplaceEditorTask($sender->getWorld(), $session->getSelection(), $map), TextFormat::GREEN . "Replacing " . $map);
 			return;
 		}

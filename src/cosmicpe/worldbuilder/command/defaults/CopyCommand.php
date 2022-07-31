@@ -22,12 +22,12 @@ class CopyCommand extends Command{
 	public function __construct(Loader $plugin){
 		parent::__construct($plugin, "/copy", "Copies blocks in the selected space");
 		$this->setPermission("worldbuilder.command.copy");
-		$this->addCheck(new RequireSelectionCheck());
+		$this->addCheck(new RequireSelectionCheck($plugin->getPlayerSessionManager()));
 	}
 
 	public function onExecute(CommandSender $sender, string $label, array $args) : void{
 		assert($sender instanceof Player);
-		$session = PlayerSessionManager::get($sender);
+		$session = $this->getPlugin()->getPlayerSessionManager()->get($sender);
 		$session->setClipboardSchematic(null);
 
 		/** @var Selection $selection */
