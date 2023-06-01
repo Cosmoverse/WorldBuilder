@@ -12,10 +12,14 @@ use pocketmine\world\World;
 class SetBiomeEditorTask extends AdvancedPlaneEditorTask{
 
 	private int $biome_id;
+	private int $min_y;
+	private int $max_y;
 
 	public function __construct(World $world, Selection $selection, int $biome_id){
 		parent::__construct($world, $selection, (int) Vector3Utils::calculateVolume($selection->getPoint(0), $selection->getPoint(1)));
 		$this->biome_id = $biome_id;
+		$this->min_y = $world->getMinY();
+		$this->max_y = $world->getMaxY();
 	}
 
 	final public function getBiomeId() : int{
@@ -27,7 +31,9 @@ class SetBiomeEditorTask extends AdvancedPlaneEditorTask{
 	}
 
 	protected function onIterate(ChunkIteratorCursor $cursor) : bool{
-		$cursor->chunk->setBiomeId($cursor->x, $cursor->z, $this->biome_id);
+		for($y = $this->min_y; $y < $this->max_y; ++$y) {
+			$cursor->chunk->setBiomeId($cursor->x, $y, $cursor->z, $this->biome_id);
+		}
 		return true;
 	}
 }

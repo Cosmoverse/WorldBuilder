@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\editor\utils\replacement;
 
 use pocketmine\block\Block;
-use pocketmine\block\BlockFactory;
+use pocketmine\block\RuntimeBlockStateRegistry;
 
 final class BlockToBlockReplacementMap{
 
@@ -13,7 +13,7 @@ final class BlockToBlockReplacementMap{
 	private array $full_id_map = [];
 
 	public function put(Block $find, Block $replace) : BlockToBlockReplacementMap{
-		return $this->putFullId($find->getFullId(), $replace->getFullId());
+		return $this->putFullId($find->getStateId(), $replace->getStateId());
 	}
 
 	public function putFullId(int $find, int $replace) : BlockToBlockReplacementMap{
@@ -24,7 +24,7 @@ final class BlockToBlockReplacementMap{
 	}
 
 	public function contains(Block $block) : bool{
-		return isset($this->full_id_map[$block->getFullId()]);
+		return isset($this->full_id_map[$block->getStateId()]);
 	}
 
 	public function isEmpty() : bool{
@@ -39,10 +39,10 @@ final class BlockToBlockReplacementMap{
 	}
 
 	public function __toString() : string{
-		$block_factory = BlockFactory::getInstance();
+		$block_state_registry = RuntimeBlockStateRegistry::getInstance();
 		$result = "";
 		foreach($this->full_id_map as $find => $replace){
-			$result .= $block_factory->fromFullBlock($find)->getName() . " -> " . $block_factory->fromFullBlock($replace)->getName() . ", ";
+			$result .= $block_state_registry->fromStateId($find)->getName() . " -> " . $block_state_registry->fromStateId($replace)->getName() . ", ";
 		}
 		return rtrim($result, ", ");
 	}

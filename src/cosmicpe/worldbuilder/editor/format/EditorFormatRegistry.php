@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\editor\format;
 
-use cosmicpe\worldbuilder\editor\format\mcschematic\MinecraftSchematicEditorFormat;
 use InvalidArgumentException;
 
 final class EditorFormatRegistry{
@@ -13,7 +12,6 @@ final class EditorFormatRegistry{
 	private array $formats = [];
 
 	public function __construct(){
-		$this->register(EditorFormatIds::MINECRAFT_SCHEMATIC, new MinecraftSchematicEditorFormat());
 	}
 
 	public function register(string $identifier, EditorFormat $format) : void{

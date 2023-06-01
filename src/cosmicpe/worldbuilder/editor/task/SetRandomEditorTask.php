@@ -25,7 +25,7 @@ class SetRandomEditorTask extends AdvancedEditorTask{
 	}
 
 	protected function onIterate(SubChunkIteratorCursor $cursor) : bool{
-		$cursor->sub_chunk->setFullBlock($cursor->x, $cursor->y, $cursor->z, $this->selector->generate(1)->current());
+		$cursor->sub_chunk->setBlockStateId($cursor->x, $cursor->y, $cursor->z, $this->selector->generate(1)->current());
 		$tile = $cursor->chunk->getTile($cursor->x, ($cursor->subChunkY << Chunk::COORD_BIT_SIZE) + $cursor->y, $cursor->z);
 		if($tile !== null){
 			$cursor->chunk->removeTile($tile);

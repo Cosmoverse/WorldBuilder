@@ -41,7 +41,7 @@ class CopyEditorTask extends AdvancedEditorTask{
 			$y - $this->minimum->y,
 			($cursor->chunkZ << Chunk::COORD_BIT_SIZE) + $cursor->z - $this->minimum->z,
 			new SchematicEntry(
-				$cursor->sub_chunk->getFullBlock($cursor->x, $cursor->y, $cursor->z),
+				$cursor->sub_chunk->getBlockStateId($cursor->x, $cursor->y, $cursor->z),
 				$tile !== null ? NamedtagCopierManager::copy($tile) : null
 			)
 		);

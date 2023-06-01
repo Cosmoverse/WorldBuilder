@@ -6,7 +6,7 @@ namespace cosmicpe\worldbuilder\editor\utils\replacement;
 
 use cosmicpe\worldbuilder\utils\WeightedRandomIntegerSelector;
 use pocketmine\block\Block;
-use pocketmine\block\BlockFactory;
+use pocketmine\block\RuntimeBlockStateRegistry;
 
 final class BlockToWeightedRandomSelectorReplacementMap{
 
@@ -14,16 +14,16 @@ final class BlockToWeightedRandomSelectorReplacementMap{
 	private array $block_to_selector_map = [];
 
 	public function put(Block $find, WeightedRandomIntegerSelector $selector) : self{
-		$this->block_to_selector_map[$find->getFullId()] = $selector;
+		$this->block_to_selector_map[$find->getStateId()] = $selector;
 		return $this;
 	}
 
 	public function get(Block $block) : ?WeightedRandomIntegerSelector{
-		return $this->block_to_selector_map[$block->getFullId()] ?? null;
+		return $this->block_to_selector_map[$block->getStateId()] ?? null;
 	}
 
 	public function contains(Block $block) : bool{
-		return isset($this->block_to_selector_map[$block->getFullId()]);
+		return isset($this->block_to_selector_map[$block->getStateId()]);
 	}
 
 	public function isEmpty() : bool{
@@ -38,10 +38,10 @@ final class BlockToWeightedRandomSelectorReplacementMap{
 	}
 
 	public function __toString() : string{
-		$block_factory = BlockFactory::getInstance();
+		$block_state_registry = RuntimeBlockStateRegistry::getInstance();
 		$result = "";
 		foreach($this->block_to_selector_map as $find => $replace){
-			$result .= $block_factory->fromFullBlock($find)->getName() . " -> Random({" . $replace->count() . "}), ";
+			$result .= $block_state_registry->fromStateId($find)->getName() . " -> Random({" . $replace->count() . "}), ";
 		}
 		return rtrim($result, ", ");
 	}

@@ -87,7 +87,7 @@ final class ReplaceSetRandomCommandExecutor extends WorldBuilderCommandExecutor{
 						return true;
 					}
 
-					$randomizer->add($replacement_block->getFullId(), $weight);
+					$randomizer->add($replacement_block->getStateId(), $weight);
 				}
 
 				$randomizer->setup();

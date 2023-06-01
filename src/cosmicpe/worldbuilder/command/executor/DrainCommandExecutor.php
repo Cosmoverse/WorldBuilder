@@ -9,7 +9,7 @@ use cosmicpe\worldbuilder\editor\task\ReplaceEditorTask;
 use cosmicpe\worldbuilder\editor\utils\replacement\BlockToBlockReplacementMap;
 use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\session\utils\Selection;
-use pocketmine\block\BlockFactory;
+use pocketmine\block\RuntimeBlockStateRegistry;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\block\Water;
 use pocketmine\command\Command;
@@ -31,7 +31,7 @@ final class DrainCommandExecutor extends WorldBuilderCommandExecutor{
 
 		$this->map = new BlockToBlockReplacementMap();
 		$air = VanillaBlocks::AIR();
-		foreach(BlockFactory::getInstance()->getAllKnownStates() as $state){
+		foreach(RuntimeBlockStateRegistry::getInstance()->getAllKnownStates() as $state){
 			if($state instanceof Water){
 				$this->map->put($state, $air);
 			}

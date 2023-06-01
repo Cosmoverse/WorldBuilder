@@ -46,7 +46,7 @@ final class SetRandomCommandExecutor extends WorldBuilderCommandExecutor{
 					return true;
 				}
 
-				$randomizer->add($block->getFullId(), $weight);
+				$randomizer->add($block->getStateId(), $weight);
 			}
 
 			$randomizer->setup();

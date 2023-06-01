@@ -8,7 +8,7 @@ use cosmicpe\worldbuilder\editor\task\utils\SubChunkIteratorCursor;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use cosmicpe\worldbuilder\utils\Vector3Utils;
 use pocketmine\block\Block;
-use pocketmine\block\BlockFactory;
+use pocketmine\block\RuntimeBlockStateRegistry;
 use pocketmine\world\format\Chunk;
 use pocketmine\world\World;
 
@@ -18,11 +18,11 @@ class SetEditorTask extends AdvancedEditorTask{
 
 	public function __construct(World $world, Selection $selection, Block $block){
 		parent::__construct($world, $selection, (int) Vector3Utils::calculateVolume($selection->getPoint(0), $selection->getPoint(1)));
-		$this->full_block = $block->getFullId();
+		$this->full_block = $block->getStateId();
 	}
 
 	final public function getBlockSet() : Block{
-		return BlockFactory::getInstance()->fromFullBlock($this->full_block);
+		return RuntimeBlockStateRegistry::getInstance()->fromStateId($this->full_block);
 	}
 
 	public function getName() : string{
@@ -30,7 +30,7 @@ class SetEditorTask extends AdvancedEditorTask{
 	}
 
 	protected function onIterate(SubChunkIteratorCursor $cursor) : bool{
-		$cursor->sub_chunk->setFullBlock($cursor->x, $cursor->y, $cursor->z, $this->full_block);
+		$cursor->sub_chunk->setBlockStateId($cursor->x, $cursor->y, $cursor->z, $this->full_block);
 		$tile = $cursor->chunk->getTile($cursor->x, ($cursor->subChunkY << Chunk::COORD_BIT_SIZE) + $cursor->y, $cursor->z);
 		if($tile !== null){
 			$cursor->chunk->removeTile($tile);

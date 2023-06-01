@@ -33,8 +33,8 @@ class ReplaceEditorTask extends AdvancedEditorTask{
 	}
 
 	protected function onIterate(SubChunkIteratorCursor $cursor) : bool{
-		if(isset($this->replacement_map[$find = $cursor->sub_chunk->getFullBlock($cursor->x, $cursor->y, $cursor->z)])){
-			$cursor->sub_chunk->setFullBlock($cursor->x, $cursor->y, $cursor->z, $this->replacement_map[$find]);
+		if(isset($this->replacement_map[$find = $cursor->sub_chunk->getBlockStateId($cursor->x, $cursor->y, $cursor->z)])){
+			$cursor->sub_chunk->setBlockStateId($cursor->x, $cursor->y, $cursor->z, $this->replacement_map[$find]);
 			$tile = $cursor->chunk->getTile($cursor->x, ($cursor->subChunkY << Chunk::COORD_BIT_SIZE) + $cursor->y, $cursor->z);
 			if($tile !== null){
 				$cursor->chunk->removeTile($tile);
