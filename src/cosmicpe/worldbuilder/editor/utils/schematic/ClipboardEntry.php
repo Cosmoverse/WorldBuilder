@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\editor\utils;
+namespace cosmicpe\worldbuilder\editor\utils\schematic;
 
 use pocketmine\nbt\tag\CompoundTag;
 
