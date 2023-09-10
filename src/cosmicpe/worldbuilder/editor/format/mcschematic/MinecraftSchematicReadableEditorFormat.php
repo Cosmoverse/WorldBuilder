@@ -7,6 +7,8 @@ namespace cosmicpe\worldbuilder\editor\format\mcschematic;
 use cosmicpe\worldbuilder\editor\format\ReadableEditorFormat;
 use cosmicpe\worldbuilder\editor\utils\schematic\Schematic;
 use pocketmine\block\tile\Tile;
+use pocketmine\block\VanillaBlocks;
+use pocketmine\data\bedrock\block\BlockStateDeserializeException;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\BigEndianNbtSerializer;
 use pocketmine\nbt\tag\CompoundTag;
@@ -36,7 +38,11 @@ class MinecraftSchematicReadableEditorFormat implements ReadableEditorFormat{
 		$deserializer = GlobalBlockStateHandlers::getDeserializer();
 		$upgrader = GlobalBlockStateHandlers::getUpgrader();
 		for($i = 0, $count = strlen($block_ids); $i < $count; $i++){
-			$blocks[$i] = $deserializer->deserialize($upgrader->upgradeIntIdMeta(ord($block_ids[$i]), ord($block_metas[$i])));
+			try{
+				$blocks[$i] = $deserializer->deserialize($upgrader->upgradeIntIdMeta(ord($block_ids[$i]), ord($block_metas[$i])));
+			}catch(BlockStateDeserializeException){
+				$blocks[$i] = VanillaBlocks::INFO_UPDATE()->getStateId();
+			}
 		}
 
 		$explorer = new MinecraftSchematicExplorer($width, $height, $length, $blocks, []);
