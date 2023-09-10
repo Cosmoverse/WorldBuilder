@@ -6,9 +6,7 @@ namespace cosmicpe\worldbuilder\editor\format;
 
 use cosmicpe\worldbuilder\editor\utils\schematic\Schematic;
 
-interface EditorFormat{
+interface ReadableEditorFormat{
 
-	public function import(string $contents) : Schematic;
-
-	public function export(Schematic $schematic) : string;
+	public function read(string $contents) : Schematic;
 }

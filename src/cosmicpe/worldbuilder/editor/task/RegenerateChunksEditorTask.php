@@ -8,6 +8,7 @@ use cosmicpe\worldbuilder\editor\task\utils\ChunkIteratorCursor;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use cosmicpe\worldbuilder\utils\Vector3Utils;
 use pocketmine\world\format\io\exception\UnsupportedWorldFormatException;
+use pocketmine\world\format\io\leveldb\ChunkDataKey;
 use pocketmine\world\format\io\leveldb\LevelDB;
 use pocketmine\world\World;
 use ReflectionClassConstant;
@@ -35,12 +36,10 @@ class RegenerateChunksEditorTask extends AdvancedChunkEditorTask{
 			throw new UnsupportedWorldFormatException("Regeneration of chunks is only supported for LevelDb worlds");
 		}
 
-		static $tag_version = null;
-		if($tag_version === null){
-			$const = new ReflectionClassConstant($provider, "TAG_VERSION");
-			$tag_version = $const->getValue();
-		}
-		$provider->getDatabase()->delete(LevelDB::chunkIndex($cursor->chunkX, $cursor->chunkZ) . $tag_version);
+		$index = LevelDB::chunkIndex($cursor->chunkX, $cursor->chunkZ);
+		$database = $provider->getDatabase();
+		$database->delete($index . ChunkDataKey::NEW_VERSION);
+		$database->delete($index . ChunkDataKey::OLD_VERSION);
 		return false;
 	}
 

@@ -7,6 +7,7 @@ namespace cosmicpe\worldbuilder\command\executor;
 use cosmicpe\worldbuilder\editor\format\EditorFormatIds;
 use cosmicpe\worldbuilder\editor\task\SimpleSetSchematicEditorTask;
 use cosmicpe\worldbuilder\utils\FileSystemUtils;
+use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
@@ -16,7 +17,7 @@ final class SchematicCommandExecutor extends WorldBuilderCommandExecutor{
 
 	private const FILE_EXTENSION = "schematic";
 
-	protected function executeCommand(CommandSender $sender, \pocketmine\command\Command $command, string $label, array $args) : bool{
+	protected function executeCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		if(isset($args[0])){
 			switch($args[0]){
 				case "list":
@@ -45,7 +46,7 @@ final class SchematicCommandExecutor extends WorldBuilderCommandExecutor{
 
 							assert($sender instanceof Player);
 
-							$schematic = $this->getLoader()->getEditorManager()->getFormatRegistry()->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->import($contents);
+							$schematic = $this->getLoader()->getEditorManager()->getFormatRegistry()->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->read($contents);
 							$this->getLoader()->getPlayerSessionManager()->get($sender)->pushEditorTask(new SimpleSetSchematicEditorTask($sender->getWorld(), $schematic, $sender->getPosition()->floor()), TextFormat::GREEN . "Importing {$file->getFilename()}");
 						}else{
 							$sender->sendMessage(TextFormat::RED . "File not found: {$file->getPathname()}");
@@ -55,25 +56,7 @@ final class SchematicCommandExecutor extends WorldBuilderCommandExecutor{
 					}
 					return true;
 				case "export":
-					if(isset($args[1])){
-						$export_path = $this->getLoader()->getDataFolder() . implode(" ", array_slice($args, 1)) . "." . self::FILE_EXTENSION;
-						if(!file_exists($export_path)){
-							assert($sender instanceof Player);
-							$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
-							$schematic = $session->getClipboardSchematic();
-							if($schematic !== null){
-								$contents = $this->getLoader()->getEditorManager()->getFormatRegistry()->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->export($schematic);
-								file_put_contents($export_path, $contents);
-								$sender->sendMessage(TextFormat::GREEN . "Exported clipboard to {$export_path}.");
-							}else{
-								$sender->sendMessage(TextFormat::RED . "You must //copy the region you'd like to export.");
-							}
-						}else{
-							$sender->sendMessage(TextFormat::RED . "Cannot overwrite existing file or directory {$export_path}.");
-						}
-					}else{
-						$sender->sendMessage(TextFormat::RED . "/{$label} export <file_name>");
-					}
+					$sender->sendMessage(TextFormat::RED . "Exporting schematics is currently not supported");
 					return true;
 			}
 		}
