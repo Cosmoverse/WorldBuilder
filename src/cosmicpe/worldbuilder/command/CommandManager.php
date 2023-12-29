@@ -8,7 +8,6 @@ use cosmicpe\worldbuilder\command\check\PlayerOnlyCommandCheck;
 use cosmicpe\worldbuilder\command\check\RequireSelectionCheck;
 use cosmicpe\worldbuilder\command\executor\CopyCommandExecutor;
 use cosmicpe\worldbuilder\command\executor\DrainCommandExecutor;
-use cosmicpe\worldbuilder\command\executor\FixPcBlocksCommandExecutor;
 use cosmicpe\worldbuilder\command\executor\PasteCommandExecutor;
 use cosmicpe\worldbuilder\command\executor\PosCommandExecutor;
 use cosmicpe\worldbuilder\command\executor\RegenerateChunksCommandExecutor;
@@ -34,7 +33,6 @@ final class CommandManager{
 
 		$this->getCommand("/copy")->setExecutor(new CopyCommandExecutor($this->loader, [$check_require_selection]));
 		$this->getCommand("/drain")->setExecutor(new DrainCommandExecutor($this->loader, [$check_player_only], $check_require_selection));
-		$this->getCommand("/fixpcblocks")->setExecutor(new FixPcBlocksCommandExecutor($this->loader, [$check_require_selection]));
 		$this->getCommand("/paste")->setExecutor(new PasteCommandExecutor($this->loader, [$check_require_selection]));
 		$this->getCommand("/pos1")->setExecutor(new PosCommandExecutor($this->loader, [$check_player_only], 0));
 		$this->getCommand("/pos2")->setExecutor(new PosCommandExecutor($this->loader, [$check_player_only], 1));

@@ -4,3 +4,7 @@
 # Decreasing this will slow down world editor processes.
 # Increasing this will speed up world editor processes but may decrease server TPS
 max-ops-per-tick: 65536
+
+# Upgrades 'update blocks' from Java 1.8 worlds to PE-equivalent when performing conversion.
+# This conversion is executed only when the world is upgraded.
+register-pc-world-converter: false

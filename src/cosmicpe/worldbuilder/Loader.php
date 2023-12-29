@@ -7,7 +7,10 @@ namespace cosmicpe\worldbuilder;
 use cosmicpe\worldbuilder\command\CommandManager;
 use cosmicpe\worldbuilder\editor\EditorManager;
 use cosmicpe\worldbuilder\session\PlayerSessionManager;
+use cosmicpe\worldbuilder\utils\PcPEMappedAnvil;
+use Logger;
 use pocketmine\plugin\PluginBase;
+use pocketmine\world\format\io\ReadOnlyWorldProviderManagerEntry;
 
 final class Loader extends PluginBase{
 
@@ -19,6 +22,11 @@ final class Loader extends PluginBase{
 		$this->command_manager = new CommandManager($this);
 		$this->editor_manager = new EditorManager();
 		$this->player_session_manager = new PlayerSessionManager();
+
+		if($this->getConfig()->get("register-pc-world-converter")){
+			$provider_manager = $this->getServer()->getWorldManager()->getProviderManager();
+			$provider_manager->addProvider(new ReadOnlyWorldProviderManagerEntry(PcPEMappedAnvil::isValid(...), fn(string $path, Logger $logger) => new PcPEMappedAnvil($path, $logger)), "anvil", true);
+		}
 	}
 
 	protected function onEnable() : void{

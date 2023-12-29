@@ -46,7 +46,7 @@ abstract class SetSchematicEditorTask extends EditorTask{
 				$tiles[] = $tile_factory->createFromData($world, NamedtagCopierManager::moveTo($entry->tile_nbt, $x, $y, $z));
 			}
 
-			$iterator->currentSubChunk->setBlockStateId($x & Chunk::COORD_MASK, $y & Chunk::COORD_MASK, $z & Chunk::COORD_MASK, $entry->state_id);
+			$iterator->currentSubChunk->setBlockStateId($x & Chunk::COORD_MASK, $y & Chunk::COORD_MASK, $z & Chunk::COORD_MASK, $entry->block_state_id);
 			$chunks[World::chunkHash($x >> Chunk::COORD_BIT_SIZE, $z >> Chunk::COORD_BIT_SIZE)] = true;
 			yield true;
 		}

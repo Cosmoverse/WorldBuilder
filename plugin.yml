@@ -10,9 +10,6 @@ commands:
   /drain:
     permission: worldbuilder.command.drain
     description: Drain water in selected space or a radius
-  /fixpcblocks:
-    permission: worldbuilder.command.fixpcblocks
-    description: Replaces java edition pre-1.12 blocks in selected space with bedrock equivalents
   /paste:
     permission: worldbuilder.command.paste
     description: Pastes blocks in the selected space
