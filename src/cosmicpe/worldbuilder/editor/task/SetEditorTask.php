@@ -14,7 +14,7 @@ use pocketmine\world\World;
 
 class SetEditorTask extends AdvancedEditorTask{
 
-	private int $full_block;
+	readonly private int $full_block;
 
 	public function __construct(World $world, Selection $selection, Block $block){
 		parent::__construct($world, $selection, (int) Vector3Utils::calculateVolume($selection->getPoint(0), $selection->getPoint(1)));

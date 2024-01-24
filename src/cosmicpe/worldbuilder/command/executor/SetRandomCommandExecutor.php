@@ -50,8 +50,8 @@ final class SetRandomCommandExecutor extends WorldBuilderCommandExecutor{
 			}
 
 			$randomizer->setup();
-			$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
-			$session->pushEditorTask(new SetRandomEditorTask($sender->getWorld(), $session->getSelection(), $randomizer), TextFormat::GREEN . "Setting a randomized list of {$randomizer->count()} block(s)");
+			$session = $this->loader->getPlayerSessionManager()->get($sender);
+			$session->pushEditorTask(new SetRandomEditorTask($sender->getWorld(), $session->selection, $randomizer), TextFormat::GREEN . "Setting a randomized list of {$randomizer->count()} block(s)");
 			return true;
 		}
 

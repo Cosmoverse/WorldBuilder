@@ -13,36 +13,20 @@ use pocketmine\player\Player;
 
 final class PlayerSession{
 
-	private ?Selection $selection = null;
-	private ?Schematic $clipboard_schematic = null;
+	public ?Selection $selection = null;
+	public ?Schematic $clipboard_schematic = null;
 
 	public function __construct(
-		private Player $player,
-		private EditorManager $editor_manager
+		readonly private Player $player,
+		readonly private EditorManager $editor_manager
 	){}
-
-	public function getSelection() : ?Selection{
-		return $this->selection;
-	}
-
-	public function setSelection(?Selection $selection) : void{
-		$this->selection = $selection;
-	}
-
-	public function getClipboardSchematic() : ?Schematic{
-		return $this->clipboard_schematic;
-	}
-
-	public function setClipboardSchematic(?Schematic $schematic) : void{
-		$this->clipboard_schematic = $schematic;
-	}
 
 	public function pushEditorTask(EditorTask $task, ?string $message = null) : bool{
 		$ev = new PlayerTriggerEditorTaskEvent($this->player, $task, $message);
 		$ev->call();
 		if(!$ev->isCancelled()){
 			$this->editor_manager->push($task);
-			$message = $ev->getMessage();
+			$message = $ev->message;
 			if($message !== null){
 				$this->player->sendMessage($message);
 			}

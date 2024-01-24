@@ -46,7 +46,6 @@ class RegenerateChunksEditorTask extends AdvancedChunkEditorTask{
 
 	public function onCompletion() : void{
 		parent::onCompletion();
-		$world = $this->getWorld();
-		$world->saveChunks();
+		$this->world->saveChunks();
 	}
 }

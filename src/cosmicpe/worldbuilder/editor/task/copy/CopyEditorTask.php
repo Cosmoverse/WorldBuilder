@@ -17,17 +17,13 @@ use pocketmine\world\World;
 
 class CopyEditorTask extends AdvancedEditorTask{
 
-	private Schematic $clipboard;
-	private Vector3 $minimum;
+	readonly public Schematic $clipboard;
+	readonly private Vector3 $minimum;
 
 	public function __construct(World $world, Selection $selection, Schematic $clipboard){
 		parent::__construct($world, $selection, (int) Vector3Utils::calculateVolume($selection->getPoint(0), $selection->getPoint(1)));
 		$this->clipboard = $clipboard;
 		$this->minimum = Vector3::minComponents(...$selection->getPoints());
-	}
-
-	public function getClipboard() : Schematic{
-		return $this->clipboard;
 	}
 
 	public function getName() : string{

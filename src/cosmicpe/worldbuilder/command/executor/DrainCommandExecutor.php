@@ -20,12 +20,12 @@ use pocketmine\world\format\Chunk;
 
 final class DrainCommandExecutor extends WorldBuilderCommandExecutor{
 
-	private BlockToBlockReplacementMap $map;
+	readonly private BlockToBlockReplacementMap $map;
 
 	public function __construct(
 		Loader $loader,
 		array $checks,
-		private RequireSelectionCheck $selection_check
+		readonly private RequireSelectionCheck $selection_check
 	){
 		parent::__construct($loader, $checks);
 
@@ -40,7 +40,7 @@ final class DrainCommandExecutor extends WorldBuilderCommandExecutor{
 
 	protected function executeCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
-		$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
+		$session = $this->loader->getPlayerSessionManager()->get($sender);
 		if(!isset($args[0])){
 			$result = $this->selection_check->validate($sender);
 			if($result !== null){
@@ -48,7 +48,7 @@ final class DrainCommandExecutor extends WorldBuilderCommandExecutor{
 				return true;
 			}
 
-			$selection = $session->getSelection();
+			$selection = $session->selection;
 			$message = "Draining water";
 		}else{
 			$radius = (int) $args[0];

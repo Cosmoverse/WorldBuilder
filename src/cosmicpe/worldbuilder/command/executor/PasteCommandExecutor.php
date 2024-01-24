@@ -13,8 +13,8 @@ final class PasteCommandExecutor extends WorldBuilderCommandExecutor{
 
 	protected function executeCommand(CommandSender $sender, \pocketmine\command\Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
-		$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
-		$clipboard = $session->getClipboardSchematic();
+		$session = $this->loader->getPlayerSessionManager()->get($sender);
+		$clipboard = $session->clipboard_schematic;
 		if($clipboard !== null){
 			$session->pushEditorTask(new PasteEditorTask($sender->getWorld(), $clipboard, $sender->getPosition()->floor()), TextFormat::GREEN . "Pasting blocks");
 		}else{

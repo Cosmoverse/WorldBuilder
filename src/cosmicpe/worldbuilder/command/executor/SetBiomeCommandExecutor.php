@@ -26,8 +26,8 @@ final class SetBiomeCommandExecutor extends WorldBuilderCommandExecutor{
 		if(isset($args[0])){
 			$biome_id = $this->getBiomeIdFromString($args[0]);
 			if($biome_id !== null){
-				$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
-				$session->pushEditorTask(new SetBiomeEditorTask($sender->getWorld(), $session->getSelection(), $biome_id), TextFormat::GREEN . "Setting biome " . $biome_id);
+				$session = $this->loader->getPlayerSessionManager()->get($sender);
+				$session->pushEditorTask(new SetBiomeEditorTask($sender->getWorld(), $session->selection, $biome_id), TextFormat::GREEN . "Setting biome " . $biome_id);
 				return true;
 			}
 			$sender->sendMessage(TextFormat::RED . $args[0] . " is not a valid biome ID.");

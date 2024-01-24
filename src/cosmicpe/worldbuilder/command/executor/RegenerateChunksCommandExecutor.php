@@ -14,8 +14,8 @@ final class RegenerateChunksCommandExecutor extends WorldBuilderCommandExecutor{
 
 	protected function executeCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
-		$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
-		$selection = $session->getSelection();
+		$session = $this->loader->getPlayerSessionManager()->get($sender);
+		$selection = $session->selection;
 		$session->pushEditorTask(new RegenerateChunksEditorTask($sender->getWorld(), $selection), TextFormat::GREEN . "Regenerating chunks");
 		return true;
 	}

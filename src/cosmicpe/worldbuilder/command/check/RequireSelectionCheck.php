@@ -11,8 +11,8 @@ use pocketmine\player\Player;
 final class RequireSelectionCheck implements CommandCheck{
 
 	public function __construct(
-		private PlayerSessionManager $manager,
-		private PlayerOnlyCommandCheck $inner
+		readonly private PlayerSessionManager $manager,
+		readonly private PlayerOnlyCommandCheck $inner
 	){}
 
 	public function validate(CommandSender $sender) : ?string{
@@ -22,7 +22,7 @@ final class RequireSelectionCheck implements CommandCheck{
 		}
 
 		assert($sender instanceof Player);
-		$selection = $this->manager->get($sender)->getSelection();
+		$selection = $this->manager->get($sender)->selection;
 		if($selection === null || !$selection->isComplete()){
 			return "You must select the required area first.";
 		}

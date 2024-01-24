@@ -22,7 +22,7 @@ final class SchematicCommandExecutor extends WorldBuilderCommandExecutor{
 				case "list":
 					$found = 0;
 					$message = "";
-					$directory = $this->getLoader()->getDataFolder();
+					$directory = $this->loader->getDataFolder();
 					foreach(FileSystemUtils::findFilesWithExtension($directory, self::FILE_EXTENSION) as $file){
 						$message .= TextFormat::RED . TextFormat::BOLD . ++$found . ". " . TextFormat::RESET . TextFormat::RED . $file->getBasename("." . self::FILE_EXTENSION) . TextFormat::GRAY . " [" . FileSystemUtils::printBytesToHumanReadable($file->getSize()) . "]" . TextFormat::EOL;
 					}
@@ -37,7 +37,7 @@ final class SchematicCommandExecutor extends WorldBuilderCommandExecutor{
 					return true;
 				case "import":
 					if(isset($args[1])){
-						$file = new SplFileInfo($this->getLoader()->getDataFolder() . implode(" ", array_slice($args, 1)) . "." . self::FILE_EXTENSION);
+						$file = new SplFileInfo($this->loader->getDataFolder() . implode(" ", array_slice($args, 1)) . "." . self::FILE_EXTENSION);
 						if($file->isFile()){
 							$path = $file->getRealPath();
 							assert($path !== null);
@@ -45,8 +45,8 @@ final class SchematicCommandExecutor extends WorldBuilderCommandExecutor{
 
 							assert($sender instanceof Player);
 
-							$schematic = $this->getLoader()->getEditorManager()->getFormatRegistry()->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->import($contents);
-							$this->getLoader()->getPlayerSessionManager()->get($sender)->pushEditorTask(new SimpleSetSchematicEditorTask($sender->getWorld(), $schematic, $sender->getPosition()->floor()), TextFormat::GREEN . "Importing {$file->getFilename()}");
+							$schematic = $this->loader->getEditorManager()->format_registry->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->import($contents);
+							$this->loader->getPlayerSessionManager()->get($sender)->pushEditorTask(new SimpleSetSchematicEditorTask($sender->getWorld(), $schematic, $sender->getPosition()->floor()), TextFormat::GREEN . "Importing {$file->getFilename()}");
 						}else{
 							$sender->sendMessage(TextFormat::RED . "File not found: {$file->getPathname()}");
 						}
@@ -56,13 +56,13 @@ final class SchematicCommandExecutor extends WorldBuilderCommandExecutor{
 					return true;
 				case "export":
 					if(isset($args[1])){
-						$export_path = $this->getLoader()->getDataFolder() . implode(" ", array_slice($args, 1)) . "." . self::FILE_EXTENSION;
+						$export_path = $this->loader->getDataFolder() . implode(" ", array_slice($args, 1)) . "." . self::FILE_EXTENSION;
 						if(!file_exists($export_path)){
 							assert($sender instanceof Player);
-							$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
-							$schematic = $session->getClipboardSchematic();
+							$session = $this->loader->getPlayerSessionManager()->get($sender);
+							$schematic = $session->clipboard_schematic;
 							if($schematic !== null){
-								$contents = $this->getLoader()->getEditorManager()->getFormatRegistry()->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->export($schematic);
+								$contents = $this->loader->getEditorManager()->format_registry->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->export($schematic);
 								file_put_contents($export_path, $contents);
 								$sender->sendMessage(TextFormat::GREEN . "Exported clipboard to {$export_path}.");
 							}else{

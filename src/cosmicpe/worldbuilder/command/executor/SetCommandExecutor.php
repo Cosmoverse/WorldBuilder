@@ -17,8 +17,8 @@ final class SetCommandExecutor extends WorldBuilderCommandExecutor{
 		if(isset($args[0])){
 			$block = BlockUtils::fromString($args[0]);
 			if($block !== null){
-				$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
-				$session->pushEditorTask(new SetEditorTask($sender->getWorld(), $session->getSelection(), $block), TextFormat::GREEN . "Setting " . $block->getName());
+				$session = $this->loader->getPlayerSessionManager()->get($sender);
+				$session->pushEditorTask(new SetEditorTask($sender->getWorld(), $session->selection, $block), TextFormat::GREEN . "Setting " . $block->getName());
 				return true;
 			}
 			$sender->sendMessage(TextFormat::RED . $args[0] . " is not a valid block.");

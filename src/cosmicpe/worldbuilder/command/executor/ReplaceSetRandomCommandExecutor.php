@@ -94,8 +94,8 @@ final class ReplaceSetRandomCommandExecutor extends WorldBuilderCommandExecutor{
 				$replacement_map->put($find_block, $randomizer);
 			}
 
-			$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
-			$session->pushEditorTask(new ReplaceSetRandomEditorTask($sender->getWorld(), $session->getSelection(), $replacement_map), TextFormat::GREEN . "Replacing blocks with a randomized list of block(s)");
+			$session = $this->loader->getPlayerSessionManager()->get($sender);
+			$session->pushEditorTask(new ReplaceSetRandomEditorTask($sender->getWorld(), $session->selection, $replacement_map), TextFormat::GREEN . "Replacing blocks with a randomized list of block(s)");
 			return true;
 		}
 

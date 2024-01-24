@@ -18,18 +18,18 @@ final class CopyCommandExecutor extends WorldBuilderCommandExecutor{
 
 	protected function executeCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
-		$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
-		$session->setClipboardSchematic(null);
+		$session = $this->loader->getPlayerSessionManager()->get($sender);
+		$session->clipboard_schematic = null;
 
 		/** @var Selection $selection */
-		$selection = $session->getSelection();
+		$selection = $session->selection;
 		$task = new CopyEditorTask($sender->getWorld(), $selection, new SimpleSchematic(
 			Vector3::minComponents(...$selection->getPoints())->subtractVector($sender->getPosition()->floor()),
 			$selection->getPoint(0),
 			$selection->getPoint(1)
 		));
 		$task->registerListener(new EditorTaskOnCompletionListener(static function(CopyEditorTask $task) use($session) : void{
-			$session->setClipboardSchematic($task->getClipboard());
+			$session->clipboard_schematic = $task->clipboard;
 		}));
 		$session->pushEditorTask($task, TextFormat::GREEN . "Copying selection");
 		return true;

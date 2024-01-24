@@ -14,7 +14,7 @@ class EditorTaskOnCompletionListener implements EditorTaskListener{
 	 * @param Closure(TEditorTask) : void $callback
 	 */
 	public function __construct(
-		private Closure $callback
+		readonly private Closure $callback
 	){}
 
 	public function onRegister(EditorTask $task) : void{

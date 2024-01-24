@@ -12,8 +12,8 @@ use pocketmine\scheduler\TaskScheduler;
 
 final class EditorManager{
 
+	readonly public EditorFormatRegistry $format_registry;
 	private ?EditorTaskHandler $task_handler = null;
-	private EditorFormatRegistry $format_registry;
 	private TaskScheduler $scheduler;
 	private int $max_ops_per_tick;
 
@@ -25,10 +25,6 @@ final class EditorManager{
 	public function init(Loader $plugin) : void{
 		$this->scheduler = $plugin->getScheduler();
 		$this->max_ops_per_tick = (int) $plugin->getConfig()->get("max-ops-per-tick");
-	}
-
-	public function getFormatRegistry() : EditorFormatRegistry{
-		return $this->format_registry;
 	}
 
 	public function push(EditorTask $task) : void{

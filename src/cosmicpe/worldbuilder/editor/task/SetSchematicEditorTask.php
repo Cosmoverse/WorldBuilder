@@ -17,8 +17,8 @@ use pocketmine\world\World;
 
 abstract class SetSchematicEditorTask extends EditorTask{
 
-	private Vector3 $relative_position;
-	private Schematic $clipboard;
+	readonly private Vector3 $relative_position;
+	readonly private Schematic $clipboard;
 
 	public function __construct(World $world, Schematic $clipboard, Vector3 $relative_position){
 		$this->relative_position = $relative_position->floor()->addVector($clipboard->getRelativePosition());
@@ -28,7 +28,7 @@ abstract class SetSchematicEditorTask extends EditorTask{
 
 	public function run() : Generator{
 		$relative_pos = $this->relative_position->floor();
-		$world = $this->getWorld();
+		$world = $this->world;
 		$chunks = [];
 		$tiles = [];
 		$tile_factory = TileFactory::getInstance();

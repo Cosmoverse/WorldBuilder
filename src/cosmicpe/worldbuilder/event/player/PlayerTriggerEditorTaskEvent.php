@@ -14,24 +14,8 @@ class PlayerTriggerEditorTaskEvent extends WorldBuilderEvent implements Cancella
 	use CancellableTrait;
 
 	public function __construct(
-		private Player $player,
-		private EditorTask $task,
-		private ?string $message = null
+		readonly public Player $player,
+		readonly public EditorTask $task,
+		public ?string $message = null
 	){}
-
-	public function getPlayer() : Player{
-		return $this->player;
-	}
-
-	public function getTask() : EditorTask{
-		return $this->task;
-	}
-
-	public function getMessage() : ?string{
-		return $this->message;
-	}
-
-	public function setMessage(?string $message) : void{
-		$this->message = $message;
-	}
 }

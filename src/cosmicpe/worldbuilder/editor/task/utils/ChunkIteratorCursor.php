@@ -16,6 +16,6 @@ class ChunkIteratorCursor{
 	public int $z = 0; // 0 - 15
 
 	public function __construct(
-		public World $world
+		readonly public World $world
 	){}
 }

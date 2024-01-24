@@ -9,7 +9,7 @@ use pocketmine\nbt\tag\CompoundTag;
 final class SchematicEntry{
 
 	public function __construct(
-		public int $block_state_id,
-		public ?CompoundTag $tile_nbt
+		readonly public int $block_state_id,
+		readonly public ?CompoundTag $tile_nbt
 	){}
 }

@@ -17,13 +17,9 @@ abstract class WorldBuilderCommandExecutor implements CommandExecutor{
 	 * @param CommandCheck[] $checks
 	 */
 	public function __construct(
-		private Loader $loader,
-		private array $checks
+		readonly public Loader $loader,
+		readonly private array $checks
 	){}
-
-	public function getLoader() : Loader{
-		return $this->loader;
-	}
 
 	final public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		foreach($this->checks as $check){

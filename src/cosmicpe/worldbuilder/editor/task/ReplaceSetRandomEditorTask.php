@@ -15,7 +15,7 @@ use pocketmine\world\World;
 class ReplaceSetRandomEditorTask extends AdvancedEditorTask{
 
 	/** @var array<int, WeightedRandomIntegerSelector> */
-	private array $replacement_map;
+	readonly private array $replacement_map;
 
 	public function __construct(World $world, Selection $selection, BlockToWeightedRandomSelectorReplacementMap $replacement_map){
 		parent::__construct($world, $selection, (int) Vector3Utils::calculateVolume($selection->getPoint(0), $selection->getPoint(1)));

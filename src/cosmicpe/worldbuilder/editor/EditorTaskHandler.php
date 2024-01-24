@@ -20,8 +20,8 @@ final class EditorTaskHandler extends Task{
 	 * @param Closure() : void $on_tasks_completion
 	 */
 	public function __construct(
-		private int $max_operations_per_tick,
-		private Closure $on_tasks_completion
+		readonly private int $max_operations_per_tick,
+		readonly private Closure $on_tasks_completion
 	){}
 
 	public function handle(EditorTask $task) : void{
@@ -38,14 +38,14 @@ final class EditorTaskHandler extends Task{
 			$limit = $ops;
 			$initial = $limit;
 			$info = $this->tasks[$id];
-			$generator = $info->getGenerator();
+			$generator = $info->generator;
 			while(--$limit >= 0){
 				if(!$generator->send(true) || !$generator->valid()){
 					unset($this->tasks[$id]);
 					if(--$tasks_c > 0){
 						$ops += (int) floor($limit / count($this->tasks));
 					}
-					$info->getTask()->onCompletion();
+					$info->task->onCompletion();
 
 					if(count($this->tasks) === 0){
 						($this->on_tasks_completion)();
@@ -55,7 +55,7 @@ final class EditorTaskHandler extends Task{
 				}
 			}
 			if(isset($this->tasks[$id])){
-				$info->getTask()->onCompleteOperations($initial - $limit);
+				$info->task->onCompleteOperations($initial - $limit);
 			}
 			$completed += $initial - $limit;
 			if($completed >= $ops){

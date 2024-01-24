@@ -35,8 +35,8 @@ final class ReplaceCommandExecutor extends WorldBuilderCommandExecutor{
 			}
 
 			if(!$map->isEmpty()){
-				$session = $this->getLoader()->getPlayerSessionManager()->get($sender);
-				$session->pushEditorTask(new ReplaceEditorTask($sender->getWorld(), $session->getSelection(), $map), TextFormat::GREEN . "Replacing " . $map);
+				$session = $this->loader->getPlayerSessionManager()->get($sender);
+				$session->pushEditorTask(new ReplaceEditorTask($sender->getWorld(), $session->selection, $map), TextFormat::GREEN . "Replacing " . $map);
 				return true;
 			}
 		}

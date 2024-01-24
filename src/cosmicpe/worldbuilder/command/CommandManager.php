@@ -24,7 +24,7 @@ use RuntimeException;
 final class CommandManager{
 
 	public function __construct(
-		private Loader $loader
+		readonly private Loader $loader
 	){}
 
 	public function init() : void{

@@ -32,7 +32,7 @@ abstract class AdvancedEditorTask extends EditorTask{
 		$min_chunkZ = $min_z >> Chunk::COORD_BIT_SIZE;
 		$max_chunkZ = $max_z >> Chunk::COORD_BIT_SIZE;
 
-		$cursor = new SubChunkIteratorCursor($this->getWorld());
+		$cursor = new SubChunkIteratorCursor($this->world);
 		for($cursor->chunkX = $min_chunkX; $cursor->chunkX <= $max_chunkX; ++$cursor->chunkX){
 			$abs_cx = $cursor->chunkX << Chunk::COORD_BIT_SIZE;
 			$min_i = max($abs_cx, $min_x) & Chunk::COORD_MASK;

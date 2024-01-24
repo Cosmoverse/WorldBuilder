@@ -18,18 +18,7 @@ final class EditorTaskInfo{
 	 * @param Generator<bool> $generator
 	 */
 	private function __construct(
-		private EditorTask $task,
-		private Generator $generator
+		readonly public EditorTask $task,
+		readonly public Generator $generator
 	){}
-
-	/**
-	 * @return Generator<bool>
-	 */
-	public function getGenerator() : Generator{
-		return $this->generator;
-	}
-
-	public function getTask() : EditorTask{
-		return $this->task;
-	}
 }

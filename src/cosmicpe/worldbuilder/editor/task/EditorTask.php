@@ -20,27 +20,15 @@ abstract class EditorTask{
 	private array $listeners = [];
 
 	public function __construct(
-		protected World $world,
-		protected Selection $selection,
-		private int $estimated_operations
+		readonly public World $world,
+		readonly public Selection $selection,
+		readonly public int $estimated_operations
 	){}
 
 	final public function registerListener(EditorTaskListener $listener) : EditorTaskListenerInfo{
 		$this->listeners[$spl_id = spl_object_id($listener)] = $listener;
 		$listener->onRegister($this);
 		return new ClosureEditorTaskListenerInfo(function() use($spl_id) : void{ unset($this->listeners[$spl_id]); });
-	}
-
-	final public function getWorld() : World{
-		return $this->world;
-	}
-
-	final public function getSelection() : Selection{
-		return $this->selection;
-	}
-
-	final public function getEstimatedOperations() : int{
-		return $this->estimated_operations;
 	}
 
 	abstract public function getName() : string;
