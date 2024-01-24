@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\editor\task;
 
 use cosmicpe\worldbuilder\editor\task\utils\ChunkIteratorCursor;
+use cosmicpe\worldbuilder\editor\task\utils\EditorTaskUtils;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use cosmicpe\worldbuilder\utils\Vector3Utils;
+use Generator;
 use pocketmine\world\World;
+use SOFe\AwaitGenerator\Traverser;
 
-class SetBiomeEditorTask extends AdvancedPlaneEditorTask{
+class SetBiomeEditorTask extends EditorTask{
 
 	readonly private int $biome_id;
 	readonly private int $min_y;
@@ -30,10 +33,14 @@ class SetBiomeEditorTask extends AdvancedPlaneEditorTask{
 		return "setbiome";
 	}
 
-	protected function onIterate(ChunkIteratorCursor $cursor) : bool{
-		for($y = $this->min_y; $y < $this->max_y; ++$y) {
-			$cursor->chunk->setBiomeId($cursor->x, $y, $cursor->z, $this->biome_id);
+	public function run() : Generator{
+		$cursor = new ChunkIteratorCursor($this->world);
+		foreach(EditorTaskUtils::iterateChunks($this->selection, $cursor) as $operation){
+			for($y = $this->min_y; $y < $this->max_y; ++$y) {
+				$cursor->chunk->setBiomeId($cursor->x, $y, $cursor->z, $this->biome_id);
+			}
+			$cursor->world->setChunk($cursor->chunkX, $cursor->chunkZ, $cursor->chunk);
+			yield null => Traverser::VALUE;
 		}
-		return true;
 	}
 }

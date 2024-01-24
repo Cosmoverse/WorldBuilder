@@ -18,13 +18,13 @@ WorldBuilder is great for creative mode servers and provides an API for limiting
 If you are running a creative-mode server, you may want to disallow players from editing other player's region, or perhaps blacklisting TNTs and falling blocks from being world-edited in.
 ```php
 public function onPlayerTriggerEditorTask(PlayerTriggerEditorTaskEvent $event) : void{
-	$player = $event->getPlayer();
-	$task = $event->getTask();
+	$player = $event->player;
+	$task = $event->task;
 
-	$world = $event->getWorld();
+	$world = $task->world;
 	// TODO: Check if $world is not spawn_world
 
-	$selection = $event->getSelection();
+	$selection = $task->selection;
 	// TODO: Check if all $selection->getPoints() lie in $player's plot.
 
 	if($task instanceof SetEditorTask){
@@ -68,7 +68,7 @@ class MahEditorTaskListener implements EditorTaskListener{
  * @priority MONITOR
  */
 public function onPlayerTriggerEditorTask(PlayerTriggerEditorTaskEvent $event) : void{
-	$task = $event->getTask();
+	$task = $event->task;
 	$handler = $task->registerListener(new MahEditorTaskListener());
 	// Don't forget to call $handler->unregister() once the player quits the server, if
 	// your listener is indirectly sending packets to the player.

@@ -11,6 +11,8 @@ use cosmicpe\worldbuilder\editor\task\utils\ChunkIteratorCursor;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use Generator;
 use pocketmine\world\World;
+use SOFe\AwaitGenerator\Await;
+use SOFe\AwaitGenerator\Traverser;
 
 abstract class EditorTask{
 
@@ -34,7 +36,7 @@ abstract class EditorTask{
 	abstract public function getName() : string;
 
 	/**
-	 * @return Generator<bool>
+	 * @return Generator<null, Traverser::VALUE, void, void>
 	 */
 	abstract public function run() : Generator;
 

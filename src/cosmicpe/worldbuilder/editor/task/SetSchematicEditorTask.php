@@ -14,6 +14,7 @@ use pocketmine\world\format\Chunk;
 use pocketmine\world\utils\SubChunkExplorer;
 use pocketmine\world\utils\SubChunkExplorerStatus;
 use pocketmine\world\World;
+use SOFe\AwaitGenerator\Traverser;
 
 abstract class SetSchematicEditorTask extends EditorTask{
 
@@ -48,7 +49,7 @@ abstract class SetSchematicEditorTask extends EditorTask{
 
 			$iterator->currentSubChunk->setBlockStateId($x & Chunk::COORD_MASK, $y & Chunk::COORD_MASK, $z & Chunk::COORD_MASK, $entry->block_state_id);
 			$chunks[World::chunkHash($x >> Chunk::COORD_BIT_SIZE, $z >> Chunk::COORD_BIT_SIZE)] = true;
-			yield true;
+			yield null => Traverser::VALUE;
 		}
 
 		$cursor = new ChunkIteratorCursor($world);
@@ -69,7 +70,7 @@ abstract class SetSchematicEditorTask extends EditorTask{
 				$world->removeTile($old_tile);
 			}
 			$world->addTile($tile);
-			yield true;
+			yield null => Traverser::VALUE;
 		}
 	}
 }

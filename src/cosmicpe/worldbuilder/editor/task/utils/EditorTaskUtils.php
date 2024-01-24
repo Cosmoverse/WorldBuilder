@@ -2,18 +2,56 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\editor\task;
+namespace cosmicpe\worldbuilder\editor\task\utils;
 
-use cosmicpe\worldbuilder\editor\task\utils\SubChunkIteratorCursor;
+use cosmicpe\worldbuilder\session\utils\Selection;
 use Generator;
 use pocketmine\math\Vector3;
 use pocketmine\world\format\Chunk;
+use function max;
+use function min;
 
-abstract class AdvancedEditorTask extends EditorTask{
+final class EditorTaskUtils{
 
-	public function run() : Generator{
-		$first = $this->selection->getPoint(0);
-		$second = $this->selection->getPoint(1);
+	public const OP_WRITE_BUFFER = 0;
+	public const OP_WRITE_WORLD = 1;
+
+	/**
+	 * @param Selection $selection
+	 * @param ChunkIteratorCursor $cursor
+	 * @return Generator<self::OP_WRITE_WORLD>
+	 */
+	public static function iterateChunks(Selection $selection, ChunkIteratorCursor $cursor) : Generator{
+		$first = $selection->getPoint(0);
+		$second = $selection->getPoint(1);
+
+		$min = Vector3::minComponents($first, $second);
+		$min_x = $min->x >> Chunk::COORD_BIT_SIZE;
+		$min_z = $min->z >> Chunk::COORD_BIT_SIZE;
+
+		$max = Vector3::maxComponents($first, $second);
+		$max_x = $max->x >> Chunk::COORD_BIT_SIZE;
+		$max_z = $max->z >> Chunk::COORD_BIT_SIZE;
+
+		for($cursor->chunkX = $min_x; $cursor->chunkX <= $max_x; ++$cursor->chunkX){
+			for($cursor->chunkZ = $min_z; $cursor->chunkZ <= $max_z; ++$cursor->chunkZ){
+				$chunk = $cursor->world->loadChunk($cursor->chunkX, $cursor->chunkZ);
+				if($chunk !== null){
+					$cursor->chunk = $chunk;
+					yield self::OP_WRITE_WORLD;
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param Selection $selection
+	 * @param SubChunkIteratorCursor $cursor
+	 * @return Generator<self::OP_WRITE_*>
+	 */
+	public static function iterateBlocks(Selection $selection, SubChunkIteratorCursor $cursor) : Generator{
+		$first = $selection->getPoint(0);
+		$second = $selection->getPoint(1);
 
 		$min = Vector3::minComponents($first, $second);
 		$min_x = $min->x;
@@ -32,7 +70,6 @@ abstract class AdvancedEditorTask extends EditorTask{
 		$min_chunkZ = $min_z >> Chunk::COORD_BIT_SIZE;
 		$max_chunkZ = $max_z >> Chunk::COORD_BIT_SIZE;
 
-		$cursor = new SubChunkIteratorCursor($this->world);
 		for($cursor->chunkX = $min_chunkX; $cursor->chunkX <= $max_chunkX; ++$cursor->chunkX){
 			$abs_cx = $cursor->chunkX << Chunk::COORD_BIT_SIZE;
 			$min_i = max($abs_cx, $min_x) & Chunk::COORD_MASK;
@@ -43,8 +80,6 @@ abstract class AdvancedEditorTask extends EditorTask{
 					continue;
 				}
 				$cursor->chunk = $chunk;
-
-				$changed = false;
 
 				$abs_cz = $cursor->chunkZ << Chunk::COORD_BIT_SIZE;
 				$min_k = max($abs_cz, $min_z) & Chunk::COORD_MASK;
@@ -59,25 +94,13 @@ abstract class AdvancedEditorTask extends EditorTask{
 					for($cursor->y = $min_j; $cursor->y <= $max_j; ++$cursor->y){
 						for($cursor->x = $min_i; $cursor->x <= $max_i; ++$cursor->x){
 							for($cursor->z = $min_k; $cursor->z <= $max_k; ++$cursor->z){
-								if($this->onIterate($cursor)){
-									$changed = true;
-								}
-								yield true;
+								yield self::OP_WRITE_BUFFER;
 							}
 						}
 					}
 				}
-
-				if($changed){
-					$this->onChunkChanged($cursor);
-				}
+				yield self::OP_WRITE_WORLD;
 			}
 		}
 	}
-
-	/**
-	 * @param SubChunkIteratorCursor $cursor
-	 * @return bool whether chunk was changed
-	 */
-	abstract protected function onIterate(SubChunkIteratorCursor $cursor) : bool;
 }
