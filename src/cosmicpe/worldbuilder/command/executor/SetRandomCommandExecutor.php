@@ -5,16 +5,22 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\command\executor;
 
 use cosmicpe\worldbuilder\editor\task\SetRandomEditorTask;
+use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use cosmicpe\worldbuilder\utils\BlockUtils;
 use cosmicpe\worldbuilder\utils\WeightedRandomIntegerSelector;
 use pocketmine\command\Command;
+use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
-final class SetRandomCommandExecutor extends WorldBuilderCommandExecutor{
+final class SetRandomCommandExecutor implements CommandExecutor{
 
-	protected function executeCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
+	public function __construct(
+		readonly private PlayerSessionManager $session_manager
+	){}
+
+	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
 		if(isset($args[0])){
 			$randomizer = new WeightedRandomIntegerSelector();
@@ -51,7 +57,7 @@ final class SetRandomCommandExecutor extends WorldBuilderCommandExecutor{
 			}
 
 			$randomizer->setup();
-			$session = $this->loader->getPlayerSessionManager()->get($sender);
+			$session = $this->session_manager->get($sender);
 			$session->pushEditorTask(new SetRandomEditorTask($sender->getWorld(), $session->selection, $randomizer), TextFormat::GREEN . "Setting a randomized list of {$randomizer->count()} block(s)");
 			return true;
 		}

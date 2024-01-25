@@ -7,28 +7,26 @@ namespace cosmicpe\worldbuilder\command\executor;
 use cosmicpe\worldbuilder\command\check\RequireSelectionCheck;
 use cosmicpe\worldbuilder\editor\task\ReplaceEditorTask;
 use cosmicpe\worldbuilder\editor\utils\replacement\BlockToBlockReplacementMap;
-use cosmicpe\worldbuilder\Loader;
+use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use pocketmine\block\RuntimeBlockStateRegistry;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\block\Water;
 use pocketmine\command\Command;
+use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\format\Chunk;
 
-final class DrainCommandExecutor extends WorldBuilderCommandExecutor{
+final class DrainCommandExecutor implements CommandExecutor{
 
 	readonly private BlockToBlockReplacementMap $map;
 
 	public function __construct(
-		Loader $loader,
-		array $checks,
+		readonly private PlayerSessionManager $session_manager,
 		readonly private RequireSelectionCheck $selection_check
 	){
-		parent::__construct($loader, $checks);
-
 		$this->map = new BlockToBlockReplacementMap();
 		$air = VanillaBlocks::AIR();
 		foreach(RuntimeBlockStateRegistry::getInstance()->getAllKnownStates() as $state){
@@ -38,9 +36,9 @@ final class DrainCommandExecutor extends WorldBuilderCommandExecutor{
 		}
 	}
 
-	protected function executeCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
+	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
-		$session = $this->loader->getPlayerSessionManager()->get($sender);
+		$session = $this->session_manager->get($sender);
 		if(!isset($args[0])){
 			$result = $this->selection_check->validate($sender);
 			if($result !== null){

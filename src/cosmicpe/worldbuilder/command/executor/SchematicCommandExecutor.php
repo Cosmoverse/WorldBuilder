@@ -6,18 +6,24 @@ namespace cosmicpe\worldbuilder\command\executor;
 
 use cosmicpe\worldbuilder\editor\format\EditorFormatIds;
 use cosmicpe\worldbuilder\editor\task\SimpleSetSchematicEditorTask;
+use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\utils\FileSystemUtils;
 use pocketmine\command\Command;
+use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 use SplFileInfo;
 
-final class SchematicCommandExecutor extends WorldBuilderCommandExecutor{
+final class SchematicCommandExecutor implements CommandExecutor{
 
 	private const FILE_EXTENSION = "schematic";
 
-	protected function executeCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
+	public function __construct(
+		readonly private Loader $loader
+	){}
+
+	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		if(isset($args[0])){
 			switch($args[0]){
 				case "list":

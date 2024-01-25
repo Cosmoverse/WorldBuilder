@@ -6,5 +6,5 @@ namespace cosmicpe\worldbuilder\command\utils;
 
 use pocketmine\command\utils\CommandException as PocketMineCommandException;
 
-class CommandException extends PocketMineCommandException{
+final class CommandException extends PocketMineCommandException{
 }

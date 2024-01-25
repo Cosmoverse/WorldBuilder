@@ -4,26 +4,24 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\command\executor;
 
-use cosmicpe\worldbuilder\Loader;
+use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use pocketmine\command\Command;
+use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
-final class PosCommandExecutor extends WorldBuilderCommandExecutor{
+final class PosCommandExecutor implements CommandExecutor{
 
 	public function __construct(
-		Loader $loader,
-		array $checks,
+		readonly private PlayerSessionManager $session_manager,
 		readonly private int $selection_index
-	){
-		parent::__construct($loader, $checks);
-	}
+	){}
 
-	protected function executeCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
+	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
-		$session = $this->loader->getPlayerSessionManager()->get($sender);
+		$session = $this->session_manager->get($sender);
 		$session->selection ??= new Selection(2);
 		$pos = $session->selection->setPoint($this->selection_index, $sender->getPosition()->floor());
 		assert($pos !== null);

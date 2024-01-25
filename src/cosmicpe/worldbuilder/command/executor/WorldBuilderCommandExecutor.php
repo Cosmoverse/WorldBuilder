@@ -5,23 +5,23 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\command\executor;
 
 use cosmicpe\worldbuilder\command\check\CommandCheck;
-use cosmicpe\worldbuilder\Loader;
 use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 
-abstract class WorldBuilderCommandExecutor implements CommandExecutor{
+final class WorldBuilderCommandExecutor implements CommandExecutor{
 
 	/**
-	 * @param CommandCheck[] $checks
+	 * @param CommandExecutor $inner
+	 * @param list<CommandCheck> $checks
 	 */
 	public function __construct(
-		readonly public Loader $loader,
+		readonly private CommandExecutor $inner,
 		readonly private array $checks
 	){}
 
-	final public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
+	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		foreach($this->checks as $check){
 			$error = $check->validate($sender);
 			if($error !== null){
@@ -29,16 +29,6 @@ abstract class WorldBuilderCommandExecutor implements CommandExecutor{
 				return true;
 			}
 		}
-
-		return $this->executeCommand($sender, $command, $label, $args);
+		return $this->inner->onCommand($sender, $command, $label, $args);
 	}
-
-	/**
-	 * @param CommandSender $sender
-	 * @param Command $command
-	 * @param string $label
-	 * @param string[] $args
-	 * @return bool
-	 */
-	abstract protected function executeCommand(CommandSender $sender, Command $command, string $label, array $args) : bool;
 }

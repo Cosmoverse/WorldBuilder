@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\command;
 
+use cosmicpe\worldbuilder\command\check\CommandCheck;
 use cosmicpe\worldbuilder\command\check\PlayerOnlyCommandCheck;
 use cosmicpe\worldbuilder\command\check\RequireSelectionCheck;
 use cosmicpe\worldbuilder\command\executor\CopyCommandExecutor;
@@ -17,7 +18,9 @@ use cosmicpe\worldbuilder\command\executor\SchematicCommandExecutor;
 use cosmicpe\worldbuilder\command\executor\SetBiomeCommandExecutor;
 use cosmicpe\worldbuilder\command\executor\SetCommandExecutor;
 use cosmicpe\worldbuilder\command\executor\SetRandomCommandExecutor;
+use cosmicpe\worldbuilder\command\executor\WorldBuilderCommandExecutor;
 use cosmicpe\worldbuilder\Loader;
+use pocketmine\command\CommandExecutor;
 use pocketmine\command\PluginCommand;
 use RuntimeException;
 
@@ -30,26 +33,30 @@ final class CommandManager{
 	public function init() : void{
 		$check_player_only = new PlayerOnlyCommandCheck();
 		$check_require_selection = new RequireSelectionCheck($this->loader->getPlayerSessionManager(), $check_player_only);
+		$session_manager = $this->loader->getPlayerSessionManager();
 
-		$this->getCommand("/copy")->setExecutor(new CopyCommandExecutor($this->loader, [$check_require_selection]));
-		$this->getCommand("/drain")->setExecutor(new DrainCommandExecutor($this->loader, [$check_player_only], $check_require_selection));
-		$this->getCommand("/paste")->setExecutor(new PasteCommandExecutor($this->loader, [$check_require_selection]));
-		$this->getCommand("/pos1")->setExecutor(new PosCommandExecutor($this->loader, [$check_player_only], 0));
-		$this->getCommand("/pos2")->setExecutor(new PosCommandExecutor($this->loader, [$check_player_only], 1));
-		$this->getCommand("/regeneratechunks")->setExecutor(new RegenerateChunksCommandExecutor($this->loader, [$check_require_selection]));
-		$this->getCommand("/replace")->setExecutor(new ReplaceCommandExecutor($this->loader, [$check_require_selection]));
-		$this->getCommand("/replacesetrandom")->setExecutor(new ReplaceSetRandomCommandExecutor($this->loader, [$check_require_selection]));
-		$this->getCommand("/schematic")->setExecutor(new SchematicCommandExecutor($this->loader, [$check_player_only]));
-		$this->getCommand("/set")->setExecutor(new SetCommandExecutor($this->loader, [$check_require_selection]));
-		$this->getCommand("/setbiome")->setExecutor(new SetBiomeCommandExecutor($this->loader, [$check_require_selection]));
-		$this->getCommand("/setrandom")->setExecutor(new SetRandomCommandExecutor($this->loader, [$check_require_selection]));
+		$this->setExecutor("/copy", new CopyCommandExecutor($session_manager), [$check_require_selection]);
+		$this->setExecutor("/drain", new DrainCommandExecutor($session_manager, $check_require_selection), [$check_player_only]);
+		$this->setExecutor("/paste", new PasteCommandExecutor($session_manager), [$check_require_selection]);
+		$this->setExecutor("/pos1", new PosCommandExecutor($session_manager, 0), [$check_player_only]);
+		$this->setExecutor("/pos2", new PosCommandExecutor($session_manager, 1), [$check_player_only]);
+		$this->setExecutor("/regeneratechunks", new RegenerateChunksCommandExecutor($session_manager), [$check_require_selection]);
+		$this->setExecutor("/replace", new ReplaceCommandExecutor($session_manager), [$check_require_selection]);
+		$this->setExecutor("/replacesetrandom", new ReplaceSetRandomCommandExecutor($session_manager), [$check_require_selection]);
+		$this->setExecutor("/schematic", new SchematicCommandExecutor($this->loader), [$check_player_only]);
+		$this->setExecutor("/set", new SetCommandExecutor($session_manager), [$check_require_selection]);
+		$this->setExecutor("/setbiome", new SetBiomeCommandExecutor($session_manager), [$check_require_selection]);
+		$this->setExecutor("/setrandom", new SetRandomCommandExecutor($session_manager), [$check_require_selection]);
 	}
 
-	private function getCommand(string $command) : PluginCommand{
+	/**
+	 * @param string $command
+	 * @param CommandExecutor $executor
+	 * @param list<CommandCheck> $checks
+	 */
+	private function setExecutor(string $command, CommandExecutor $executor, array $checks) : void{
 		$result = $this->loader->getCommand($command);
-		if(!($result instanceof PluginCommand)){
-			throw new RuntimeException("Could not obtain command: {$command}");
-		}
-		return $result;
+		$result instanceof PluginCommand || throw new RuntimeException("Could not obtain command: {$command}");
+		$result->setExecutor(new WorldBuilderCommandExecutor($executor, $checks));
 	}
 }

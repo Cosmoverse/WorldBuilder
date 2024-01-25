@@ -5,20 +5,26 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\command\executor;
 
 use cosmicpe\worldbuilder\editor\task\SetEditorTask;
+use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use cosmicpe\worldbuilder\utils\BlockUtils;
 use pocketmine\command\Command;
+use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
-final class SetCommandExecutor extends WorldBuilderCommandExecutor{
+final class SetCommandExecutor implements CommandExecutor{
 
-	protected function executeCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
+	public function __construct(
+		readonly private PlayerSessionManager $session_manager
+	){}
+
+	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
 		if(isset($args[0])){
 			$block = BlockUtils::fromString($args[0]);
 			if($block !== null){
-				$session = $this->loader->getPlayerSessionManager()->get($sender);
+				$session = $this->session_manager->get($sender);
 				$session->pushEditorTask(new SetEditorTask($sender->getWorld(), $session->selection, $block), TextFormat::GREEN . "Setting " . $block->getName());
 				return true;
 			}
