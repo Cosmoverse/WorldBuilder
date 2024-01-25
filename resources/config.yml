@@ -12,3 +12,6 @@ register-pc-world-converter: false
 # Generates chunks that were never generated, instead of skipping chunks.
 # This addresses the issue with //set and other commands avoiding chunks and making the edit appear 'glitchy'.
 generate-new-chunks: true
+
+# Shows a popup text to players that displays progress of the editor task
+display-progress-bar: true

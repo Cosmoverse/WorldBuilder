@@ -16,8 +16,11 @@ use cosmicpe\worldbuilder\editor\executor\SetRandomEditorTaskInfo;
 use cosmicpe\worldbuilder\editor\executor\SetSchematicEditorTaskInfo;
 use cosmicpe\worldbuilder\editor\format\EditorFormatRegistry;
 use cosmicpe\worldbuilder\editor\task\copy\nbtcopier\NamedtagCopierManager;
+use cosmicpe\worldbuilder\editor\task\listener\PopupProgressEditorTaskListener;
+use cosmicpe\worldbuilder\event\player\PlayerTriggerEditorTaskEvent;
 use cosmicpe\worldbuilder\Loader;
 use Generator;
+use pocketmine\event\EventPriority;
 use pocketmine\scheduler\ClosureTask;
 use RuntimeException;
 use SOFe\AwaitGenerator\Await;
@@ -74,6 +77,12 @@ final class EditorManager{
 				$callback();
 			}
 		}), 1);
+
+		if($plugin->getConfig()->get("display-progress-bar", true)){
+			$plugin->getServer()->getPluginManager()->registerEvent(PlayerTriggerEditorTaskEvent::class, function(PlayerTriggerEditorTaskEvent $event) : void{
+				$event->instance->registerListener(new PopupProgressEditorTaskListener($event->player));
+			}, EventPriority::MONITOR, $plugin);
+		}
 	}
 
 	public function buildInstance(EditorTaskInfo $info) : EditorTaskInstance{
