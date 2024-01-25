@@ -20,4 +20,8 @@ final class CopyEditorTaskInfo implements EditorTaskInfo{
 		readonly public Schematic $clipboard,
 		readonly public bool $generate_new_chunks
 	){}
+
+	public function getName() : string{
+		return "Copy";
+	}
 }

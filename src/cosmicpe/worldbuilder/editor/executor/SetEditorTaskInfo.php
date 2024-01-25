@@ -20,4 +20,8 @@ final class SetEditorTaskInfo implements EditorTaskInfo{
 		readonly public Block $block,
 		readonly public bool $generate_new_chunks
 	){}
+
+	public function getName() : string{
+		return "Set";
+	}
 }

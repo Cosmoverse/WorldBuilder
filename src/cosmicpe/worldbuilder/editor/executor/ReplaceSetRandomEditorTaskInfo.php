@@ -20,4 +20,8 @@ final class ReplaceSetRandomEditorTaskInfo implements EditorTaskInfo{
 		readonly public BlockToWeightedRandomSelectorReplacementMap $replacement_map,
 		readonly public bool $generate_new_chunks
 	){}
+
+	public function getName() : string{
+		return "Replace (Set-Random)";
+	}
 }

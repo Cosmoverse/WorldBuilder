@@ -17,4 +17,8 @@ final class PasteEditorTaskInfo implements EditorTaskInfo{
 		readonly public int $relative_z,
 		readonly public bool $generate_new_chunks
 	){}
+
+	public function getName() : string{
+		return "Paste";
+	}
 }

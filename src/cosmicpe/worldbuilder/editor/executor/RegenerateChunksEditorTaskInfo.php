@@ -15,4 +15,8 @@ final class RegenerateChunksEditorTaskInfo implements EditorTaskInfo{
 		readonly public int $x2,
 		readonly public int $z2
 	){}
+
+	public function getName() : string{
+		return "Regenerate Chunks";
+	}
 }

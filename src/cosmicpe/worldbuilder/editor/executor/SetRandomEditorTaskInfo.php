@@ -20,4 +20,8 @@ final class SetRandomEditorTaskInfo implements EditorTaskInfo{
 		readonly public WeightedRandomIntegerSelector $selector,
 		readonly public bool $generate_new_chunks
 	){}
+
+	public function getName() : string{
+		return "Set Random";
+	}
 }

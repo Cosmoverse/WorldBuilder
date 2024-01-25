@@ -17,4 +17,8 @@ final class SetBiomeEditorTaskInfo implements EditorTaskInfo{
 		readonly public int $biome_id,
 		readonly public bool $generate_new_chunks
 	){}
+
+	public function getName() : string{
+		return "Set Biome";
+	}
 }

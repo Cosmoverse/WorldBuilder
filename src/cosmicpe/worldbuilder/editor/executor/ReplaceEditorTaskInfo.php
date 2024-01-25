@@ -20,4 +20,8 @@ final class ReplaceEditorTaskInfo implements EditorTaskInfo{
 		readonly public BlockToBlockReplacementMap $replacement_map,
 		readonly public bool $generate_new_chunks
 	){}
+
+	public function getName() : string{
+		return "Replace";
+	}
 }
