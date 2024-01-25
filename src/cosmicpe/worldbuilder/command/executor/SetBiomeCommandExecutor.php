@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\command\executor;
 
 use cosmicpe\worldbuilder\editor\task\SetBiomeEditorTask;
+use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
@@ -16,7 +17,7 @@ use function is_numeric;
 final class SetBiomeCommandExecutor implements CommandExecutor{
 
 	public function __construct(
-		readonly private PlayerSessionManager $session_manager
+		readonly private Loader $loader
 	){}
 
 	private function getBiomeIdFromString(string $string) : ?int{
@@ -34,8 +35,8 @@ final class SetBiomeCommandExecutor implements CommandExecutor{
 		if(isset($args[0])){
 			$biome_id = $this->getBiomeIdFromString($args[0]);
 			if($biome_id !== null){
-				$session = $this->session_manager->get($sender);
-				$session->pushEditorTask(new SetBiomeEditorTask($sender->getWorld(), $session->selection, $biome_id), TextFormat::GREEN . "Setting biome " . $biome_id);
+				$session = $this->loader->getPlayerSessionManager()->get($sender);
+				$session->pushEditorTask(new SetBiomeEditorTask($sender->getWorld(), $session->selection, $biome_id, $this->loader->getEditorManager()->generate_new_chunks), TextFormat::GREEN . "Setting biome " . $biome_id);
 				return true;
 			}
 			$sender->sendMessage(TextFormat::RED . $args[0] . " is not a valid biome ID.");

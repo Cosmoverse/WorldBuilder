@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\editor\task\utils;
 
+use Closure;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use Generator;
 use pocketmine\math\Vector3;
 use pocketmine\world\format\Chunk;
+use pocketmine\world\World;
+use SOFe\AwaitGenerator\Await;
+use SOFe\AwaitGenerator\Traverser;
 use function max;
 use function min;
 
@@ -17,11 +21,30 @@ final class EditorTaskUtils{
 	public const OP_WRITE_WORLD = 1;
 
 	/**
-	 * @param Selection $selection
-	 * @param ChunkIteratorCursor $cursor
-	 * @return Generator<self::OP_WRITE_WORLD>
+	 * @param World $world
+	 * @param int $x
+	 * @param int $z
+	 * @param bool $generate
+	 * @return Generator<mixed, Await::RESOLVE, void, Chunk|null>
 	 */
-	public static function iterateChunks(Selection $selection, ChunkIteratorCursor $cursor) : Generator{
+	private static function retrieveChunk(World $world, int $x, int $z, bool $generate) : Generator{
+		if(!$generate){
+			return $world->loadChunk($x, $z);
+		}
+		/** @var Closure(Closure(Chunk|null) : void) : void $closure */
+		$closure = static function(Closure $resolve) use($x, $z, $world) : void{
+			$world->orderChunkPopulation($x, $z, EditorChunkLoader::instance())->onCompletion($resolve, function() use($resolve) : void{ $resolve(null); });
+		};
+		return yield from Await::promise($closure);
+	}
+
+	/**
+	 * @param World $world
+	 * @param Selection $selection
+	 * @param bool $generate
+	 * @return Generator<ChunkIteratorCursor, Traverser::VALUE|Await::RESOLVE>
+	 */
+	public static function iterateChunks(World $world, Selection $selection, bool $generate) : Generator{
 		$first = $selection->getPoint(0);
 		$second = $selection->getPoint(1);
 
@@ -33,23 +56,27 @@ final class EditorTaskUtils{
 		$max_x = $max->x >> Chunk::COORD_BIT_SIZE;
 		$max_z = $max->z >> Chunk::COORD_BIT_SIZE;
 
-		for($cursor->chunkX = $min_x; $cursor->chunkX <= $max_x; ++$cursor->chunkX){
-			for($cursor->chunkZ = $min_z; $cursor->chunkZ <= $max_z; ++$cursor->chunkZ){
-				$chunk = $cursor->world->loadChunk($cursor->chunkX, $cursor->chunkZ);
-				if($chunk !== null){
-					$cursor->chunk = $chunk;
-					yield self::OP_WRITE_WORLD;
+		for($chunkX = $min_x; $chunkX <= $max_x; ++$chunkX){
+			for($chunkZ = $min_z; $chunkZ <= $max_z; ++$chunkZ){
+				$chunk = yield from self::retrieveChunk($world, $chunkX, $chunkZ, $generate);
+				if($chunk === null){
+					continue;
+				}
+				yield new ChunkIteratorCursor($chunkX, $chunkZ, $chunk) => Traverser::VALUE;
+				if($generate){
+					$world->unregisterChunkLoader(EditorChunkLoader::instance(), $chunkX, $chunkZ);
 				}
 			}
 		}
 	}
 
 	/**
+	 * @param World $world
 	 * @param Selection $selection
-	 * @param SubChunkIteratorCursor $cursor
-	 * @return Generator<self::OP_WRITE_*>
+	 * @param bool $generate
+	 * @return Generator<array{self::OP_WRITE_BUFFER, SubChunkIteratorCursor}|array{self::OP_WRITE_WORLD, ChunkIteratorCursor}, Traverser::VALUE|Await::RESOLVE>
 	 */
-	public static function iterateBlocks(Selection $selection, SubChunkIteratorCursor $cursor) : Generator{
+	public static function iterateBlocks(World $world, Selection $selection, bool $generate) : Generator{
 		$first = $selection->getPoint(0);
 		$second = $selection->getPoint(1);
 
@@ -70,36 +97,38 @@ final class EditorTaskUtils{
 		$min_chunkZ = $min_z >> Chunk::COORD_BIT_SIZE;
 		$max_chunkZ = $max_z >> Chunk::COORD_BIT_SIZE;
 
-		for($cursor->chunkX = $min_chunkX; $cursor->chunkX <= $max_chunkX; ++$cursor->chunkX){
-			$abs_cx = $cursor->chunkX << Chunk::COORD_BIT_SIZE;
+		for($chunkX = $min_chunkX; $chunkX <= $max_chunkX; ++$chunkX){
+			$abs_cx = $chunkX << Chunk::COORD_BIT_SIZE;
 			$min_i = max($abs_cx, $min_x) & Chunk::COORD_MASK;
 			$max_i = min($abs_cx + Chunk::COORD_MASK, $max_x) & Chunk::COORD_MASK;
-			for($cursor->chunkZ = $min_chunkZ; $cursor->chunkZ <= $max_chunkZ; ++$cursor->chunkZ){
-				$chunk = $cursor->world->loadChunk($cursor->chunkX, $cursor->chunkZ);
+			for($chunkZ = $min_chunkZ; $chunkZ <= $max_chunkZ; ++$chunkZ){
+				$chunk = yield from self::retrieveChunk($world, $chunkX, $chunkZ, $generate);
 				if($chunk === null){
 					continue;
 				}
-				$cursor->chunk = $chunk;
 
-				$abs_cz = $cursor->chunkZ << Chunk::COORD_BIT_SIZE;
+				$abs_cz = $chunkZ << Chunk::COORD_BIT_SIZE;
 				$min_k = max($abs_cz, $min_z) & Chunk::COORD_MASK;
 				$max_k = min($abs_cz + Chunk::COORD_MASK, $max_z) & Chunk::COORD_MASK;
 
-				for($cursor->subChunkY = $min_subChunkY; $cursor->subChunkY <= $max_subChunkY; ++$cursor->subChunkY){
-					$cursor->sub_chunk = $cursor->chunk->getSubChunk($cursor->subChunkY);
+				for($subChunkY = $min_subChunkY; $subChunkY <= $max_subChunkY; ++$subChunkY){
+					$sub_chunk = $chunk->getSubChunk($subChunkY);
 
-					$abs_cy = $cursor->subChunkY << Chunk::COORD_BIT_SIZE;
+					$abs_cy = $subChunkY << Chunk::COORD_BIT_SIZE;
 					$min_j = max($abs_cy, $min_y) & Chunk::COORD_MASK;
 					$max_j = min($abs_cy + Chunk::COORD_MASK, $max_y) & Chunk::COORD_MASK;
-					for($cursor->y = $min_j; $cursor->y <= $max_j; ++$cursor->y){
-						for($cursor->x = $min_i; $cursor->x <= $max_i; ++$cursor->x){
-							for($cursor->z = $min_k; $cursor->z <= $max_k; ++$cursor->z){
-								yield self::OP_WRITE_BUFFER;
+					for($y = $min_j; $y <= $max_j; ++$y){
+						for($x = $min_i; $x <= $max_i; ++$x){
+							for($z = $min_k; $z <= $max_k; ++$z){
+								yield [self::OP_WRITE_BUFFER, new SubChunkIteratorCursor($x, $y, $z, $chunkX, $chunkZ, $subChunkY, $sub_chunk, $chunk)] => Traverser::VALUE;
 							}
 						}
 					}
 				}
-				yield self::OP_WRITE_WORLD;
+				yield [self::OP_WRITE_WORLD, new ChunkIteratorCursor($chunkX, $chunkZ, $chunk)] => Traverser::VALUE;
+				if($generate){
+					$world->unregisterChunkLoader(EditorChunkLoader::instance(), $chunkX, $chunkZ);
+				}
 			}
 		}
 	}

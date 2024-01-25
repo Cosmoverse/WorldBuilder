@@ -24,7 +24,8 @@ abstract class EditorTask{
 	public function __construct(
 		readonly public World $world,
 		readonly public Selection $selection,
-		readonly public int $estimated_operations
+		readonly public int $estimated_operations,
+		readonly public bool $generate_new_chunks
 	){}
 
 	final public function registerListener(EditorTaskListener $listener) : EditorTaskListenerInfo{
@@ -39,10 +40,6 @@ abstract class EditorTask{
 	 * @return Generator<null, Traverser::VALUE, void, void>
 	 */
 	abstract public function run() : Generator;
-
-	protected function onChunkChanged(ChunkIteratorCursor $cursor) : void{
-		$cursor->world->setChunk($cursor->chunkX, $cursor->chunkZ, $cursor->chunk);
-	}
 
 	public function onCompleteOperations(int $completed) : void{
 		$this->operations_completed += $completed;

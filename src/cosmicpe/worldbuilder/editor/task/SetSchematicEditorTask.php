@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\editor\task;
 
 use cosmicpe\worldbuilder\editor\task\copy\nbtcopier\NamedtagCopierManager;
-use cosmicpe\worldbuilder\editor\task\utils\ChunkIteratorCursor;
 use cosmicpe\worldbuilder\editor\utils\schematic\Schematic;
 use Generator;
 use pocketmine\block\tile\TileFactory;
@@ -21,9 +20,9 @@ abstract class SetSchematicEditorTask extends EditorTask{
 	readonly private Vector3 $relative_position;
 	readonly private Schematic $clipboard;
 
-	public function __construct(World $world, Schematic $clipboard, Vector3 $relative_position){
+	public function __construct(World $world, Schematic $clipboard, Vector3 $relative_position, bool $generate_new_chunks){
 		$this->relative_position = $relative_position->floor()->addVector($clipboard->getRelativePosition());
-		parent::__construct($world, $clipboard->asSelection($this->relative_position), $clipboard->getVolume());
+		parent::__construct($world, $clipboard->asSelection($this->relative_position), $clipboard->getVolume(), $generate_new_chunks);
 		$this->clipboard = $clipboard;
 	}
 
@@ -52,13 +51,11 @@ abstract class SetSchematicEditorTask extends EditorTask{
 			yield null => Traverser::VALUE;
 		}
 
-		$cursor = new ChunkIteratorCursor($world);
 		foreach($chunks as $hash => $_){
-			World::getXZ($hash, $cursor->chunkX, $cursor->chunkZ);
-			$chunk = $world->loadChunk($cursor->chunkX, $cursor->chunkZ);
+			World::getXZ($hash, $chunkX, $chunkZ);
+			$chunk = $world->loadChunk($chunkX, $chunkZ);
 			if($chunk !== null){
-				$cursor->chunk = $chunk;
-				$this->onChunkChanged($cursor);
+				$this->world->setChunk($chunkX, $chunkZ, $chunk);
 			}
 		}
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\command\executor;
 
 use cosmicpe\worldbuilder\editor\task\SetEditorTask;
-use cosmicpe\worldbuilder\session\PlayerSessionManager;
+use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\utils\BlockUtils;
 use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
@@ -16,7 +16,7 @@ use pocketmine\utils\TextFormat;
 final class SetCommandExecutor implements CommandExecutor{
 
 	public function __construct(
-		readonly private PlayerSessionManager $session_manager
+		readonly private Loader $loader
 	){}
 
 	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
@@ -24,8 +24,8 @@ final class SetCommandExecutor implements CommandExecutor{
 		if(isset($args[0])){
 			$block = BlockUtils::fromString($args[0]);
 			if($block !== null){
-				$session = $this->session_manager->get($sender);
-				$session->pushEditorTask(new SetEditorTask($sender->getWorld(), $session->selection, $block), TextFormat::GREEN . "Setting " . $block->getName());
+				$session = $this->loader->getPlayerSessionManager()->get($sender);
+				$session->pushEditorTask(new SetEditorTask($sender->getWorld(), $session->selection, $block, $this->loader->getEditorManager()->generate_new_chunks), TextFormat::GREEN . "Setting " . $block->getName());
 				return true;
 			}
 			$sender->sendMessage(TextFormat::RED . $args[0] . " is not a valid block.");

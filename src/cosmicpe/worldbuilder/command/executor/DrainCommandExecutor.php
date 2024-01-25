@@ -7,7 +7,7 @@ namespace cosmicpe\worldbuilder\command\executor;
 use cosmicpe\worldbuilder\command\check\RequireSelectionCheck;
 use cosmicpe\worldbuilder\editor\task\ReplaceEditorTask;
 use cosmicpe\worldbuilder\editor\utils\replacement\BlockToBlockReplacementMap;
-use cosmicpe\worldbuilder\session\PlayerSessionManager;
+use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use pocketmine\block\RuntimeBlockStateRegistry;
 use pocketmine\block\VanillaBlocks;
@@ -24,7 +24,7 @@ final class DrainCommandExecutor implements CommandExecutor{
 	readonly private BlockToBlockReplacementMap $map;
 
 	public function __construct(
-		readonly private PlayerSessionManager $session_manager,
+		readonly private Loader $loader,
 		readonly private RequireSelectionCheck $selection_check
 	){
 		$this->map = new BlockToBlockReplacementMap();
@@ -38,7 +38,7 @@ final class DrainCommandExecutor implements CommandExecutor{
 
 	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
-		$session = $this->session_manager->get($sender);
+		$session = $this->loader->getPlayerSessionManager()->get($sender);
 		if(!isset($args[0])){
 			$result = $this->selection_check->validate($sender);
 			if($result !== null){
@@ -64,7 +64,7 @@ final class DrainCommandExecutor implements CommandExecutor{
 			$message = "Draining water in " . $radius . " block" . ($radius === 1 ? "" : "s") . " radius";
 		}
 
-		$session->pushEditorTask(new ReplaceEditorTask($sender->getWorld(), $selection, $this->map), TextFormat::GREEN . $message);
+		$session->pushEditorTask(new ReplaceEditorTask($sender->getWorld(), $selection, $this->map, $this->loader->getEditorManager()->generate_new_chunks), TextFormat::GREEN . $message);
 		return true;
 	}
 }

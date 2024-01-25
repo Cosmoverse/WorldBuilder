@@ -6,7 +6,7 @@ namespace cosmicpe\worldbuilder\command\executor;
 
 use cosmicpe\worldbuilder\editor\task\ReplaceEditorTask;
 use cosmicpe\worldbuilder\editor\utils\replacement\BlockToBlockReplacementMap;
-use cosmicpe\worldbuilder\session\PlayerSessionManager;
+use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\utils\BlockUtils;
 use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
@@ -17,7 +17,7 @@ use pocketmine\utils\TextFormat;
 final class ReplaceCommandExecutor implements CommandExecutor{
 
 	public function __construct(
-		readonly private PlayerSessionManager $session_manager
+		readonly private Loader $loader
 	){}
 
 	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
@@ -42,8 +42,8 @@ final class ReplaceCommandExecutor implements CommandExecutor{
 			}
 
 			if(!$map->isEmpty()){
-				$session = $this->session_manager->get($sender);
-				$session->pushEditorTask(new ReplaceEditorTask($sender->getWorld(), $session->selection, $map), TextFormat::GREEN . "Replacing " . $map);
+				$session = $this->loader->getPlayerSessionManager()->get($sender);
+				$session->pushEditorTask(new ReplaceEditorTask($sender->getWorld(), $session->selection, $map, $this->loader->getEditorManager()->generate_new_chunks), TextFormat::GREEN . "Replacing " . $map);
 				return true;
 			}
 		}

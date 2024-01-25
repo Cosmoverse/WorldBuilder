@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\editor\task;
 
+use cosmicpe\worldbuilder\editor\task\utils\ChunkIteratorCursor;
 use cosmicpe\worldbuilder\editor\task\utils\EditorTaskUtils;
 use cosmicpe\worldbuilder\editor\task\utils\SubChunkIteratorCursor;
 use cosmicpe\worldbuilder\session\utils\Selection;
@@ -19,8 +20,8 @@ class SetRandomEditorTask extends EditorTask{
 
 	readonly private WeightedRandomIntegerSelector $selector;
 
-	public function __construct(World $world, Selection $selection, WeightedRandomIntegerSelector $selector){
-		parent::__construct($world, $selection, (int) Vector3Utils::calculateVolume($selection->getPoint(0), $selection->getPoint(1)));
+	public function __construct(World $world, Selection $selection, WeightedRandomIntegerSelector $selector, bool $generate_new_chunks){
+		parent::__construct($world, $selection, (int) Vector3Utils::calculateVolume($selection->getPoint(0), $selection->getPoint(1)), $generate_new_chunks);
 		$this->selector = $selector;
 	}
 
@@ -29,16 +30,19 @@ class SetRandomEditorTask extends EditorTask{
 	}
 
 	public function run() : Generator{
-		$cursor = new SubChunkIteratorCursor($this->world);
-		foreach(EditorTaskUtils::iterateBlocks($this->selection, $cursor) as $operation){
-			if($operation === EditorTaskUtils::OP_WRITE_WORLD){
-				$cursor->world->setChunk($cursor->chunkX, $cursor->chunkZ, $cursor->chunk);
+		$traverser = new Traverser(EditorTaskUtils::iterateBlocks($this->world, $this->selection, $this->generate_new_chunks));
+		while(yield from $traverser->next($operation)){
+			[$op, $cursor] = $operation;
+			if($op === EditorTaskUtils::OP_WRITE_WORLD){
+				assert($cursor instanceof ChunkIteratorCursor);
+				$this->world->setChunk($cursor->x, $cursor->z, $cursor->chunk);
 				continue;
 			}
 
-			assert($operation === EditorTaskUtils::OP_WRITE_BUFFER);
+			assert($op === EditorTaskUtils::OP_WRITE_BUFFER);
+			assert($cursor instanceof SubChunkIteratorCursor);
 			$cursor->sub_chunk->setBlockStateId($cursor->x, $cursor->y, $cursor->z, $this->selector->generate(1)->current());
-			$tile = $cursor->chunk->getTile($cursor->x, ($cursor->subChunkY << Chunk::COORD_BIT_SIZE) + $cursor->y, $cursor->z);
+			$tile = $cursor->chunk->getTile($cursor->x, ($cursor->sub_chunk_y << Chunk::COORD_BIT_SIZE) + $cursor->y, $cursor->z);
 			if($tile !== null){
 				$cursor->chunk->removeTile($tile);
 				// $tile->onBlockDestroyed();

@@ -6,7 +6,7 @@ namespace cosmicpe\worldbuilder\command\executor;
 
 use cosmicpe\worldbuilder\editor\task\ReplaceSetRandomEditorTask;
 use cosmicpe\worldbuilder\editor\utils\replacement\BlockToWeightedRandomSelectorReplacementMap;
-use cosmicpe\worldbuilder\session\PlayerSessionManager;
+use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\utils\BlockUtils;
 use cosmicpe\worldbuilder\utils\WeightedRandomIntegerSelector;
 use pocketmine\command\Command;
@@ -18,7 +18,7 @@ use pocketmine\utils\TextFormat;
 final class ReplaceSetRandomCommandExecutor implements CommandExecutor{
 
 	public function __construct(
-		readonly private PlayerSessionManager $session_manager
+		readonly private Loader $loader
 	){}
 
 	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
@@ -101,8 +101,8 @@ final class ReplaceSetRandomCommandExecutor implements CommandExecutor{
 				$replacement_map->put($find_block, $randomizer);
 			}
 
-			$session = $this->session_manager->get($sender);
-			$session->pushEditorTask(new ReplaceSetRandomEditorTask($sender->getWorld(), $session->selection, $replacement_map), TextFormat::GREEN . "Replacing blocks with a randomized list of block(s)");
+			$session = $this->loader->getPlayerSessionManager()->get($sender);
+			$session->pushEditorTask(new ReplaceSetRandomEditorTask($sender->getWorld(), $session->selection, $replacement_map, $this->loader->getEditorManager()->generate_new_chunks), TextFormat::GREEN . "Replacing blocks with a randomized list of block(s)");
 			return true;
 		}
 

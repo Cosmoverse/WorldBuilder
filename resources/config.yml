@@ -1,4 +1,4 @@
-# WorldBuilder v0.0.2 configuration
+# WorldBuilder v0.0.5 configuration
 
 # The maximum number of blocks that can be iterated over a tick.
 # Decreasing this will slow down world editor processes.
@@ -8,3 +8,7 @@ max-ops-per-tick: 65536
 # Upgrades 'update blocks' from Java 1.8 worlds to PE-equivalent when performing conversion.
 # This conversion is executed only when the world is upgraded.
 register-pc-world-converter: false
+
+# Generates chunks that were never generated, instead of skipping chunks.
+# This addresses the issue with //set and other commands avoiding chunks and making the edit appear 'glitchy'.
+generate-new-chunks: true

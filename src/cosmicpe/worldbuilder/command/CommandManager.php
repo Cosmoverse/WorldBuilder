@@ -35,18 +35,18 @@ final class CommandManager{
 		$check_require_selection = new RequireSelectionCheck($this->loader->getPlayerSessionManager(), $check_player_only);
 		$session_manager = $this->loader->getPlayerSessionManager();
 
-		$this->setExecutor("/copy", new CopyCommandExecutor($session_manager), [$check_require_selection]);
-		$this->setExecutor("/drain", new DrainCommandExecutor($session_manager, $check_require_selection), [$check_player_only]);
-		$this->setExecutor("/paste", new PasteCommandExecutor($session_manager), [$check_require_selection]);
+		$this->setExecutor("/copy", new CopyCommandExecutor($this->loader), [$check_require_selection]);
+		$this->setExecutor("/drain", new DrainCommandExecutor($this->loader, $check_require_selection), [$check_player_only]);
+		$this->setExecutor("/paste", new PasteCommandExecutor($this->loader), [$check_require_selection]);
 		$this->setExecutor("/pos1", new PosCommandExecutor($session_manager, 0), [$check_player_only]);
 		$this->setExecutor("/pos2", new PosCommandExecutor($session_manager, 1), [$check_player_only]);
-		$this->setExecutor("/regeneratechunks", new RegenerateChunksCommandExecutor($session_manager), [$check_require_selection]);
-		$this->setExecutor("/replace", new ReplaceCommandExecutor($session_manager), [$check_require_selection]);
-		$this->setExecutor("/replacesetrandom", new ReplaceSetRandomCommandExecutor($session_manager), [$check_require_selection]);
+		$this->setExecutor("/regeneratechunks", new RegenerateChunksCommandExecutor($this->loader), [$check_require_selection]);
+		$this->setExecutor("/replace", new ReplaceCommandExecutor($this->loader), [$check_require_selection]);
+		$this->setExecutor("/replacesetrandom", new ReplaceSetRandomCommandExecutor($this->loader), [$check_require_selection]);
 		$this->setExecutor("/schematic", new SchematicCommandExecutor($this->loader), [$check_player_only]);
-		$this->setExecutor("/set", new SetCommandExecutor($session_manager), [$check_require_selection]);
-		$this->setExecutor("/setbiome", new SetBiomeCommandExecutor($session_manager), [$check_require_selection]);
-		$this->setExecutor("/setrandom", new SetRandomCommandExecutor($session_manager), [$check_require_selection]);
+		$this->setExecutor("/set", new SetCommandExecutor($this->loader), [$check_require_selection]);
+		$this->setExecutor("/setbiome", new SetBiomeCommandExecutor($this->loader), [$check_require_selection]);
+		$this->setExecutor("/setrandom", new SetRandomCommandExecutor($this->loader), [$check_require_selection]);
 	}
 
 	/**

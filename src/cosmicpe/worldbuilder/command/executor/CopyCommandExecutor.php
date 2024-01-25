@@ -7,7 +7,7 @@ namespace cosmicpe\worldbuilder\command\executor;
 use cosmicpe\worldbuilder\editor\task\copy\CopyEditorTask;
 use cosmicpe\worldbuilder\editor\task\listener\EditorTaskOnCompletionListener;
 use cosmicpe\worldbuilder\editor\utils\schematic\SimpleSchematic;
-use cosmicpe\worldbuilder\session\PlayerSessionManager;
+use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
@@ -19,12 +19,12 @@ use pocketmine\utils\TextFormat;
 final class CopyCommandExecutor implements CommandExecutor{
 
 	public function __construct(
-		readonly private PlayerSessionManager $session_manager
+		readonly private Loader $loader
 	){}
 
 	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
-		$session = $this->session_manager->get($sender);
+		$session = $this->loader->getPlayerSessionManager()->get($sender);
 		$session->clipboard_schematic = null;
 
 		/** @var Selection $selection */
@@ -33,7 +33,7 @@ final class CopyCommandExecutor implements CommandExecutor{
 			Vector3::minComponents(...$selection->getPoints())->subtractVector($sender->getPosition()->floor()),
 			$selection->getPoint(0),
 			$selection->getPoint(1)
-		));
+		), $this->loader->getEditorManager()->generate_new_chunks);
 		$task->registerListener(new EditorTaskOnCompletionListener(static function(CopyEditorTask $task) use($session) : void{
 			$session->clipboard_schematic = $task->clipboard;
 		}));

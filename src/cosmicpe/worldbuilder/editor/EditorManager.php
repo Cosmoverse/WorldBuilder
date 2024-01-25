@@ -15,6 +15,7 @@ use RuntimeException;
 use SOFe\AwaitGenerator\Await;
 use function array_keys;
 use function array_rand;
+use function assert;
 use function count;
 use function floor;
 use function max;
@@ -24,6 +25,7 @@ use function spl_object_id;
 final class EditorManager{
 
 	readonly public EditorFormatRegistry $format_registry;
+	public bool $generate_new_chunks = true;
 	private int $max_ops_per_tick;
 	private bool $running = false;
 
@@ -39,6 +41,7 @@ final class EditorManager{
 	}
 
 	public function init(Loader $plugin) : void{
+		$this->generate_new_chunks = (bool) $plugin->getConfig()->get("generate-new-chunks", true);
 		$this->max_ops_per_tick = (int) $plugin->getConfig()->get("max-ops-per-tick");
 		$plugin->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void{
 			$sleeping = $this->sleeping;
@@ -57,10 +60,12 @@ final class EditorManager{
 	}
 
 	/**
-	 * @return Generator<mixed, Await::RESOLVE, void, void>
+	 * @return Generator<void, Await::RESOLVE, void, void>
 	 */
 	private function sleep() : Generator{
-		return Await::promise(function(Closure $resolve) : void{ $this->sleeping[] = $resolve; });
+		/** @var Closure(Closure() : void) : void $closure */
+		$closure = function(Closure $resolve) : void{ $this->sleeping[] = $resolve; };
+		yield from Await::promise($closure);
 	}
 
 	private function schedule() : Generator{

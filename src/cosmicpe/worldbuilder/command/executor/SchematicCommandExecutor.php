@@ -53,7 +53,7 @@ final class SchematicCommandExecutor implements CommandExecutor{
 							assert($sender instanceof Player);
 
 							$schematic = $this->loader->getEditorManager()->format_registry->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->import($contents);
-							$this->loader->getPlayerSessionManager()->get($sender)->pushEditorTask(new SimpleSetSchematicEditorTask($sender->getWorld(), $schematic, $sender->getPosition()->floor()), TextFormat::GREEN . "Importing {$file->getFilename()}");
+							$this->loader->getPlayerSessionManager()->get($sender)->pushEditorTask(new SimpleSetSchematicEditorTask($sender->getWorld(), $schematic, $sender->getPosition()->floor(), $this->loader->getEditorManager()->generate_new_chunks), TextFormat::GREEN . "Importing {$file->getFilename()}");
 						}else{
 							$sender->sendMessage(TextFormat::RED . "File not found: {$file->getPathname()}");
 						}
