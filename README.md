@@ -16,63 +16,61 @@ WorldBuilder is great for creative mode servers and provides an API for limiting
 ## Developer Docs
 ### Handling and filtering editor tasks
 If you are running a creative-mode server, you may want to disallow players from editing other player's region, or perhaps blacklisting TNTs and falling blocks from being world-edited in.
+
 ```php
+use cosmicpe\worldbuilder\editor\executor\SetEditorTaskInfo;
+use cosmicpe\worldbuilder\event\player\PlayerTriggerEditorTaskEvent;
+use pocketmine\block\BlockTypeIds;
+
 public function onPlayerTriggerEditorTask(PlayerTriggerEditorTaskEvent $event) : void{
 	$player = $event->player;
-	$task = $event->task;
-
-	$world = $task->world;
-	// TODO: Check if $world is not spawn_world
-
-	$selection = $task->selection;
-	// TODO: Check if all $selection->getPoints() lie in $player's plot.
-
-	if($task instanceof SetEditorTask){
-		$block = $task->getBlock();
-		if($block->getId() === BlockLegacyIds::TNT){
-			$event->setCancelled();
-			$player->sendMessage("//set-ting " . $block->getName() . " is not allowed!");
+	$task = $event->instance->info;
+	if($task instanceof SetEditorTaskInfo){
+		if($task->block->getTypeId() === BlockTypeIds::TNT){
+			$event->cancel();
+			$player->sendMessage("Setting " . $task->block->getName() . " is not allowed!");
 		}
 	}else{
-		// disallow players from using anything else besides //set because i am a dick.
-		$event->setCancelled();
-		$player->sendMessage($task->getName() . " is disallowed on the server.");
+		// disallow players from using anything else besides //set
+		$event->cancel();
+		$player->sendMessage("This operation is not allowed on the server.");
 	}
 }
 ```
 
 ### Monitoring editor tasks
 Boy do I need some sick world editor progress bars on my server! Let's start by creating an editor task listener...
-```php
-class MahEditorTaskListener implements EditorTaskListener{
 
-	public function onRegister(EditorTask $task) : void{
+```php
+use cosmicpe\worldbuilder\editor\executor\EditorTaskInfo;
+use cosmicpe\worldbuilder\editor\task\listener\EditorTaskListener;
+
+class MyEditorTaskListener implements EditorTaskListener{
+
+	public function onRegister(EditorTaskInfo $info) : void{
 		// Called after PlayerTriggerEditorTaskEvent has been triggered and the
 		// event hasn't been cancelled.
 	}
-	
-	public function onCompleteFraction(EditorTask $task, int $completed, int $total) : void{
-		// Progress bar material here!
+
+	public function onCompleteFraction(EditorTaskInfo $info, int $completed, int $total) : void{
 		// $player->sendPopup($task->getName() . " completed: " . sprintf("%0.2f", ($completed / $total) * 100) . "%");
 	}
-	
-	public function onCompletion(EditorTask $task) : void{
+
+	public function onCompletion(EditorTaskInfo $info) : void{
 		// $player->sendPopup($task->getName() . " completed!");
 	}
 }
 ```
 ...and then register it to an editor task!
+
 ```php
+use cosmicpe\worldbuilder\event\player\PlayerTriggerEditorTaskEvent;
+
 /**
  * @param PlayerTriggerEditorTaskEvent $event
  * @priority MONITOR
  */
 public function onPlayerTriggerEditorTask(PlayerTriggerEditorTaskEvent $event) : void{
-	$task = $event->task;
-	$handler = $task->registerListener(new MahEditorTaskListener());
-	// Don't forget to call $handler->unregister() once the player quits the server, if
-	// your listener is indirectly sending packets to the player.
-	// It is not necessary to unregister a handler from a completed task, you can safely
-	// register and forget.
+	$event->instance->registerListener(new MyEditorTaskListener());
 }
 ```
