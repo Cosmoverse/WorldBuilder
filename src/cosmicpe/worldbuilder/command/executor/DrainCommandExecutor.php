@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\command\executor;
 
 use cosmicpe\worldbuilder\command\check\RequireSelectionCheck;
-use cosmicpe\worldbuilder\editor\task\ReplaceEditorTask;
+use cosmicpe\worldbuilder\editor\executor\ReplaceEditorTaskInfo;
 use cosmicpe\worldbuilder\editor\utils\replacement\BlockToBlockReplacementMap;
 use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\session\utils\Selection;
@@ -64,7 +64,16 @@ final class DrainCommandExecutor implements CommandExecutor{
 			$message = "Draining water in " . $radius . " block" . ($radius === 1 ? "" : "s") . " radius";
 		}
 
-		$session->pushEditorTask(new ReplaceEditorTask($sender->getWorld(), $selection, $this->map, $this->loader->getEditorManager()->generate_new_chunks), TextFormat::GREEN . $message);
+		$p1 = $selection->getPoint(0);
+		$p2 = $selection->getPoint(1);
+		$manager = $this->loader->getEditorManager();
+		$session->pushEditorTask($manager->buildInstance(new ReplaceEditorTaskInfo(
+			$sender->getWorld(),
+			$p1->x, $p1->y, $p1->z,
+			$p2->x, $p2->y, $p2->z,
+			$this->map,
+			$manager->generate_new_chunks
+		)), TextFormat::GREEN . $message);
 		return true;
 	}
 }

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\command\executor;
 
-use cosmicpe\worldbuilder\editor\task\SetBiomeEditorTask;
+use cosmicpe\worldbuilder\editor\executor\SetBiomeEditorTaskInfo;
 use cosmicpe\worldbuilder\Loader;
-use cosmicpe\worldbuilder\session\PlayerSessionManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
@@ -36,7 +35,16 @@ final class SetBiomeCommandExecutor implements CommandExecutor{
 			$biome_id = $this->getBiomeIdFromString($args[0]);
 			if($biome_id !== null){
 				$session = $this->loader->getPlayerSessionManager()->get($sender);
-				$session->pushEditorTask(new SetBiomeEditorTask($sender->getWorld(), $session->selection, $biome_id, $this->loader->getEditorManager()->generate_new_chunks), TextFormat::GREEN . "Setting biome " . $biome_id);
+				$manager = $this->loader->getEditorManager();
+				$session->pushEditorTask($manager->buildInstance(new SetBiomeEditorTaskInfo(
+					$sender->getWorld(),
+					$session->selection->getPoint(0)->getFloorX(),
+					$session->selection->getPoint(0)->getFloorZ(),
+					$session->selection->getPoint(1)->getFloorX(),
+					$session->selection->getPoint(1)->getFloorZ(),
+					$biome_id,
+					$manager->generate_new_chunks
+				)), TextFormat::GREEN . "Setting biome " . $biome_id);
 				return true;
 			}
 			$sender->sendMessage(TextFormat::RED . $args[0] . " is not a valid biome ID.");

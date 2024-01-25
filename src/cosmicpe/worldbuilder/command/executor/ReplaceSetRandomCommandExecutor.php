@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\command\executor;
 
-use cosmicpe\worldbuilder\editor\task\ReplaceSetRandomEditorTask;
+use cosmicpe\worldbuilder\editor\executor\ReplaceSetRandomEditorTaskInfo;
 use cosmicpe\worldbuilder\editor\utils\replacement\BlockToWeightedRandomSelectorReplacementMap;
 use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\utils\BlockUtils;
@@ -102,7 +102,18 @@ final class ReplaceSetRandomCommandExecutor implements CommandExecutor{
 			}
 
 			$session = $this->loader->getPlayerSessionManager()->get($sender);
-			$session->pushEditorTask(new ReplaceSetRandomEditorTask($sender->getWorld(), $session->selection, $replacement_map, $this->loader->getEditorManager()->generate_new_chunks), TextFormat::GREEN . "Replacing blocks with a randomized list of block(s)");
+			$manager = $this->loader->getEditorManager();
+			$session->pushEditorTask($manager->buildInstance(new ReplaceSetRandomEditorTaskInfo(
+				$sender->getWorld(),
+				$session->selection->getPoint(0)->getFloorX(),
+				$session->selection->getPoint(0)->getFloorY(),
+				$session->selection->getPoint(0)->getFloorZ(),
+				$session->selection->getPoint(1)->getFloorX(),
+				$session->selection->getPoint(1)->getFloorY(),
+				$session->selection->getPoint(1)->getFloorZ(),
+				$replacement_map,
+				$manager->generate_new_chunks
+			)), TextFormat::GREEN . "Replacing blocks with a randomized list of block(s)");
 			return true;
 		}
 

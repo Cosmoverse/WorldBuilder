@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\editor\task\utils;
 
 use Closure;
-use cosmicpe\worldbuilder\session\utils\Selection;
 use Generator;
-use pocketmine\math\Vector3;
 use pocketmine\world\format\Chunk;
 use pocketmine\world\World;
 use SOFe\AwaitGenerator\Await;
@@ -40,22 +38,18 @@ final class EditorTaskUtils{
 
 	/**
 	 * @param World $world
-	 * @param Selection $selection
+	 * @param int $x1
+	 * @param int $z1
+	 * @param int $x2
+	 * @param int $z2
 	 * @param bool $generate
 	 * @return Generator<ChunkIteratorCursor, Traverser::VALUE|Await::RESOLVE>
 	 */
-	public static function iterateChunks(World $world, Selection $selection, bool $generate) : Generator{
-		$first = $selection->getPoint(0);
-		$second = $selection->getPoint(1);
-
-		$min = Vector3::minComponents($first, $second);
-		$min_x = $min->x >> Chunk::COORD_BIT_SIZE;
-		$min_z = $min->z >> Chunk::COORD_BIT_SIZE;
-
-		$max = Vector3::maxComponents($first, $second);
-		$max_x = $max->x >> Chunk::COORD_BIT_SIZE;
-		$max_z = $max->z >> Chunk::COORD_BIT_SIZE;
-
+	public static function iterateChunks(World $world, int $x1, int $z1, int $x2, int $z2, bool $generate) : Generator{
+		$min_x = min($x1, $x2) >> Chunk::COORD_BIT_SIZE;
+		$min_z = min($z1, $z2) >> Chunk::COORD_BIT_SIZE;
+		$max_x = max($x1, $x2) >> Chunk::COORD_BIT_SIZE;
+		$max_z = max($z1, $z2) >> Chunk::COORD_BIT_SIZE;
 		for($chunkX = $min_x; $chunkX <= $max_x; ++$chunkX){
 			for($chunkZ = $min_z; $chunkZ <= $max_z; ++$chunkZ){
 				$chunk = yield from self::retrieveChunk($world, $chunkX, $chunkZ, $generate);
@@ -72,23 +66,22 @@ final class EditorTaskUtils{
 
 	/**
 	 * @param World $world
-	 * @param Selection $selection
+	 * @param int $x1
+	 * @param int $y1
+	 * @param int $z1
+	 * @param int $x2
+	 * @param int $y2
+	 * @param int $z2
 	 * @param bool $generate
 	 * @return Generator<array{self::OP_WRITE_BUFFER, SubChunkIteratorCursor}|array{self::OP_WRITE_WORLD, ChunkIteratorCursor}, Traverser::VALUE|Await::RESOLVE>
 	 */
-	public static function iterateBlocks(World $world, Selection $selection, bool $generate) : Generator{
-		$first = $selection->getPoint(0);
-		$second = $selection->getPoint(1);
-
-		$min = Vector3::minComponents($first, $second);
-		$min_x = $min->x;
-		$min_y = $min->y;
-		$min_z = $min->z;
-
-		$max = Vector3::maxComponents($first, $second);
-		$max_x = $max->x;
-		$max_y = $max->y;
-		$max_z = $max->z;
+	public static function iterateBlocks(World $world, int $x1, int $y1, int $z1, int $x2, int $y2, int $z2, bool $generate) : Generator{
+		$min_x = min($x1, $x2);
+		$min_y = min($y1, $y2);
+		$min_z = min($z1, $z2);
+		$max_x = max($x1, $x2);
+		$max_y = max($y1, $y2);
+		$max_z = max($z1, $z2);
 
 		$min_chunkX = $min_x >> Chunk::COORD_BIT_SIZE;
 		$max_chunkX = $max_x >> Chunk::COORD_BIT_SIZE;

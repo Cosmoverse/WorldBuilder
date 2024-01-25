@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\command\executor;
 
-use cosmicpe\worldbuilder\editor\task\ReplaceEditorTask;
+use cosmicpe\worldbuilder\editor\executor\ReplaceEditorTaskInfo;
 use cosmicpe\worldbuilder\editor\utils\replacement\BlockToBlockReplacementMap;
 use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\utils\BlockUtils;
@@ -43,7 +43,18 @@ final class ReplaceCommandExecutor implements CommandExecutor{
 
 			if(!$map->isEmpty()){
 				$session = $this->loader->getPlayerSessionManager()->get($sender);
-				$session->pushEditorTask(new ReplaceEditorTask($sender->getWorld(), $session->selection, $map, $this->loader->getEditorManager()->generate_new_chunks), TextFormat::GREEN . "Replacing " . $map);
+				$manager = $this->loader->getEditorManager();
+				$session->pushEditorTask($manager->buildInstance(new ReplaceEditorTaskInfo(
+					$sender->getWorld(),
+					$session->selection->getPoint(0)->getFloorX(),
+					$session->selection->getPoint(0)->getFloorY(),
+					$session->selection->getPoint(0)->getFloorZ(),
+					$session->selection->getPoint(1)->getFloorX(),
+					$session->selection->getPoint(1)->getFloorY(),
+					$session->selection->getPoint(1)->getFloorZ(),
+					$map,
+					$manager->generate_new_chunks
+				)), TextFormat::GREEN . "Replacing " . $map);
 				return true;
 			}
 		}

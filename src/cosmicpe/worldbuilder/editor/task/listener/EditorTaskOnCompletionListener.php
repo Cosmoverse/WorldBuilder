@@ -5,25 +5,24 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\editor\task\listener;
 
 use Closure;
-use cosmicpe\worldbuilder\editor\task\EditorTask;
+use cosmicpe\worldbuilder\editor\executor\EditorTaskInfo;
 
-class EditorTaskOnCompletionListener implements EditorTaskListener{
+final class EditorTaskOnCompletionListener implements EditorTaskListener{
 
 	/**
-	 * @template TEditorTask of EditorTask
-	 * @param Closure(TEditorTask) : void $callback
+	 * @param Closure(EditorTaskInfo) : void $callback
 	 */
 	public function __construct(
 		readonly private Closure $callback
 	){}
 
-	public function onRegister(EditorTask $task) : void{
+	public function onRegister(EditorTaskInfo $info) : void{
 	}
 
-	public function onCompleteFraction(EditorTask $task, int $completed, int $total) : void{
+	public function onCompleteFraction(EditorTaskInfo $info, int $completed, int $total) : void{
 	}
 
-	public function onCompletion(EditorTask $task) : void{
-		($this->callback)($task);
+	public function onCompletion(EditorTaskInfo $info) : void{
+		($this->callback)($info);
 	}
 }

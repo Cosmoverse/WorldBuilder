@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\command\executor;
 
+use cosmicpe\worldbuilder\editor\executor\SetSchematicEditorTaskInfo;
 use cosmicpe\worldbuilder\editor\format\EditorFormatIds;
-use cosmicpe\worldbuilder\editor\task\SimpleSetSchematicEditorTask;
 use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\utils\FileSystemUtils;
 use pocketmine\command\Command;
@@ -53,7 +53,16 @@ final class SchematicCommandExecutor implements CommandExecutor{
 							assert($sender instanceof Player);
 
 							$schematic = $this->loader->getEditorManager()->format_registry->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->import($contents);
-							$this->loader->getPlayerSessionManager()->get($sender)->pushEditorTask(new SimpleSetSchematicEditorTask($sender->getWorld(), $schematic, $sender->getPosition()->floor(), $this->loader->getEditorManager()->generate_new_chunks), TextFormat::GREEN . "Importing {$file->getFilename()}");
+							$relative = $sender->getPosition();
+							$manager = $this->loader->getEditorManager();
+							$this->loader->getPlayerSessionManager()->get($sender)->pushEditorTask($manager->buildInstance(new SetSchematicEditorTaskInfo(
+								$sender->getWorld(),
+								$schematic,
+								$relative->getFloorX(),
+								$relative->getFloorY(),
+								$relative->getFloorZ(),
+								$manager->generate_new_chunks
+							)), TextFormat::GREEN . "Importing {$file->getFilename()}");
 						}else{
 							$sender->sendMessage(TextFormat::RED . "File not found: {$file->getPathname()}");
 						}

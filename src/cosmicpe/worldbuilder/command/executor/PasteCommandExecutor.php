@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\command\executor;
 
-use cosmicpe\worldbuilder\editor\task\copy\PasteEditorTask;
+use cosmicpe\worldbuilder\editor\executor\PasteEditorTaskInfo;
 use cosmicpe\worldbuilder\Loader;
 use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
@@ -23,7 +23,16 @@ final class PasteCommandExecutor implements CommandExecutor{
 		$session = $this->loader->getPlayerSessionManager()->get($sender);
 		$clipboard = $session->clipboard_schematic;
 		if($clipboard !== null){
-			$session->pushEditorTask(new PasteEditorTask($sender->getWorld(), $clipboard, $sender->getPosition()->floor(), $this->loader->getEditorManager()->generate_new_chunks), TextFormat::GREEN . "Pasting blocks");
+			$relative = $sender->getPosition();
+			$manager = $this->loader->getEditorManager();
+			$session->pushEditorTask($manager->buildInstance(new PasteEditorTaskInfo(
+				$sender->getWorld(),
+				$clipboard,
+				$relative->getFloorX(),
+				$relative->getFloorY(),
+				$relative->getFloorZ(),
+				$manager->generate_new_chunks
+			)), TextFormat::GREEN . "Pasting blocks");
 		}else{
 			$sender->sendMessage(TextFormat::RED . "You must //copy a region first.");
 		}

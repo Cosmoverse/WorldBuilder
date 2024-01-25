@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\command\executor;
 
-use cosmicpe\worldbuilder\editor\task\SetRandomEditorTask;
+use cosmicpe\worldbuilder\editor\executor\SetRandomEditorTaskInfo;
 use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\utils\BlockUtils;
 use cosmicpe\worldbuilder\utils\WeightedRandomIntegerSelector;
@@ -58,7 +58,18 @@ final class SetRandomCommandExecutor implements CommandExecutor{
 
 			$randomizer->setup();
 			$session = $this->loader->getPlayerSessionManager()->get($sender);
-			$session->pushEditorTask(new SetRandomEditorTask($sender->getWorld(), $session->selection, $randomizer, $this->loader->getEditorManager()->generate_new_chunks), TextFormat::GREEN . "Setting a randomized list of {$randomizer->count()} block(s)");
+			$manager = $this->loader->getEditorManager();
+			$session->pushEditorTask($manager->buildInstance(new SetRandomEditorTaskInfo(
+				$sender->getWorld(),
+				$session->selection->getPoint(0)->getFloorX(),
+				$session->selection->getPoint(0)->getFloorY(),
+				$session->selection->getPoint(0)->getFloorZ(),
+				$session->selection->getPoint(1)->getFloorX(),
+				$session->selection->getPoint(1)->getFloorY(),
+				$session->selection->getPoint(1)->getFloorZ(),
+				$randomizer,
+				$manager->generate_new_chunks
+			)), TextFormat::GREEN . "Setting a randomized list of {$randomizer->count()} block(s)");
 			return true;
 		}
 

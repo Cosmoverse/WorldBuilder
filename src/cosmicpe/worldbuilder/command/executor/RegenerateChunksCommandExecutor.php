@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\command\executor;
 
-use cosmicpe\worldbuilder\editor\task\RegenerateChunksEditorTask;
+use cosmicpe\worldbuilder\editor\executor\RegenerateChunksEditorTaskInfo;
 use cosmicpe\worldbuilder\Loader;
 use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
@@ -22,7 +22,13 @@ final class RegenerateChunksCommandExecutor implements CommandExecutor{
 		assert($sender instanceof Player);
 		$session = $this->loader->getPlayerSessionManager()->get($sender);
 		$selection = $session->selection;
-		$session->pushEditorTask(new RegenerateChunksEditorTask($sender->getWorld(), $selection, $this->loader->getEditorManager()->generate_new_chunks), TextFormat::GREEN . "Regenerating chunks");
+		$session->pushEditorTask($this->loader->getEditorManager()->buildInstance(new RegenerateChunksEditorTaskInfo(
+			$sender->getWorld(),
+			$selection->getPoint(0)->getFloorX(),
+			$selection->getPoint(0)->getFloorZ(),
+			$selection->getPoint(1)->getFloorX(),
+			$selection->getPoint(1)->getFloorZ()
+		)), TextFormat::GREEN . "Regenerating chunks");
 		return true;
 	}
 }
