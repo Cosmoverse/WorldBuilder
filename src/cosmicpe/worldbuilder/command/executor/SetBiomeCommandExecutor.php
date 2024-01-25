@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\command\executor;
 
 use cosmicpe\worldbuilder\editor\task\SetBiomeEditorTask;
+use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
@@ -21,7 +22,7 @@ final class SetBiomeCommandExecutor extends WorldBuilderCommandExecutor{
 		return null;
 	}
 
-	protected function executeCommand(CommandSender $sender, \pocketmine\command\Command $command, string $label, array $args) : bool{
+	protected function executeCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
 		if(isset($args[0])){
 			$biome_id = $this->getBiomeIdFromString($args[0]);

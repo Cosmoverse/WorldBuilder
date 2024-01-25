@@ -8,13 +8,14 @@ use cosmicpe\worldbuilder\editor\task\ReplaceSetRandomEditorTask;
 use cosmicpe\worldbuilder\editor\utils\replacement\BlockToWeightedRandomSelectorReplacementMap;
 use cosmicpe\worldbuilder\utils\BlockUtils;
 use cosmicpe\worldbuilder\utils\WeightedRandomIntegerSelector;
+use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
 final class ReplaceSetRandomCommandExecutor extends WorldBuilderCommandExecutor{
 
-	protected function executeCommand(CommandSender $sender, \pocketmine\command\Command $command, string $label, array $args) : bool{
+	protected function executeCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
 		if(isset($args[0])){
 			$arg_str = implode(" ", $args); // TODO: Iterate over $args directly to support block identifiers with spaces (do they even have spaces in identifiers?)
