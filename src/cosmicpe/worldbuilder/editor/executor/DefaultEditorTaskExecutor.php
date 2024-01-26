@@ -248,8 +248,11 @@ final class DefaultEditorTaskExecutor{
 			$y += $relative_y;
 			$z += $relative_z;
 			if($iterator->moveTo($x, $y, $z) === SubChunkExplorerStatus::INVALID){
-				++$progress;
-				continue;
+				$info->world->loadChunk($x >> Chunk::COORD_BIT_SIZE, $z >> Chunk::COORD_BIT_SIZE);
+				if($iterator->moveTo($x, $y, $z) === SubChunkExplorerStatus::INVALID){
+					++$progress;
+					continue;
+				}
 			}
 
 			if($entry->tile_nbt !== null){
