@@ -10,12 +10,12 @@ use pocketmine\world\World;
 final class PasteEditorTaskInfo implements EditorTaskInfo{
 
 	public function __construct(
-		readonly public World     $world,
+		readonly public World $world,
 		readonly public Clipboard $clipboard,
-		readonly public int       $relative_x,
-		readonly public int       $relative_y,
-		readonly public int       $relative_z,
-		readonly public bool      $generate_new_chunks
+		readonly public int $relative_x,
+		readonly public int $relative_y,
+		readonly public int $relative_z,
+		readonly public bool $generate_new_chunks
 	){}
 
 	public function getName() : string{
