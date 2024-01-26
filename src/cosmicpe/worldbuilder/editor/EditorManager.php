@@ -105,15 +105,15 @@ final class EditorManager{
 		yield from Await::promise($closure);
 	}
 
+	private function calculateOpsPerTick() : int{
+		return max(1024, (int) floor($this->max_ops_per_tick / max(count($this->tasks), 1)));
+	}
+
 	private function schedule() : Generator{
 		!$this->running || throw new RuntimeException("Tried to run a duplicate scheduler");
 		$this->running = true;
-		$tasks_c = count($this->tasks);
-		$tasks_c > 0 || throw new RuntimeException("Tried to run a scheduler without pending tasks");
-		$ops = max(1024, (int) floor($this->max_ops_per_tick / $tasks_c));
 		$completed = 0;
-		$ids = array_keys($this->tasks);
-		shuffle($ids);
+		$ops = $this->calculateOpsPerTick();
 		while(count($this->tasks) > 0){
 			$id = array_rand($this->tasks);
 			$state = $this->tasks[$id];
@@ -137,6 +137,7 @@ final class EditorManager{
 			if($completed >= $ops){
 				yield from $this->sleep();
 				$completed = 0;
+				$ops = $this->calculateOpsPerTick();
 			}
 		}
 		$this->running = false;

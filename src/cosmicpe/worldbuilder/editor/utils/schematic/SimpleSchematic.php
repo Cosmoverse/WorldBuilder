@@ -9,7 +9,8 @@ use Generator;
 use pocketmine\math\Vector3;
 use pocketmine\world\World;
 
-class SimpleSchematic extends AdvancedSchematic{
+final class SimpleSchematic implements Schematic{
+	use SimpleSchematicTrait;
 
 	/** @var array<int, SchematicEntry> */
 	private array $entries = [];

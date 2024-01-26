@@ -6,12 +6,12 @@ namespace cosmicpe\worldbuilder\editor\utils\schematic;
 
 use pocketmine\math\Vector3;
 
-abstract class AdvancedSchematic implements Schematic{
+trait SimpleSchematicTrait{
 
 	public function __construct(
-		protected Vector3 $relative_position,
-		protected Vector3 $minimum,
-		protected Vector3 $maximum
+		readonly private Vector3 $relative_position,
+		readonly private Vector3 $minimum,
+		readonly private Vector3 $maximum
 	){}
 
 	public function getWidth() : int{
