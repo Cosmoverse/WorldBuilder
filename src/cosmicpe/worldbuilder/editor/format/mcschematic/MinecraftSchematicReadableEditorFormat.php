@@ -6,6 +6,7 @@ namespace cosmicpe\worldbuilder\editor\format\mcschematic;
 
 use cosmicpe\worldbuilder\editor\format\ReadableEditorFormat;
 use cosmicpe\worldbuilder\editor\utils\clipboard\Clipboard;
+use cosmicpe\worldbuilder\editor\utils\clipboard\InMemoryClipboard;
 use pocketmine\block\tile\Tile;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\data\bedrock\block\BlockStateDeserializeException;
@@ -51,6 +52,6 @@ class MinecraftSchematicReadableEditorFormat implements ReadableEditorFormat{
 			$explorer->tile_entities[$explorer->indexAt($tag->getInt(Tile::TAG_X), $tag->getInt(Tile::TAG_Y), $tag->getInt(Tile::TAG_Z))] = $tag;
 		}
 
-		return new LazyLoadedMinecraftSchematic(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3($width - 1, $height - 1, $length - 1), $explorer);
+		return new LazyLoadedMinecraftSchematic(new InMemoryClipboard(new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3($width - 1, $height - 1, $length - 1)), $explorer);
 	}
 }

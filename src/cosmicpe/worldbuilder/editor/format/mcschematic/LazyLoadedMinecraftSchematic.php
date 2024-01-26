@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\editor\format\mcschematic;
 
+use cosmicpe\worldbuilder\editor\utils\clipboard\Clipboard;
 use cosmicpe\worldbuilder\editor\utils\clipboard\ClipboardEntry;
-use cosmicpe\worldbuilder\editor\utils\clipboard\InMemoryClipboard;
+use cosmicpe\worldbuilder\session\utils\Selection;
 use Generator;
 use pocketmine\math\Vector3;
 
-class LazyLoadedMinecraftSchematic extends InMemoryClipboard{
+final class LazyLoadedMinecraftSchematic implements Clipboard{
 
-	readonly private MinecraftSchematicExplorer $explorer;
-
-	public function __construct(Vector3 $relative_position, Vector3 $minimum, Vector3 $maximum, MinecraftSchematicExplorer $explorer){
-		parent::__construct($relative_position, $minimum, $maximum);
-		$this->explorer = $explorer;
-	}
+	public function __construct(
+		readonly private Clipboard $inner,
+		readonly private MinecraftSchematicExplorer $explorer
+	){}
 
 	public function getWidth() : int{
 		return 1 + $this->explorer->width;
@@ -35,7 +34,7 @@ class LazyLoadedMinecraftSchematic extends InMemoryClipboard{
 	}
 
 	public function get(int $x, int $y, int $z) : ?ClipboardEntry{
-		$result = parent::get($x, $y, $z);
+		$result = $this->inner->get($x, $y, $z);
 		if($result === null){
 			$result = $this->explorer->getSchematicEntryAt($x, $y, $z);
 			if($result !== null){
@@ -68,5 +67,17 @@ class LazyLoadedMinecraftSchematic extends InMemoryClipboard{
 				}
 			}
 		}
+	}
+
+	public function asSelection(Vector3 $relative_to) : Selection{
+		return $this->inner->asSelection($relative_to);
+	}
+
+	public function getRelativePosition() : Vector3{
+		return $this->inner->getRelativePosition();
+	}
+
+	public function copy(int $x, int $y, int $z, ClipboardEntry $entry) : void{
+		$this->inner->copy($x, $y, $z, $entry);
 	}
 }
