@@ -3,15 +3,19 @@
 # The maximum number of blocks that can be iterated over a tick.
 # Decreasing this will slow down world editor processes.
 # Increasing this will speed up world editor processes but may decrease server TPS
+# Default: 65536
 max-ops-per-tick: 65536
 
 # Upgrades 'update blocks' from Java 1.8 worlds to PE-equivalent when performing conversion.
 # This conversion is executed only when the world is upgraded.
+# Default: false
 register-pc-world-converter: false
 
 # Generates chunks that were never generated, instead of skipping chunks.
 # This addresses the issue with //set and other commands avoiding chunks and making the edit appear 'glitchy'.
+# Default: true
 generate-new-chunks: true
 
 # Shows a popup text to players that displays progress of the editor task
+# Default: true
 display-progress-bar: true
