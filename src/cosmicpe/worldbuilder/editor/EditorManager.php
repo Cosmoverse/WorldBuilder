@@ -19,10 +19,15 @@ use cosmicpe\worldbuilder\editor\executor\SetSchematicEditorTaskInfo;
 use cosmicpe\worldbuilder\editor\format\EditorFormatRegistry;
 use cosmicpe\worldbuilder\editor\task\copy\nbtcopier\NamedtagCopierManager;
 use cosmicpe\worldbuilder\editor\task\listener\PopupProgressEditorTaskListener;
+use cosmicpe\worldbuilder\editor\utils\clipboard\BufferedClipboard;
+use cosmicpe\worldbuilder\editor\utils\clipboard\Clipboard;
+use cosmicpe\worldbuilder\editor\utils\clipboard\InMemoryClipboard;
 use cosmicpe\worldbuilder\event\player\PlayerTriggerEditorTaskEvent;
 use cosmicpe\worldbuilder\Loader;
 use Generator;
+use Logger;
 use pocketmine\event\EventPriority;
+use pocketmine\math\Vector3;
 use pocketmine\scheduler\ClosureTask;
 use RuntimeException;
 use SOFe\AwaitGenerator\Await;
@@ -32,11 +37,15 @@ use function count;
 use function floor;
 use function max;
 use function spl_object_id;
+use function stream_get_meta_data;
+use function tmpfile;
 
 final class EditorManager{
 
 	readonly public EditorFormatRegistry $format_registry;
 	readonly private DefaultEditorTaskExecutor $default_editor_task_executor;
+	private Logger $logger;
+	public bool $buffered_clipboards = true;
 	public bool $generate_new_chunks = true;
 	private int $max_ops_per_tick;
 	private bool $running = false;
@@ -70,8 +79,10 @@ final class EditorManager{
 	}
 
 	public function init(Loader $plugin) : void{
+		$this->logger = $plugin->getLogger();
 		$this->generate_new_chunks = (bool) $plugin->getConfig()->get("generate-new-chunks", true);
 		$this->max_ops_per_tick = (int) $plugin->getConfig()->get("max-ops-per-tick");
+		$this->buffered_clipboards = (bool) $plugin->getConfig()->get("buffer-clipboard-operations", true);
 		$plugin->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void{
 			$sleeping = $this->sleeping;
 			$this->sleeping = [];
@@ -85,6 +96,17 @@ final class EditorManager{
 				$event->instance->registerListener(new PopupProgressEditorTaskListener($event->player));
 			}, EventPriority::MONITOR, $plugin);
 		}
+	}
+
+	public function buildClipboard(Vector3 $p1, Vector3 $p2, Vector3 $relative_pos) : Clipboard{
+		if(!$this->buffered_clipboards){
+			return new InMemoryClipboard($relative_pos, $p1, $p2);
+		}
+		$resource = tmpfile();
+		$resource !== false || throw new RuntimeException("Failed to create temporary resource file");
+		$this->logger->debug("Created temporary resource file for clipboard: " . stream_get_meta_data($resource)["uri"]);
+		// resource will automatically be deleted when clipboard is gc-d
+		return new BufferedClipboard($relative_pos, $p1, $p2, $resource);
 	}
 
 	public function buildInstance(EditorTaskInfo $info) : EditorTaskInstance{

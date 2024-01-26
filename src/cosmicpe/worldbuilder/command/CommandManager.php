@@ -34,9 +34,8 @@ final class CommandManager{
 		$check_player_only = new PlayerOnlyCommandCheck();
 		$check_require_selection = new RequireSelectionCheck($this->loader->getPlayerSessionManager(), $check_player_only);
 		$session_manager = $this->loader->getPlayerSessionManager();
-		$buffer_clipboard_operations = (bool) $this->loader->getConfig()->get("buffer-clipboard-operations", true);
 
-		$this->setExecutor("/copy", new CopyCommandExecutor($this->loader, $buffer_clipboard_operations), [$check_require_selection]);
+		$this->setExecutor("/copy", new CopyCommandExecutor($this->loader), [$check_require_selection]);
 		$this->setExecutor("/drain", new DrainCommandExecutor($this->loader, $check_require_selection), [$check_player_only]);
 		$this->setExecutor("/paste", new PasteCommandExecutor($this->loader), [$check_require_selection]);
 		$this->setExecutor("/pos1", new PosCommandExecutor($session_manager, 0), [$check_player_only]);
