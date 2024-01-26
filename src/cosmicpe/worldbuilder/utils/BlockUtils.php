@@ -7,7 +7,6 @@ namespace cosmicpe\worldbuilder\utils;
 use pocketmine\block\Block;
 use pocketmine\block\BlockTypeIds;
 use pocketmine\block\VanillaBlocks;
-use pocketmine\item\ItemTypeIds;
 use pocketmine\item\LegacyStringToItemParser;
 use pocketmine\item\LegacyStringToItemParserException;
 use pocketmine\item\StringToItemParser;

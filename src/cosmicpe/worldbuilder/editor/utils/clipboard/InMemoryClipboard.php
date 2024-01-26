@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\editor\utils\clipboard;
 
-use cosmicpe\worldbuilder\session\utils\Selection;
 use Generator;
-use pocketmine\math\Vector3;
 use pocketmine\world\World;
 
 final class InMemoryClipboard implements Clipboard{

@@ -27,12 +27,10 @@ use pocketmine\scheduler\ClosureTask;
 use RuntimeException;
 use SOFe\AwaitGenerator\Await;
 use SOFe\AwaitGenerator\Traverser;
-use function array_keys;
 use function array_rand;
 use function count;
 use function floor;
 use function max;
-use function shuffle;
 use function spl_object_id;
 
 final class EditorManager{
