@@ -6,7 +6,7 @@ namespace cosmicpe\worldbuilder\session;
 
 use cosmicpe\worldbuilder\editor\EditorManager;
 use cosmicpe\worldbuilder\editor\EditorTaskInstance;
-use cosmicpe\worldbuilder\editor\utils\schematic\Schematic;
+use cosmicpe\worldbuilder\editor\utils\clipboard\Clipboard;
 use cosmicpe\worldbuilder\event\player\PlayerTriggerEditorTaskEvent;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use pocketmine\player\Player;
@@ -14,7 +14,7 @@ use pocketmine\player\Player;
 final class PlayerSession{
 
 	public ?Selection $selection = null;
-	public ?Schematic $clipboard_schematic = null;
+	public ?Clipboard $clipboard = null;
 
 	public function __construct(
 		readonly private Player $player,

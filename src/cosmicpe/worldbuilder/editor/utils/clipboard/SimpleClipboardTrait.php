@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\editor\utils\schematic;
+namespace cosmicpe\worldbuilder\editor\utils\clipboard;
 
 use pocketmine\math\Vector3;
 
-trait SimpleSchematicTrait{
+trait SimpleClipboardTrait{
 
 	public function __construct(
 		readonly private Vector3 $relative_position,

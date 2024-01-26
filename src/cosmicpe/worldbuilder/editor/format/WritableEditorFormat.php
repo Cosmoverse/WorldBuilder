@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\editor\format;
 
-use cosmicpe\worldbuilder\editor\utils\schematic\Schematic;
+use cosmicpe\worldbuilder\editor\utils\clipboard\Clipboard;
 
 interface WritableEditorFormat{
 
-	public function write(Schematic $schematic) : string;
+	public function write(Clipboard $schematic) : string;
 }

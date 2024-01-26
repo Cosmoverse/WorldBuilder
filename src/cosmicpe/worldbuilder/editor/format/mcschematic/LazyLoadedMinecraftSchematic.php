@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\editor\format\mcschematic;
 
-use cosmicpe\worldbuilder\editor\utils\schematic\SchematicEntry;
-use cosmicpe\worldbuilder\editor\utils\schematic\SimpleSchematic;
+use cosmicpe\worldbuilder\editor\utils\clipboard\ClipboardEntry;
+use cosmicpe\worldbuilder\editor\utils\clipboard\SimpleClipboard;
 use Generator;
 use pocketmine\math\Vector3;
 
-class LazyLoadedMinecraftSchematic extends SimpleSchematic{
+class LazyLoadedMinecraftSchematic extends SimpleClipboard{
 
 	readonly private MinecraftSchematicExplorer $explorer;
 
@@ -34,7 +34,7 @@ class LazyLoadedMinecraftSchematic extends SimpleSchematic{
 		return $this->getWidth() * $this->getLength() * $this->getHeight();
 	}
 
-	public function get(int $x, int $y, int $z) : ?SchematicEntry{
+	public function get(int $x, int $y, int $z) : ?ClipboardEntry{
 		$result = parent::get($x, $y, $z);
 		if($result === null){
 			$result = $this->explorer->getSchematicEntryAt($x, $y, $z);
@@ -49,7 +49,7 @@ class LazyLoadedMinecraftSchematic extends SimpleSchematic{
 	 * @param int $x
 	 * @param int $y
 	 * @param int $z
-	 * @return Generator<SchematicEntry>
+	 * @return Generator<ClipboardEntry>
 	 */
 	public function getAll(&$x, &$y, &$z) : Generator{
 		$width = $this->explorer->width;

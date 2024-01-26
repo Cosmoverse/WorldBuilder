@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\editor\utils\schematic;
+namespace cosmicpe\worldbuilder\editor\utils\clipboard;
 
 use cosmicpe\worldbuilder\session\utils\Selection;
 use Generator;
 use pocketmine\math\Vector3;
 use pocketmine\world\World;
 
-final class SimpleSchematic implements Schematic{
-	use SimpleSchematicTrait;
+final class SimpleClipboard implements Clipboard{
+	use SimpleClipboardTrait;
 
-	/** @var array<int, SchematicEntry> */
+	/** @var array<int, ClipboardEntry> */
 	private array $entries = [];
 
 	public function asSelection(Vector3 $relative_to) : Selection{
@@ -22,11 +22,11 @@ final class SimpleSchematic implements Schematic{
 		return $selection;
 	}
 
-	public function get(int $x, int $y, int $z) : ?SchematicEntry{
+	public function get(int $x, int $y, int $z) : ?ClipboardEntry{
 		return $this->entries[World::blockHash($x, $y, $z)] ?? null;
 	}
 
-	public function copy(int $x, int $y, int $z, SchematicEntry $entry) : void{
+	public function copy(int $x, int $y, int $z, ClipboardEntry $entry) : void{
 		$this->entries[World::blockHash($x, $y, $z)] = $entry;
 	}
 
@@ -34,7 +34,7 @@ final class SimpleSchematic implements Schematic{
 	 * @param int $x
 	 * @param int $y
 	 * @param int $z
-	 * @return Generator<SchematicEntry>
+	 * @return Generator<ClipboardEntry>
 	 */
 	public function getAll(&$x, &$y, &$z) : Generator{
 		foreach($this->entries as $hash => $entry){

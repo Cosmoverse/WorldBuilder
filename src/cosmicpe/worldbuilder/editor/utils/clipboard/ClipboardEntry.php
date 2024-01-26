@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\editor\utils\schematic;
+namespace cosmicpe\worldbuilder\editor\utils\clipboard;
 
 use pocketmine\nbt\tag\CompoundTag;
 
-final class SchematicEntry{
+final class ClipboardEntry{
 
 	public function __construct(
 		readonly public int $block_state_id,

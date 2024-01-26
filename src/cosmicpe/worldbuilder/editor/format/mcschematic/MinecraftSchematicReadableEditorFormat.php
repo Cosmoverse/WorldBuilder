@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\editor\format\mcschematic;
 
 use cosmicpe\worldbuilder\editor\format\ReadableEditorFormat;
-use cosmicpe\worldbuilder\editor\utils\schematic\Schematic;
+use cosmicpe\worldbuilder\editor\utils\clipboard\Clipboard;
 use pocketmine\block\tile\Tile;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\data\bedrock\block\BlockStateDeserializeException;
@@ -25,7 +25,7 @@ class MinecraftSchematicReadableEditorFormat implements ReadableEditorFormat{
 	private const TAG_BLOCK_METAS = "Data"; // byte array
 	private const TAG_TILE_ENTITIES = "TileEntities"; // list
 
-	public function read(string $contents) : Schematic{
+	public function read(string $contents) : Clipboard{
 		$root = (new BigEndianNbtSerializer())->read(zlib_decode($contents))->mustGetCompoundTag();
 
 		$width = $root->getShort(self::TAG_WIDTH);

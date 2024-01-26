@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\editor\format\mcschematic;
 
-use cosmicpe\worldbuilder\editor\utils\schematic\SchematicEntry;
+use cosmicpe\worldbuilder\editor\utils\clipboard\ClipboardEntry;
 use pocketmine\nbt\tag\CompoundTag;
 
 final class MinecraftSchematicExplorer{
@@ -32,11 +32,11 @@ final class MinecraftSchematicExplorer{
 		return self::index($x, $y, $z, $this->length, $this->width);
 	}
 
-	public function getSchematicEntryAt(int $x, int $y, int $z) : ?SchematicEntry{
+	public function getSchematicEntryAt(int $x, int $y, int $z) : ?ClipboardEntry{
 		return $this->getSchematicEntry($this->indexAt($x, $y, $z));
 	}
 
-	public function getSchematicEntry(int $index) : ?SchematicEntry{
-		return isset($this->blocks[$index]) ? new SchematicEntry($this->blocks[$index], $this->tile_entities[$index] ?? null) : null;
+	public function getSchematicEntry(int $index) : ?ClipboardEntry{
+		return isset($this->blocks[$index]) ? new ClipboardEntry($this->blocks[$index], $this->tile_entities[$index] ?? null) : null;
 	}
 }

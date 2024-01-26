@@ -21,7 +21,7 @@ final class PasteCommandExecutor implements CommandExecutor{
 	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		assert($sender instanceof Player);
 		$session = $this->loader->getPlayerSessionManager()->get($sender);
-		$clipboard = $session->clipboard_schematic;
+		$clipboard = $session->clipboard;
 		if($clipboard !== null){
 			$relative = $sender->getPosition();
 			$manager = $this->loader->getEditorManager();

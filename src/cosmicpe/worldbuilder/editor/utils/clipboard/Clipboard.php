@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace cosmicpe\worldbuilder\editor\utils\schematic;
+namespace cosmicpe\worldbuilder\editor\utils\clipboard;
 
 use cosmicpe\worldbuilder\session\utils\Selection;
 use Generator;
 use pocketmine\math\Vector3;
 
-interface Schematic{
+interface Clipboard{
 
 	public function getWidth() : int;
 
@@ -22,15 +22,15 @@ interface Schematic{
 
 	public function getRelativePosition() : Vector3;
 
-	public function get(int $x, int $y, int $z) : ?SchematicEntry;
+	public function get(int $x, int $y, int $z) : ?ClipboardEntry;
 
-	public function copy(int $x, int $y, int $z, SchematicEntry $entry) : void;
+	public function copy(int $x, int $y, int $z, ClipboardEntry $entry) : void;
 
 	/**
 	 * @param int $x
 	 * @param int $y
 	 * @param int $z
-	 * @return Generator<SchematicEntry>
+	 * @return Generator<ClipboardEntry>
 	 */
 	public function getAll(&$x, &$y, &$z) : Generator;
 }

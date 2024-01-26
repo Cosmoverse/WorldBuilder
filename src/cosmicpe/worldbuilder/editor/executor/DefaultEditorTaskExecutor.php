@@ -8,7 +8,7 @@ use cosmicpe\worldbuilder\editor\task\copy\nbtcopier\NamedtagCopierManager;
 use cosmicpe\worldbuilder\editor\task\utils\ChunkIteratorCursor;
 use cosmicpe\worldbuilder\editor\task\utils\EditorTaskUtils;
 use cosmicpe\worldbuilder\editor\task\utils\SubChunkIteratorCursor;
-use cosmicpe\worldbuilder\editor\utils\schematic\SchematicEntry;
+use cosmicpe\worldbuilder\editor\utils\clipboard\ClipboardEntry;
 use cosmicpe\worldbuilder\utils\MathUtils;
 use Generator;
 use pocketmine\block\tile\TileFactory;
@@ -52,7 +52,7 @@ final class DefaultEditorTaskExecutor{
 				($cursor->chunk_x << Chunk::COORD_BIT_SIZE) + $cursor->x - $min_x,
 				$y - $min_y,
 				($cursor->chunk_z << Chunk::COORD_BIT_SIZE) + $cursor->z - $min_z,
-				new SchematicEntry(
+				new ClipboardEntry(
 					$cursor->sub_chunk->getBlockStateId($cursor->x, $cursor->y, $cursor->z),
 					$tile !== null ? NamedtagCopierManager::copy($tile) : null
 				)

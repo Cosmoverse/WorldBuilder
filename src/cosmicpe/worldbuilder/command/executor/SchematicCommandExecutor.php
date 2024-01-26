@@ -76,7 +76,7 @@ final class SchematicCommandExecutor implements CommandExecutor{
 						if(!file_exists($export_path)){
 							assert($sender instanceof Player);
 							$session = $this->loader->getPlayerSessionManager()->get($sender);
-							$schematic = $session->clipboard_schematic;
+							$schematic = $session->clipboard;
 							if($schematic !== null){
 								$contents = $this->loader->getEditorManager()->format_registry->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->export($schematic);
 								file_put_contents($export_path, $contents);

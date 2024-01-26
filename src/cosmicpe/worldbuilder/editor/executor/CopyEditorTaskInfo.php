@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\editor\executor;
 
-use cosmicpe\worldbuilder\editor\utils\schematic\Schematic;
+use cosmicpe\worldbuilder\editor\utils\clipboard\Clipboard;
 use pocketmine\world\World;
 
 final class CopyEditorTaskInfo implements EditorTaskInfo{
@@ -17,7 +17,7 @@ final class CopyEditorTaskInfo implements EditorTaskInfo{
 		readonly public int $x2,
 		readonly public int $y2,
 		readonly public int $z2,
-		readonly public Schematic $clipboard,
+		readonly public Clipboard $clipboard,
 		readonly public bool $generate_new_chunks
 	){}
 
