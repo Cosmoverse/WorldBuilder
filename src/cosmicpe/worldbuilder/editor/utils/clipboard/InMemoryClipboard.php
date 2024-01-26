@@ -15,13 +15,6 @@ final class InMemoryClipboard implements Clipboard{
 	/** @var array<int, ClipboardEntry> */
 	private array $entries = [];
 
-	public function asSelection(Vector3 $relative_to) : Selection{
-		$selection = new Selection(2);
-		$selection->setPoint(0, $relative_to);
-		$selection->setPoint(1, $this->maximum->subtractVector($this->minimum)->addVector($relative_to));
-		return $selection;
-	}
-
 	public function get(int $x, int $y, int $z) : ?ClipboardEntry{
 		return $this->entries[World::blockHash($x, $y, $z)] ?? null;
 	}

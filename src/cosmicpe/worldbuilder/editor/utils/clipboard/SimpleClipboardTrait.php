@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace cosmicpe\worldbuilder\editor\utils\clipboard;
 
+use cosmicpe\worldbuilder\session\utils\Selection;
 use pocketmine\math\Vector3;
 
 trait SimpleClipboardTrait{
@@ -28,5 +29,12 @@ trait SimpleClipboardTrait{
 
 	public function getRelativePosition() : Vector3{
 		return $this->relative_position;
+	}
+
+	public function asSelection(Vector3 $relative_to) : Selection{
+		$selection = new Selection(2);
+		$selection->setPoint(0, $relative_to);
+		$selection->setPoint(1, $this->maximum->subtractVector($this->minimum)->addVector($relative_to));
+		return $selection;
 	}
 }
