@@ -1,26 +1,20 @@
 # WorldBuilder
 A world editor plugin designed for production use.
 
-WorldBuilder is specifically designed to handle multiple world edit operations efficiently.
-Unlike most of the async world editor plugins, WorldBuilder while being 100% asynchronous, does not execute world edit tasks on a new thread.
-It instead executes them on the main thread but splits the task into several smaller tasks which are executed over several game ticks.
-There is a configurable limit on how many block iterations can occur over a tick which acts as a performance regulator.
+WorldBuilder (WB) is specifically designed to handle multiple world-edit operations efficiently.
+It is an excellent editor plugin creative-mode like servers (such as MyPlot plugin users).
+WB is _not_ a fast editor—instead, it is deliberately slows down editor tasks to let the server handle multiple operations concurrently.
 
-**NOTE:** WorldBuilder is an efficiency-first, annoyance-last world editor plugin so do not expect light-speed world edits.
-There is a default limit of 65536 block iterations per tick (or about 1,310,720 per second) so if you're editing 78,643,200 million
-blocks volume region on an "INFINITE frequency" CPU, the task will always take about a minute to complete.
-
-WorldBuilder is great for creative mode servers and provides an API for limiting and monitoring world edits.
-
+WB provides an API for limiting and monitoring world edit operations.
 
 ## Developer Docs
 ### Handling and filtering editor tasks
-If you are running a creative-mode server, you may want to disallow players from editing other player's region, or perhaps blacklisting TNTs and falling blocks from being world-edited in.
+As a creative-mode server maintainer, disallowing players from editing other's regions and avoiding specific blocks from being spawned can be done using WB's API in the following way:
 
 ```php
 use cosmicpe\worldbuilder\editor\executor\SetEditorTaskInfo;
 use cosmicpe\worldbuilder\event\player\PlayerTriggerEditorTaskEvent;
-use pocketmine\block\BlockTypeIds;
+use pocketmine\block\BlockTypeIds;use pocketmine\math\Vector3;
 
 public function onPlayerTriggerEditorTask(PlayerTriggerEditorTaskEvent $event) : void{
 	$player = $event->player;
@@ -29,6 +23,14 @@ public function onPlayerTriggerEditorTask(PlayerTriggerEditorTaskEvent $event) :
 		if($task->block->getTypeId() === BlockTypeIds::TNT){
 			$event->cancel();
 			$player->sendMessage("Setting " . $task->block->getName() . " is not allowed!");
+		}
+		
+		// allow modifying sections between these 2 points
+		$p1 = new Vector3(0, 0, 0);
+		$p2 = new Vector3(100, 255, 100);
+		if($task->x1 < $p1->x || $task->x2 > $p2->x || $task->y1 < $p1->y || $task->y2 > $p2->y || $task->z1 < $p1->z || $task->z2 > $p2->z){
+			$event->cancel();
+			$player->sendMessage("You cannot build outside your allocated region!");
 		}
 	}else{
 		// disallow players from using anything else besides //set
@@ -39,8 +41,6 @@ public function onPlayerTriggerEditorTask(PlayerTriggerEditorTaskEvent $event) :
 ```
 
 ### Monitoring editor tasks
-Boy do I need some sick world editor progress bars on my server! Let's start by creating an editor task listener...
-
 ```php
 use cosmicpe\worldbuilder\editor\executor\EditorTaskInfo;
 use cosmicpe\worldbuilder\editor\task\listener\EditorTaskListener;
@@ -73,4 +73,39 @@ use cosmicpe\worldbuilder\event\player\PlayerTriggerEditorTaskEvent;
 public function onPlayerTriggerEditorTask(PlayerTriggerEditorTaskEvent $event) : void{
 	$event->instance->registerListener(new MyEditorTaskListener());
 }
+```
+
+### Executing edit operations
+An edit operation (e.g., `//copy`, `//paste`, etc.) may be programmatically executed by building an `EditorTaskInfo` object and executing it.
+An `EditorTaskInfo` implementation exists for every editor operation.
+
+```php
+use cosmicpe\worldbuilder\editor\executor\SetEditorTaskInfo;
+use cosmicpe\worldbuilder\editor\task\listener\EditorTaskOnCompletionListener;
+use cosmicpe\worldbuilder\Loader;
+use pocketmine\block\VanillaBlocks;
+use pocketmine\Server;
+
+$world = Server::getInstance()->getWorldManager()->getDefaultWorld();
+$task = new SetEditorTaskInfo(
+	world: $world,
+	x1: 0,
+	y1: 0,
+	z1: 0,
+	x2: 100,
+	y2: 255,
+	z2: 100,
+	block: VanillaBlocks::STONE(), // fill this area with stone
+	generate_new_chunks: true
+);
+
+/** @var Loader $plugin */
+$plugin = Server::getInstance()->getPluginManager()->getPlugin("WorldBuilder");
+
+echo "Task started";
+$instance = $plugin->getEditorManager()->buildInstance($task);
+$instance->registerListener(new EditorTaskOnCompletionListener(function(SetEditorTaskInfo $info) : void{
+	echo "Task completed";
+}));
+$plugin->getEditorManager()->push($instance);
 ```
