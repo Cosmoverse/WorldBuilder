@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\editor;
 
 use Closure;
+use cosmicpe\worldbuilder\editor\executor\CopyEditorTaskInfo;
 use cosmicpe\worldbuilder\editor\executor\DefaultEditorTaskExecutor;
 use cosmicpe\worldbuilder\editor\executor\EditorTaskInfo;
+use cosmicpe\worldbuilder\editor\executor\PasteEditorTaskInfo;
 use cosmicpe\worldbuilder\editor\executor\RegenerateChunksEditorTaskInfo;
 use cosmicpe\worldbuilder\editor\executor\ReplaceEditorTaskInfo;
 use cosmicpe\worldbuilder\editor\executor\ReplaceSetRandomEditorTaskInfo;
@@ -57,6 +59,8 @@ final class EditorManager{
 		$this->format_registry = new EditorFormatRegistry();
 		$this->default_editor_task_executor = new DefaultEditorTaskExecutor();
 		$this->editor_task_info_handlers = [
+			CopyEditorTaskInfo::class => $this->default_editor_task_executor->copy(...),
+			PasteEditorTaskInfo::class => $this->default_editor_task_executor->paste(...),
 			RegenerateChunksEditorTaskInfo::class => $this->default_editor_task_executor->regenerateChunks(...),
 			ReplaceEditorTaskInfo::class => $this->default_editor_task_executor->replace(...),
 			ReplaceSetRandomEditorTaskInfo::class => $this->default_editor_task_executor->replaceSetRandom(...),

@@ -19,3 +19,8 @@ generate-new-chunks: true
 # Shows a popup text to players that displays progress of the editor task
 # Default: true
 display-progress-bar: true
+
+# Uses disk (instead of memory) to store clipboard data (//copy).
+# This addresses out-of-memory issues when copying large sections of a world.
+# Default: true
+buffer-clipboard-operations: true
