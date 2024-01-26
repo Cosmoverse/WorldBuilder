@@ -7,7 +7,7 @@ namespace cosmicpe\worldbuilder\command\executor;
 use cosmicpe\worldbuilder\editor\executor\CopyEditorTaskInfo;
 use cosmicpe\worldbuilder\editor\executor\EditorTaskInfo;
 use cosmicpe\worldbuilder\editor\task\listener\EditorTaskOnCompletionListener;
-use cosmicpe\worldbuilder\editor\utils\clipboard\SimpleClipboard;
+use cosmicpe\worldbuilder\editor\utils\clipboard\InMemoryClipboard;
 use cosmicpe\worldbuilder\Loader;
 use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
@@ -34,7 +34,7 @@ final class CopyCommandExecutor implements CommandExecutor{
 			$sender->getWorld(),
 			$p1->x, $p1->y, $p1->z,
 			$p2->x, $p2->y, $p2->z,
-			new SimpleClipboard(Vector3::minComponents(...$session->selection->getPoints())->subtractVector($sender->getPosition()->floor()), $p1, $p2),
+			new InMemoryClipboard(Vector3::minComponents(...$session->selection->getPoints())->subtractVector($sender->getPosition()->floor()), $p1, $p2),
 			$this->loader->getEditorManager()->generate_new_chunks
 		));
 		$instance->registerListener(new EditorTaskOnCompletionListener(static function(EditorTaskInfo $task) use($session) : void{

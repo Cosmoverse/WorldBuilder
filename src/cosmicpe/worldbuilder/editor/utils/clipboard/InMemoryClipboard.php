@@ -9,7 +9,7 @@ use Generator;
 use pocketmine\math\Vector3;
 use pocketmine\world\World;
 
-final class SimpleClipboard implements Clipboard{
+final class InMemoryClipboard implements Clipboard{
 	use SimpleClipboardTrait;
 
 	/** @var array<int, ClipboardEntry> */

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\editor\format\mcschematic;
 
 use cosmicpe\worldbuilder\editor\utils\clipboard\ClipboardEntry;
-use cosmicpe\worldbuilder\editor\utils\clipboard\SimpleClipboard;
+use cosmicpe\worldbuilder\editor\utils\clipboard\InMemoryClipboard;
 use Generator;
 use pocketmine\math\Vector3;
 
-class LazyLoadedMinecraftSchematic extends SimpleClipboard{
+class LazyLoadedMinecraftSchematic extends InMemoryClipboard{
 
 	readonly private MinecraftSchematicExplorer $explorer;
 
