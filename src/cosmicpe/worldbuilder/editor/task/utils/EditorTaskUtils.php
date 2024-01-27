@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace cosmicpe\worldbuilder\editor\task\utils;
 
 use Closure;
+use cosmicpe\worldbuilder\editor\utils\clipboard\Clipboard;
+use cosmicpe\worldbuilder\editor\utils\clipboard\ClipboardEntry;
 use Generator;
 use pocketmine\world\format\Chunk;
+use pocketmine\world\format\SubChunk;
+use pocketmine\world\utils\SubChunkExplorer;
+use pocketmine\world\utils\SubChunkExplorerStatus;
 use pocketmine\world\World;
 use SOFe\AwaitGenerator\Await;
 use SOFe\AwaitGenerator\Traverser;
@@ -25,7 +30,7 @@ final class EditorTaskUtils{
 	 * @param bool $generate
 	 * @return Generator<mixed, Await::RESOLVE, void, Chunk|null>
 	 */
-	private static function retrieveChunk(World $world, int $x, int $z, bool $generate) : Generator{
+	public static function retrieveChunk(World $world, int $x, int $z, bool $generate) : Generator{
 		if(!$generate){
 			return $world->loadChunk($x, $z);
 		}
@@ -123,6 +128,49 @@ final class EditorTaskUtils{
 					$world->unregisterChunkLoader(EditorChunkLoader::instance(), $chunkX, $chunkZ);
 				}
 			}
+		}
+	}
+
+	/**
+	 * @param World $world
+	 * @param Clipboard $clipboard
+	 * @param int $dx
+	 * @param int $dy
+	 * @param int $dz
+	 * @param bool $generate
+	 * @return Generator<array{self::OP_WRITE_BUFFER, int, int, int, SubChunk, ClipboardEntry}|array{self::OP_WRITE_WORLD, int, int, Chunk}|null, Traverser::VALUE|Await::RESOLVE>
+	 */
+	public static function iterateClipboard(World $world, Clipboard $clipboard, int $dx, int $dy, int $dz, bool $generate) : Generator{
+		$iterator = new SubChunkExplorer($world);
+		$last_chunk_x = null;
+		$last_chunk_z = null;
+		foreach($clipboard->getAll($x, $y, $z) as $entry){
+			$x += $dx;
+			$y += $dy;
+			$z += $dz;
+			$status = $iterator->moveTo($x, $y, $z);
+			if($status === SubChunkExplorerStatus::INVALID){
+				yield from self::retrieveChunk($world, $x >> Chunk::COORD_BIT_SIZE, $z >> Chunk::COORD_BIT_SIZE, $generate);
+				$status = $iterator->moveTo($x, $y, $z);
+				if($status === SubChunkExplorerStatus::INVALID){
+					yield null => Traverser::VALUE;
+					continue;
+				}
+			}
+			if($status === SubChunkExplorerStatus::MOVED){
+				$chunk_x = $x >> Chunk::COORD_BIT_SIZE;
+				$chunk_z = $z >> Chunk::COORD_BIT_SIZE;
+				if($last_chunk_x !== null && $last_chunk_x !== $chunk_x && $last_chunk_z !== null && $last_chunk_z !== $chunk_z){
+					yield [self::OP_WRITE_WORLD, $last_chunk_x, $last_chunk_z, $iterator->currentChunk] => Traverser::VALUE;
+				}
+				$last_chunk_x = $chunk_x;
+				$last_chunk_z = $chunk_z;
+			}
+			yield [self::OP_WRITE_BUFFER, $x, $y, $z, $iterator->currentSubChunk, $entry] => Traverser::VALUE;
+		}
+		if($last_chunk_x !== null && $last_chunk_z !== null){
+			$chunk = yield from self::retrieveChunk($world, $x >> Chunk::COORD_BIT_SIZE, $z >> Chunk::COORD_BIT_SIZE, $generate);
+			yield [self::OP_WRITE_WORLD, $last_chunk_x, $last_chunk_z, $chunk] => Traverser::VALUE;
 		}
 	}
 }

@@ -17,8 +17,6 @@ use pocketmine\world\format\io\exception\UnsupportedWorldFormatException;
 use pocketmine\world\format\io\leveldb\LevelDB;
 use pocketmine\world\format\PalettedBlockArray;
 use pocketmine\world\format\SubChunk;
-use pocketmine\world\utils\SubChunkExplorer;
-use pocketmine\world\utils\SubChunkExplorerStatus;
 use pocketmine\world\World;
 use ReflectionClassConstant;
 use SOFe\AwaitGenerator\Traverser;
@@ -242,34 +240,32 @@ final class DefaultEditorTaskExecutor{
 		$tiles = [];
 		$tile_factory = TileFactory::getInstance();
 
-		$iterator = new SubChunkExplorer($info->world);
-		foreach($info->clipboard->getAll($x, $y, $z) as $entry){
-			$x += $relative_x;
-			$y += $relative_y;
-			$z += $relative_z;
-			if($iterator->moveTo($x, $y, $z) === SubChunkExplorerStatus::INVALID){
-				$info->world->loadChunk($x >> Chunk::COORD_BIT_SIZE, $z >> Chunk::COORD_BIT_SIZE);
-				if($iterator->moveTo($x, $y, $z) === SubChunkExplorerStatus::INVALID){
-					++$progress;
-					continue;
-				}
+		$traverser = new Traverser(EditorTaskUtils::iterateClipboard($info->world, $info->clipboard, $relative_x, $relative_y, $relative_z, $info->generate_new_chunks));
+		while(yield from $traverser->next($operation)){
+			if($operation[0] === null){
+				++$progress;
+				continue;
 			}
-
+			if($operation[0] === EditorTaskUtils::OP_WRITE_WORLD){
+				$chunks[World::chunkHash($operation[1], $operation[2])] = [$operation[1], $operation[2]];
+				continue;
+			}
+			assert($operation[0] === EditorTaskUtils::OP_WRITE_BUFFER);
+			/** @var array{EditorTaskUtils::OP_WRITE_BUFFER, int, int, int, SubChunk, ClipboardEntry} $operation */
+			[, $x, $y, $z, $sub_chunk, $entry] = $operation;
 			if($entry->tile_nbt !== null){
 				$tiles[] = $tile_factory->createFromData($info->world, NamedtagCopierManager::moveTo($entry->tile_nbt, $x, $y, $z));
 				++$total;
 			}
 
-			$iterator->currentSubChunk->setBlockStateId($x & Chunk::COORD_MASK, $y & Chunk::COORD_MASK, $z & Chunk::COORD_MASK, $entry->block_state_id);
-			$chunks[World::chunkHash($x >> Chunk::COORD_BIT_SIZE, $z >> Chunk::COORD_BIT_SIZE)] = true;
+			$sub_chunk->setBlockStateId($x & Chunk::COORD_MASK, $y & Chunk::COORD_MASK, $z & Chunk::COORD_MASK, $entry->block_state_id);
 			yield [++$progress, $total] => Traverser::VALUE;
 		}
 
-		foreach($chunks as $hash => $_){
-			World::getXZ($hash, $chunkX, $chunkZ);
-			$chunk = $info->world->loadChunk($chunkX, $chunkZ);
+		foreach($chunks as [$x, $z]){
+			$chunk = $info->world->loadChunk($x, $z);
 			if($chunk !== null){
-				$info->world->setChunk($chunkX, $chunkZ, $chunk);
+				$info->world->setChunk($x, $z, $chunk);
 			}
 		}
 
