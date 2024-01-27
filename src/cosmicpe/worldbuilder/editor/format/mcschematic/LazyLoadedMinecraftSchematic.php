@@ -29,7 +29,7 @@ final class LazyLoadedMinecraftSchematic implements Clipboard{
 		return 1 + $this->explorer->height;
 	}
 
-	public function getVolume() : int{
+	public function calculateEntryCount() : int{
 		return $this->getWidth() * $this->getLength() * $this->getHeight();
 	}
 

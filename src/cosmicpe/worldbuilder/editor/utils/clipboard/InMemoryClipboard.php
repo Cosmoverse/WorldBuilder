@@ -34,7 +34,7 @@ final class InMemoryClipboard implements Clipboard{
 		}
 	}
 
-	public function getVolume() : int{
+	public function calculateEntryCount() : int{
 		return count($this->entries);
 	}
 }

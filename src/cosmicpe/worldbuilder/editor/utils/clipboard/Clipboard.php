@@ -16,7 +16,7 @@ interface Clipboard{
 
 	public function getLength() : int;
 
-	public function getVolume() : int;
+	public function calculateEntryCount() : int;
 
 	public function asSelection(Vector3 $relative_to) : Selection;
 

@@ -61,13 +61,13 @@ final class BufferedClipboard implements Clipboard{
 		}
 	}
 
-	public function getVolume() : int{
-		$volume = 0;
+	public function calculateEntryCount() : int{
+		$count = 0;
 		fseek($this->resource, 0);
 		while(($data = fread($this->resource, 4)) !== false && $data !== ""){
 			fseek($this->resource, Binary::readInt($data), SEEK_CUR);
-			++$volume;
+			++$count;
 		}
-		return $volume;
+		return $count;
 	}
 }

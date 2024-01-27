@@ -229,7 +229,7 @@ final class DefaultEditorTaskExecutor{
 	 */
 	public function paste(PasteEditorTaskInfo $info) : Generator{
 		$progress = 0;
-		$total = $info->clipboard->getVolume();
+		$total = $info->clipboard->calculateEntryCount();
 
 		$clipboard_relative_pos = $info->clipboard->getRelativePosition();
 		$relative_x = $info->relative_x + $clipboard_relative_pos->x;
