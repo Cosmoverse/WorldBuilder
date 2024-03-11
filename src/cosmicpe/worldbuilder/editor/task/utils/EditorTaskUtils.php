@@ -160,7 +160,7 @@ final class EditorTaskUtils{
 			if($status === SubChunkExplorerStatus::MOVED){
 				$chunk_x = $x >> Chunk::COORD_BIT_SIZE;
 				$chunk_z = $z >> Chunk::COORD_BIT_SIZE;
-				if($last_chunk_x !== null && $last_chunk_x !== $chunk_x && $last_chunk_z !== null && $last_chunk_z !== $chunk_z){
+				if(($last_chunk_x !== null && $last_chunk_x !== $chunk_x) || ($last_chunk_z !== null && $last_chunk_z !== $chunk_z)){
 					yield [self::OP_WRITE_WORLD, $last_chunk_x, $last_chunk_z, $iterator->currentChunk] => Traverser::VALUE;
 				}
 				$last_chunk_x = $chunk_x;
