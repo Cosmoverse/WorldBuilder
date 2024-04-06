@@ -41,9 +41,9 @@ final class PcPEMappedAnvil extends Anvil{
 		parent::__construct($path, $logger);
 	}
 
-	protected function palettizeLegacySubChunkYZX(string $idArray, string $metaArray) : PalettedBlockArray{
+	protected function palettizeLegacySubChunkYZX(string $idArray, string $metaArray, \Logger $logger) : PalettedBlockArray{
 		[$idArray, $metaArray] = $this->translatePcBlocksToPe($idArray, $metaArray);
-		return parent::palettizeLegacySubChunkYZX($idArray, $metaArray);
+		return parent::palettizeLegacySubChunkYZX($idArray, $metaArray, $logger);
 	}
 
 	/**
