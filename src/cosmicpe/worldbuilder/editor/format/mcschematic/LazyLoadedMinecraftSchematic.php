@@ -9,6 +9,7 @@ use cosmicpe\worldbuilder\editor\utils\clipboard\ClipboardEntry;
 use cosmicpe\worldbuilder\session\utils\Selection;
 use Generator;
 use pocketmine\math\Vector3;
+use function count;
 
 final class LazyLoadedMinecraftSchematic implements Clipboard{
 
@@ -30,7 +31,7 @@ final class LazyLoadedMinecraftSchematic implements Clipboard{
 	}
 
 	public function calculateEntryCount() : int{
-		return $this->getWidth() * $this->getLength() * $this->getHeight();
+		return count($this->explorer->blocks);
 	}
 
 	public function get(int $x, int $y, int $z) : ?ClipboardEntry{

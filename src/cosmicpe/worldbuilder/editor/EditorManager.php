@@ -61,10 +61,10 @@ final class EditorManager{
 	 */
 	public array $editor_task_info_handlers;
 
-	public function __construct(){
+	public function __construct(Loader $loader){
 		NamedtagCopierManager::init();
 		$this->format_registry = new EditorFormatRegistry();
-		$this->default_editor_task_executor = new DefaultEditorTaskExecutor();
+		$this->default_editor_task_executor = new DefaultEditorTaskExecutor($loader);
 		$this->editor_task_info_handlers = [
 			CopyEditorTaskInfo::class => $this->default_editor_task_executor->copy(...),
 			PasteEditorTaskInfo::class => $this->default_editor_task_executor->paste(...),

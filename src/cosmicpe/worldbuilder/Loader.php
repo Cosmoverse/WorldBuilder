@@ -20,7 +20,7 @@ final class Loader extends PluginBase{
 
 	protected function onLoad() : void{
 		$this->command_manager = new CommandManager($this);
-		$this->editor_manager = new EditorManager();
+		$this->editor_manager = new EditorManager($this);
 		$this->player_session_manager = new PlayerSessionManager();
 
 		if($this->getConfig()->get("register-pc-world-converter")){

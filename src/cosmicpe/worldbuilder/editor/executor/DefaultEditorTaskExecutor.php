@@ -9,8 +9,10 @@ use cosmicpe\worldbuilder\editor\task\utils\ChunkIteratorCursor;
 use cosmicpe\worldbuilder\editor\task\utils\EditorTaskUtils;
 use cosmicpe\worldbuilder\editor\task\utils\SubChunkIteratorCursor;
 use cosmicpe\worldbuilder\editor\utils\clipboard\ClipboardEntry;
+use cosmicpe\worldbuilder\Loader;
 use cosmicpe\worldbuilder\utils\MathUtils;
 use Generator;
+use Logger;
 use pocketmine\block\tile\TileFactory;
 use pocketmine\world\format\Chunk;
 use pocketmine\world\format\io\exception\UnsupportedWorldFormatException;
@@ -22,10 +24,15 @@ use ReflectionClassConstant;
 use SOFe\AwaitGenerator\Traverser;
 use function assert;
 use function min;
+use const PHP_INT_MAX;
+use const PHP_INT_MIN;
 
 final class DefaultEditorTaskExecutor{
 
-	public function __construct(){
+	private Logger $logger;
+
+	public function __construct(Loader $loader){
+		$this->logger = $loader->getLogger();
 	}
 
 	/**
@@ -240,9 +247,16 @@ final class DefaultEditorTaskExecutor{
 		$tiles = [];
 		$tile_factory = TileFactory::getInstance();
 
+		$min_x = PHP_INT_MAX;
+		$min_y = PHP_INT_MAX;
+		$min_z = PHP_INT_MAX;
+		$max_x = PHP_INT_MIN;
+		$max_y = PHP_INT_MIN;
+		$max_z = PHP_INT_MIN;
+
 		$traverser = new Traverser(EditorTaskUtils::iterateClipboard($info->world, $info->clipboard, $relative_x, $relative_y, $relative_z, $info->generate_new_chunks));
 		while(yield from $traverser->next($operation)){
-			if($operation[0] === null){
+			if($operation === null){
 				++$progress;
 				continue;
 			}
@@ -260,7 +274,28 @@ final class DefaultEditorTaskExecutor{
 
 			$sub_chunk->setBlockStateId($x & Chunk::COORD_MASK, $y & Chunk::COORD_MASK, $z & Chunk::COORD_MASK, $entry->block_state_id);
 			yield [++$progress, $total] => Traverser::VALUE;
+
+			if($min_x > $x){
+				$min_x = $x;
+			}
+			if($min_y > $y){
+				$min_y = $y;
+			}
+			if($min_z > $z){
+				$min_z = $z;
+			}
+			if($max_x < $x){
+				$max_x = $x;
+			}
+			if($max_y < $y){
+				$max_y = $y;
+			}
+			if($max_z < $z){
+				$max_z = $z;
+			}
 		}
+
+		$this->logger->debug("Wrote schematic at min={$min_x},{$min_y},{$min_z} max={$max_x},{$max_y},{$max_z}");
 
 		foreach($chunks as [$x, $z]){
 			$chunk = $info->world->loadChunk($x, $z);

@@ -17,7 +17,7 @@ final class MinecraftSchematicExplorer{
 	 * @param int $width
 	 * @param int $height
 	 * @param int $length
-	 * @param list<int> $blocks
+	 * @param array<int, int> $blocks
 	 * @param array<int, CompoundTag> $tile_entities
 	 */
 	public function __construct(

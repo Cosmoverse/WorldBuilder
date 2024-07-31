@@ -52,7 +52,7 @@ final class SchematicCommandExecutor implements CommandExecutor{
 
 							assert($sender instanceof Player);
 
-							$schematic = $this->loader->getEditorManager()->format_registry->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->import($contents);
+							$schematic = $this->loader->getEditorManager()->format_registry->get(EditorFormatIds::MINECRAFT_SCHEMATIC)->read($contents);
 							$relative = $sender->getPosition();
 							$manager = $this->loader->getEditorManager();
 							$this->loader->getPlayerSessionManager()->get($sender)->pushEditorTask($manager->buildInstance(new SetSchematicEditorTaskInfo(
